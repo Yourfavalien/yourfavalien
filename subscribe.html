@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>subscribe — YourFavAlien</title>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0507; --dark: #12080d; --magenta: #b5175e;
+      --magenta-dark: #8b1148; --cyan: #4de8d8; --yellow: #f5c518;
+      --white: #f0ece8; --gray-light: #e8e4e0; --nav-border: rgba(255,255,255,0.6);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Space Mono', monospace; background: var(--black); color: var(--white); overflow-x: hidden; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; gap: 12px; padding: 18px 20px;
+    }
+    nav a {
+      text-decoration: none; color: var(--white); font-family: 'Courier Prime', monospace;
+      font-size: 13px; letter-spacing: 0.02em; border: 1.5px solid var(--nav-border);
+      border-radius: 999px; padding: 6px 18px; transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    nav a:hover, nav a.active { background: rgba(255,255,255,0.15); }
+    .tri {
+      display: inline-block; width: 0; height: 0;
+      border-left: 0.35em solid transparent; border-right: 0.35em solid transparent;
+      border-bottom: 0.55em solid var(--white); margin: 0 1px;
+      vertical-align: middle; position: relative; top: -0.15em;
+    }
+    .stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 3px; height: 3px; background: rgba(255,255,255,0.6); border-radius: 50%; animation: twinkle 3s infinite alternate; }
+    @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 0.9; transform: scale(1.2); } }
+    footer { background: #050205; color: rgba(255,255,255,0.3); text-align: center; padding: 28px 20px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 2px; } }
+
+
+    body { background: var(--black); }
+    .subscribe-page { min-height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .subscribe-bg { position: absolute; inset: 0; background: linear-gradient(160deg,#8898aa 0%,#c0ccd8 50%,#6878a0 100%); }
+    .subscribe-video-bg { position: absolute; inset: 0; overflow: hidden; }
+    .subscribe-video-bg img { width:100%;height:100%;object-fit:cover;object-position:center top;filter:brightness(0.6); }
+    .subscribe-logo-top { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); display: flex; gap: clamp(30px,5vw,80px); z-index: 2; white-space: nowrap; }
+    .subscribe-logo-top span { font-family: 'Space Mono',monospace; font-weight: 700; font-size: clamp(20px,3.5vw,40px); color: var(--white); letter-spacing: 0.12em; text-shadow: 0 0 20px rgba(0,0,0,0.3); }
+    .subscribe-card { position: relative; z-index: 3; background: var(--gray-light); border-radius: 4px; padding: clamp(40px,6vw,80px) clamp(30px,5vw,70px); text-align: center; max-width: 560px; width: 90%; margin-top: 80px; }
+    .subscribe-card h3 { font-family: 'Courier Prime',monospace; font-size: clamp(14px,2.2vw,20px); color: #222; font-weight: 400; margin-bottom: 14px; letter-spacing: 0.02em; }
+    .subscribe-card p { font-family: 'Courier Prime',monospace; font-size: 12px; color: #555; line-height: 1.7; margin-bottom: 28px; }
+    .join-btn { display: inline-block; background: var(--magenta); color: var(--white); font-family: 'Courier Prime',monospace; font-size: 13px; border: none; border-radius: 999px; padding: 10px 32px; cursor: pointer; transition: background 0.2s; letter-spacing: 0.05em; text-decoration: none; }
+    .join-btn:hover { background: var(--magenta-dark); }
+
+
+    /* ── GLOBAL RESPONSIVE ── */
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    img, video, iframe { max-width: 100%; }
+
+    /* NAV — mobile wrap */
+    @media (max-width: 480px) {
+      nav {
+        gap: 5px;
+        padding: 12px 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: rgba(0,0,0,0.35);
+        backdrop-filter: blur(8px);
+      }
+      nav a { font-size: 9px; padding: 5px 9px; }
+    }
+
+    /* HERO — full height on all screens */
+    @media (max-width: 768px) {
+      .hero-photo { height: 55vh; }
+    }
+    @media (max-width: 480px) {
+      .hero-photo { height: 50vh; }
+      .hero-handle h1 { font-size: 20px !important; }
+      .hero-handle p { font-size: 10px; }
+    }
+
+    /* HERO HOME section */
+    @media (max-width: 768px) {
+      .hero-logo { gap: 20px !important; }
+      .hero-logo span { font-size: clamp(18px, 7vw, 40px) !important; }
+    }
+
+    /* ABOUT page */
+    @media (max-width: 768px) {
+      .about-header { padding-top: 80px; }
+      .about-text { padding: 30px 6%; font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .about-header h2 { font-size: 24px; letter-spacing: 0.2em; }
+      .about-text { font-size: 12px; line-height: 1.8; }
+    }
+
+    /* CONTACT page */
+    @media (max-width: 768px) {
+      .contact-page { padding: 90px 6% 40px; }
+      .contact-inner h2 { font-size: clamp(28px, 8vw, 52px); }
+      .contact-art { width: 100%; right: -10px; opacity: 0.3; bottom: 0; }
+    }
+    @media (max-width: 480px) {
+      .contact-art { display: none; }
+      .contact-body { font-size: 12px; }
+    }
+
+    /* SUBSCRIBE page */
+    @media (max-width: 768px) {
+      .subscribe-card { padding: 30px 20px; margin-top: 60px; }
+      .subscribe-logo-top { top: 80px; gap: 20px; }
+      .subscribe-logo-top span { font-size: clamp(16px, 4vw, 28px); }
+    }
+    @media (max-width: 480px) {
+      .subscribe-card { width: 95%; }
+      .subscribe-card h3 { font-size: 14px; }
+      .subscribe-logo-top { display: none; }
+    }
+
+    /* SOCIALS page */
+    @media (max-width: 768px) {
+      .links-inner { max-width: 100%; }
+      .social-card { border-radius: 12px; }
+      .social-link, .social-pill { font-size: 13px; padding: 14px 18px; }
+      .card-thumbs { height: 90px; }
+    }
+    @media (max-width: 480px) {
+      .links-section { padding: 16px 12px 50px; }
+      .social-pill { padding: 13px 16px; font-size: 12px; }
+      .card-info { padding: 10px 12px; }
+      .card-name { font-size: 12px; }
+      .card-sub { font-size: 9px; }
+      .card-platform-icon { width: 30px; height: 30px; font-size: 14px; }
+      .subscribe-card { padding: 20px 16px; }
+      .subscribe-card h3 { font-size: 13px; }
+      .subscribe-card p { font-size: 10px; }
+      .subscribe-btn { font-size: 12px; padding: 12px; }
+    }
+
+    /* TikTok embed scroll row */
+    @media (max-width: 480px) {
+      .social-card div[style*="overflow-x"] > div {
+        width: 130px !important;
+        height: 230px !important;
+      }
+    }
+
+    /* Touch-friendly tap targets */
+    @media (hover: none) {
+      .social-link:hover, .social-pill:hover,
+      .social-card:hover, .join-btn:hover,
+      .contact-btn:hover { transform: none; filter: none; }
+      .social-link:active, .social-pill:active { opacity: 0.85; }
+    }
+
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">home</a>
+    <a href="socials.html">socials</a>
+    <a href="about.html">about moi</a>
+    <a href="contact.html">contact</a>
+    <a href="subscribe.html" class="active">subscribe</a>
+  </nav>
+
+  <div class="subscribe-page">
+    <div class="subscribe-bg"></div>
+    <div class="subscribe-video-bg"><img src="assets/subscribe-1.webp" alt="YourFavAlien" /></div>
+    <div class="subscribe-logo-top">
+      <span>YOUR</span>
+      <span>F<span class="tri"></span>V</span>
+      <span>ALIEN</span>
+    </div>
+    <div class="subscribe-card">
+      <h3>Subscribe to YourFavAlien's Newsletter</h3>
+      <p>Sign up to receive updates, tips on feedback, and personal insights directly from YourFavAlien.</p>
+      <a class="join-btn" href="https://2nf3qm7ls13.typeform.com/to/LEFbzwtO" target="_blank" rel="noopener noreferrer">Join now</a>
+    </div>
+  </div>
+  <footer>© 2026 YourFavAlien · All rights reserved</footer>
+  <script>
+
+    function makeStars(containerId, count) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = (Math.random() * 3) + 's';
+        star.style.animationDuration = (2 + Math.random() * 3) + 's';
+        star.style.opacity = Math.random() * 0.7 + 0.1;
+        container.appendChild(star);
+      }
+    }
+
+
+  </script>
+</body>
+</html>
