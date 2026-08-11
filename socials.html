@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>socials — YourFavAlien</title>
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&amp;family=Courier+Prime:ital,wght@0,400;0,700;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --magenta: #b5175e;
+      --magenta-dark: #8b1148;
+      --sage: #bccfbc;
+      --white: #f0ece8;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Mono', monospace;
+      background: var(--sage);
+      color: #111;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; gap: 12px; padding: 18px 20px;
+    }
+    nav a {
+      text-decoration: none; color: #fff; font-family: 'Courier Prime', monospace;
+      font-size: 13px; letter-spacing: 0.02em; border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 999px; padding: 6px 18px; transition: background 0.2s; white-space: nowrap;
+    }
+    nav a:hover, nav a.active { background: rgba(255,255,255,0.2); }
+
+    /* HERO PHOTO */
+    .hero-photo {
+      width: 100%;
+      height: 70vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+    }
+    .hero-photo::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to bottom, transparent, var(--sage));
+    }
+    .hero-handle {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      text-align: center;
+      width: 90%;
+    }
+    .hero-handle h1 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: clamp(20px, 5vw, 40px);
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: 0.08em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+    }
+    .hero-handle p {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.06em;
+      margin-top: 6px;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+    }
+    .hero-handle p a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: underline;
+    }
+
+    /* LINKS SECTION */
+    .links-section {
+      background: var(--sage);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 60px;
+      gap: 14px;
+    }
+    .links-inner {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* CARD — with thumbnail grid like Beacons */
+    .social-card {
+      background: #1a1a1a;
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #fff;
+      display: block;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .social-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    /* Thumbnail grid at top of card */
+    .card-thumbs {
+      width: 100%;
+      height: 130px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      overflow: hidden;
+    }
+    .card-thumbs.single {
+      grid-template-columns: 1fr;
+    }
+    .card-thumb {
+      overflow: hidden;
+      background: #2a2a2a;
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.85);
+      transition: filter 0.2s;
+    }
+    .social-card:hover .card-thumb img {
+      filter: brightness(1);
+    }
+
+    /* Card info row */
+    .card-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+    .card-platform-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-text { flex: 1; }
+    .card-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+    .card-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+      letter-spacing: 0.03em;
+    }
+    .card-arrow {
+      color: rgba(255,255,255,0.3);
+      font-size: 16px;
+    }
+
+    /* Simple pill buttons (no thumbnail) */
+    .social-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .social-pill:hover {
+      transform: scale(1.03);
+      filter: brightness(1.08);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+    }
+    .pill-icon { font-size: 20px; }
+
+    .pill-snapchat  { background: #1a1a1a; color: #FFFC00; }
+    .pill-facebook  { background: #1877F2; }
+    .pill-pinterest { background: #E60023; }
+    .pill-threads   { background: #1a1a1a; border: 1.5px solid rgba(255,255,255,0.2); }
+    .pill-beacons   { background: transparent; border: 1.5px solid rgba(0,0,0,0.25); color: #333; }
+    .pill-beacons:hover { background: rgba(0,0,0,0.06); }
+
+    /* Subscribe card */
+    .subscribe-card {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 24px 20px;
+      color: #fff;
+    }
+    .subscribe-card h3 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .subscribe-card p {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .subscribe-card input {
+      width: 100%;
+      background: #2a2a2a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .subscribe-card input::placeholder { color: rgba(255,255,255,0.3); }
+    .subscribe-btn {
+      width: 100%;
+      background: var(--magenta);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'Audiowide', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.05em;
+    }
+    .subscribe-btn:hover { background: var(--magenta-dark); }
+
+    footer {
+      background: var(--sage);
+      color: rgba(0,0,0,0.35);
+      text-align: center;
+      padding: 24px 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    .social-card div::-webkit-scrollbar { display: none; }
+    ::-webkit-scrollbar-track { background: var(--sage); }
+    ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 2px; }
+
+    /* ── GLOBAL RESPONSIVE ── */
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    img, video, iframe { max-width: 100%; }
+
+    /* NAV — mobile wrap */
+    @media (max-width: 480px) {
+      nav {
+        gap: 5px;
+        padding: 12px 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: rgba(0,0,0,0.35);
+        backdrop-filter: blur(8px);
+      }
+      nav a { font-size: 9px; padding: 5px 9px; }
+    }
+
+    /* HERO — full height on all screens */
+    @media (max-width: 768px) {
+      .hero-photo { height: 55vh; }
+    }
+    @media (max-width: 480px) {
+      .hero-photo { height: 50vh; }
+      .hero-handle h1 { font-size: 20px !important; }
+      .hero-handle p { font-size: 10px; }
+    }
+
+    /* HERO HOME section */
+    @media (max-width: 768px) {
+      .hero-logo { gap: 20px !important; }
+      .hero-logo span { font-size: clamp(18px, 7vw, 40px) !important; }
+    }
+
+    /* ABOUT page */
+    @media (max-width: 768px) {
+      .about-header { padding-top: 80px; }
+      .about-text { padding: 30px 6%; font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .about-header h2 { font-size: 24px; letter-spacing: 0.2em; }
+      .about-text { font-size: 12px; line-height: 1.8; }
+    }
+
+    /* CONTACT page */
+    @media (max-width: 768px) {
+      .contact-page { padding: 90px 6% 40px; }
+      .contact-inner h2 { font-size: clamp(28px, 8vw, 52px); }
+      .contact-art { width: 100%; right: -10px; opacity: 0.3; bottom: 0; }
+    }
+    @media (max-width: 480px) {
+      .contact-art { display: none; }
+      .contact-body { font-size: 12px; }
+    }
+
+    /* SUBSCRIBE page */
+    @media (max-width: 768px) {
+      .subscribe-card { padding: 30px 20px; margin-top: 60px; }
+      .subscribe-logo-top { top: 80px; gap: 20px; }
+      .subscribe-logo-top span { font-size: clamp(16px, 4vw, 28px); }
+    }
+    @media (max-width: 480px) {
+      .subscribe-card { width: 95%; }
+      .subscribe-card h3 { font-size: 14px; }
+      .subscribe-logo-top { display: none; }
+    }
+
+    /* SOCIALS page */
+    @media (max-width: 768px) {
+      .links-inner { max-width: 100%; }
+      .social-card { border-radius: 12px; }
+      .social-link, .social-pill { font-size: 13px; padding: 14px 18px; }
+      .card-thumbs { height: 90px; }
+    }
+    @media (max-width: 480px) {
+      .links-section { padding: 16px 12px 50px; }
+      .social-pill { padding: 13px 16px; font-size: 12px; }
+      .card-info { padding: 10px 12px; }
+      .card-name { font-size: 12px; }
+      .card-sub { font-size: 9px; }
+      .card-platform-icon { width: 30px; height: 30px; font-size: 14px; }
+      .subscribe-card { padding: 20px 16px; }
+      .subscribe-card h3 { font-size: 13px; }
+      .subscribe-card p { font-size: 10px; }
+      .subscribe-btn { font-size: 12px; padding: 12px; }
+    }
+
+    /* TikTok embed scroll row */
+    @media (max-width: 480px) {
+      .social-card div[style*="overflow-x"] > div {
+        width: 130px !important;
+        height: 230px !important;
+      }
+    }
+
+    /* Touch-friendly tap targets */
+    @media (hover: none) {
+      .social-link:hover, .social-pill:hover,
+      .social-card:hover, .join-btn:hover,
+      .contact-btn:hover { transform: none; filter: none; }
+      .social-link:active, .social-pill:active { opacity: 0.85; }
+    }
+
+  </style>
+<style id="final-responsive">
+/* ===== Final cross-device responsive pass ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  width: 100%;
+  min-width: 0;
+}
+img, video, iframe, svg {
+  max-width: 100%;
+}
+nav {
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+nav a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 700px) {
+  nav {
+    gap: 6px;
+    padding: max(10px, env(safe-area-inset-top)) 8px 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(5,2,5,0.40);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  nav a {
+    font-size: clamp(9px, 2.6vw, 11px);
+    padding: 5px 10px;
+    min-height: 30px;
+  }
+}
+@media (max-width: 360px) {
+  nav { gap: 4px; padding-left: 5px; padding-right: 5px; }
+  nav a { font-size: 8.5px; padding: 5px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+
+/* Socials is deliberately wider on larger screens, compact on phones. */
+.hero-photo {
+  width: 100%;
+  height: clamp(500px, 72vh, 820px);
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+.hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
+}
+.hero-handle {
+  bottom: clamp(20px, 3vw, 34px);
+  width: min(92%, 920px);
+  padding: 0 12px;
+}
+.hero-handle h1 {
+  font-size: clamp(24px, 4vw, 44px);
+  overflow-wrap: anywhere;
+}
+.hero-handle p {
+  font-size: clamp(10px, 1.1vw, 13px);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.links-section {
+  padding: clamp(22px, 4vw, 42px) clamp(14px, 4vw, 44px) clamp(54px, 7vw, 80px);
+}
+.links-inner {
+  max-width: 820px;
+  gap: clamp(14px, 2vw, 20px);
+}
+.social-card,
+.social-pill,
+.subscribe-card {
+  width: 100%;
+}
+.social-card {
+  border-radius: clamp(14px, 2vw, 20px);
+}
+.card-info {
+  padding: 15px 18px;
+}
+.card-platform-icon {
+  width: 40px;
+  height: 40px;
+}
+.card-platform-icon img,
+.social-pill > img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+.social-pill > img {
+  width: 42px !important;
+  height: 42px !important;
+}
+.card-text {
+  min-width: 0;
+}
+.card-name,
+.card-sub,
+.social-pill {
+  overflow-wrap: anywhere;
+}
+.tiktok-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px;
+}
+.tiktok-video {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+.tiktok-video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.instagram-thumbs {
+  height: auto !important;
+  aspect-ratio: 4 / 1;
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+.instagram-thumbs .card-thumb a {
+  min-height: 100%;
+}
+.subscribe-card input,
+.subscribe-btn {
+  min-height: 44px;
+}
+@media (min-width: 1200px) {
+  .hero-photo {
+    height: min(78vh, 880px);
+  }
+  .links-inner { max-width: 900px; }
+  .card-info { padding: 17px 20px; }
+}
+@media (max-width: 900px) {
+  .links-inner { max-width: 720px; }
+}
+@media (max-width: 700px) {
+  .hero-photo {
+    height: auto;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+  }
+  .hero-photo img {
+    object-position: center center;
+  }
+  .hero-photo::after {
+    height: 62%;
+  }
+  .hero-handle {
+    bottom: 14px;
+    width: 94%;
+  }
+  .hero-handle h1 {
+    font-size: clamp(19px, 6vw, 28px);
+    letter-spacing: 0.045em;
+  }
+  .hero-handle p {
+    font-size: clamp(9px, 2.6vw, 11px);
+    line-height: 1.45;
+  }
+  .links-section {
+    padding: 18px 12px 52px;
+  }
+  .links-inner {
+    max-width: 100%;
+    gap: 13px;
+  }
+  .tiktok-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: clamp(142px, 43vw, 180px);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    padding: 10px;
+    gap: 8px;
+    scrollbar-width: none;
+  }
+  .tiktok-row::-webkit-scrollbar { display: none; }
+  .tiktok-video {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .instagram-thumbs {
+    aspect-ratio: 2 / 1;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .card-info {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .card-platform-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .social-pill {
+    min-height: 58px;
+    padding: 12px 15px;
+    font-size: 12px;
+  }
+  .social-pill > img {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .subscribe-card {
+    padding: 22px 16px;
+  }
+}
+@media (max-width: 420px) {
+  .hero-photo {
+    aspect-ratio: 4 / 3;
+  }
+  .hero-photo img {
+    object-fit: cover;
+    object-position: center 20%;
+  }
+  .hero-handle h1 { font-size: clamp(18px, 5.8vw, 24px); }
+  .hero-handle p { font-size: 9px; }
+  .links-section { padding-left: 10px; padding-right: 10px; }
+  .tiktok-row { grid-auto-columns: min(46vw, 160px); }
+  .card-name { font-size: 12px; }
+  .card-sub { font-size: 9px; }
+}
+</style></head>
+<body>
+<nav>
+<a href="index.html">home</a>
+<a class="active" href="socials.html">socials</a>
+<a href="about.html">about moi</a>
+<a href="contact.html">contact</a>
+<a href="subscribe.html">subscribe</a>
+</nav>
+<!-- HERO PHOTO -->
+<div class="hero-photo">
+<img alt="YourFavAlien" decoding="async" fetchpriority="high" src="assets/socials-1.webp"/>
+<div class="hero-handle">
+<h1>@yourrfavalien</h1>
+<p>Hey cutie take a peek. 👽<br/>Biz: <a href="mailto:businessinquiry@yourfavalien.com">businessinquiry@yourfavalien.com</a></p>
+</div>
+</div>
+<!-- SOCIAL LINK CARDS -->
+<div class="links-section">
+<div class="links-inner">
+<div class="social-card">
+<!-- TikTok video scroll row -->
+<div class="tiktok-row">
+<div class="tiktok-video">
+<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7666234879394188558" title="TikTok video"></iframe>
+</div>
+<div class="tiktok-video">
+<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7666018822171757837" title="TikTok video"></iframe>
+</div>
+<div class="tiktok-video">
+<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7650813104862907661" title="TikTok video"></iframe>
+</div>
+<div class="tiktok-video">
+<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7651508141061950734" title="TikTok video"></iframe>
+</div>
+</div>
+<a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" style="text-decoration:none;" target="_blank">
+<div class="card-info">
+<div class="card-platform-icon" style="background:#000;padding:0;overflow:hidden;"><img alt="TikTok profile" decoding="async" loading="lazy" src="assets/socials-2.webp" style="width:100%;height:100%;object-fit:cover;"/></div>
+<div class="card-text">
+<div class="card-name">TikTok</div>
+<div class="card-sub">@yourrfavalien · scroll to see more</div>
+</div>
+<div class="card-arrow">›</div>
+</div>
+</a>
+</div>
+<div class="social-card" onclick="window.open('https://www.instagram.com/yourrfavalien','_blank')" style="cursor:pointer;">
+<div class="card-thumbs instagram-thumbs">
+<div class="card-thumb">
+<a href="https://www.instagram.com/p/DbM63WZjOJo/" rel="noopener noreferrer" style="display:block;width:100%;height:100%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;" target="_blank">
+<span style="font-size:22px;">📸</span>
+</a>
+</div>
+<div class="card-thumb">
+<a href="https://www.instagram.com/p/DYdHVdAnJap/" rel="noopener noreferrer" style="display:block;width:100%;height:100%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;" target="_blank">
+<span style="font-size:22px;">📸</span>
+</a>
+</div>
+<div class="card-thumb">
+<a href="https://www.instagram.com/p/DXx6PB5jHHN/" rel="noopener noreferrer" style="display:block;width:100%;height:100%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;" target="_blank">
+<span style="font-size:22px;">📸</span>
+</a>
+</div>
+<div class="card-thumb">
+<a href="https://www.instagram.com/p/DXtPJVQnNiy/" rel="noopener noreferrer" style="display:block;width:100%;height:100%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;" target="_blank">
+<span style="font-size:22px;">📸</span>
+</a>
+</div>
+</div>
+<div class="card-info">
+<div class="card-platform-icon" style="background:#000;padding:0;overflow:hidden;"><img alt="Instagram profile" decoding="async" loading="lazy" src="assets/socials-3.webp" style="width:100%;height:100%;object-fit:cover;"/></div>
+<div class="card-text">
+<div class="card-name">Instagram</div>
+<div class="card-sub">@yourrfavalien · tap a post to view</div>
+</div>
+<div class="card-arrow">›</div>
+</div>
+</div>
+<!-- Snapchat pill -->
+<a class="social-pill pill-snapchat" href="https://www.snapchat.com/add/yourfavvalien" rel="noopener noreferrer" target="_blank">
+<img alt="Snapchat profile" decoding="async" loading="lazy" src="assets/socials-4.webp" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+<div>
+<div>Snapchat</div>
+<div style="font-size:10px;font-weight:400;color:rgba(255,252,0,0.6);margin-top:2px;">Add me on Snapchat</div>
+</div>
+</a>
+<!-- Facebook pill -->
+<a class="social-pill pill-facebook" href="https://www.facebook.com/share/18BmPVjQhd/?mibextid=wwXIfr" rel="noopener noreferrer" target="_blank">
+<img alt="Facebook profile" decoding="async" loading="lazy" src="assets/socials-5.webp" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+<div>
+<div>Facebook</div>
+<div style="font-size:10px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:2px;">Ayden Martinez</div>
+</div>
+</a>
+<!-- YouTube pill -->
+<!-- Twitter/X pill -->
+<!-- Pinterest pill -->
+<!-- Threads pill -->
+<!-- Subscribe card -->
+<div class="subscribe-card">
+<h3>Subscribe to YourFavAlien</h3>
+<p>Get the scoop before it drops! Sign up for exclusive content &amp; alert on the go.</p>
+<input placeholder="First Name" type="text"/>
+<input placeholder="Email" type="email"/>
+<button class="subscribe-btn" onclick="window.open('https://2nf3qm7ls13.typeform.com/to/LEFbzwtO','_blank')">Subscribe</button>
+</div>
+<!-- Beacons link -->
+</div>
+</div>
+<footer>© 2026 YourFavAlien · All rights reserved</footer>
+</body>
+</html>
