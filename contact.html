@@ -54,6 +54,20 @@
     .contact-art { position: absolute; right: -40px; bottom: 0; width: 60%; max-width: 700px; opacity: 0.9; pointer-events: none; }
     @media (max-width:600px) { .contact-art { width:100%; right:-20px; opacity:0.4; } }
 
+  <!-- Brevo Conversations {literal} -->
+<script>
+    (function(d, w, c) {
+        w.BrevoConversationsID = '6a7bd9272621fa9d460a28be';
+        w[c] = w[c] || function() {
+            (w[c].q = w[c].q || []).push(arguments);
+        };
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
+        if (d.head) d.head.appendChild(s);
+    })(document, window, 'BrevoConversations');
+</script>
+<!-- /Brevo Conversations {/literal} -->
 
     /* ── GLOBAL RESPONSIVE ── */
     html { box-sizing: border-box; }
