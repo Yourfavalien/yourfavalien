@@ -319,12 +319,19 @@ nav a {
   }
   .social-card:hover img { transform: scale(1.025); }
 }
-.hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-logo-top, .subscribe-card, .links-inner {
+.hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-card, .links-inner {
   animation: yfaContentRise 620ms cubic-bezier(.22,.8,.3,1) both;
+}
+.subscribe-logo-top {
+  animation: yfaSubscribeLogoRise 620ms cubic-bezier(.22,.8,.3,1) both;
 }
 @keyframes yfaContentRise {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes yfaSubscribeLogoRise {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 .about-art, .contact-art, .subscribe-card, .links-inner { animation-delay: 90ms; }
 @media (hover: none) {
@@ -335,10 +342,16 @@ nav a {
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto !important; }
-  body, body.yfa-page-leaving, .hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-logo-top, .subscribe-card, .links-inner, nav a, .social-card, .social-pill, .contact-btn, .join-btn, .subscribe-btn, img {
+  body, body.yfa-page-leaving, .hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-card, .links-inner, nav a, .social-card, .social-pill, .contact-btn, .join-btn, .subscribe-btn, img {
     animation: none !important;
     transition: none !important;
     transform: none !important;
+    filter: none !important;
+  }
+  .subscribe-logo-top {
+    animation: none !important;
+    transition: none !important;
+    transform: translateX(-50%) !important;
     filter: none !important;
   }
 }
