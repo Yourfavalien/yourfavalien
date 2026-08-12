@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<title>home — YourFavAlien</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0507; --dark: #12080d; --magenta: #b5175e;
+      --magenta-dark: #8b1148; --cyan: #4de8d8; --yellow: #f5c518;
+      --white: #f0ece8; --gray-light: #e8e4e0; --nav-border: rgba(255,255,255,0.6);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Space Mono', monospace; background: var(--black); color: var(--white); overflow-x: hidden; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; gap: 12px; padding: 18px 20px;
+    }
+    nav a {
+      text-decoration: none; color: var(--white); font-family: 'Courier Prime', monospace;
+      font-size: 13px; letter-spacing: 0.02em; border: 1.5px solid var(--nav-border);
+      border-radius: 999px; padding: 6px 18px; transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    nav a:hover, nav a.active { background: rgba(255,255,255,0.15); }
+    .tri {
+      display: inline-block; width: 0; height: 0;
+      border-left: 0.35em solid transparent; border-right: 0.35em solid transparent;
+      border-bottom: 0.55em solid var(--white); margin: 0 1px;
+      vertical-align: middle; position: relative; top: -0.15em;
+    }
+    .stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 3px; height: 3px; background: rgba(255,255,255,0.6); border-radius: 50%; animation: twinkle 3s infinite alternate; }
+    @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 0.9; transform: scale(1.2); } }
+    footer { background: #050205; color: rgba(255,255,255,0.3); text-align: center; padding: 28px 20px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 2px; }
+
+
+    section#home { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0a0507; }
+    .hero-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .hero-logo { position: relative; z-index: 2; display: flex; gap: clamp(40px,8vw,120px); align-items: baseline; }
+    .hero-logo span { font-family: 'Space Mono',monospace; font-weight: 700; font-size: clamp(28px,6vw,72px); color: var(--white); letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
+    .logo-your { position: relative; }
+    .logo-fav-inner { display: inline-flex; align-items: baseline; gap: 0; }
+
+
+    /* ── GLOBAL RESPONSIVE ── */
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    img, video, iframe { max-width: 100%; }
+
+    /* NAV — mobile wrap */
+    @media (max-width: 480px) {
+      nav {
+        gap: 5px;
+        padding: 12px 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: rgba(0,0,0,0.35);
+        backdrop-filter: blur(8px);
+      }
+      nav a { font-size: 9px; padding: 5px 9px; }
+    }
+
+    /* HERO — full height on all screens */
+    @media (max-width: 768px) {
+      .hero-photo { height: 55vh; }
+    }
+    @media (max-width: 480px) {
+      .hero-photo { height: 50vh; }
+      .hero-handle h1 { font-size: 20px !important; }
+      .hero-handle p { font-size: 10px; }
+    }
+
+    /* HERO HOME section */
+    @media (max-width: 768px) {
+      .hero-logo { gap: 20px !important; }
+      .hero-logo span { font-size: clamp(18px, 7vw, 40px) !important; }
+    }
+
+    /* ABOUT page */
+    @media (max-width: 768px) {
+      .about-header { padding-top: 80px; }
+      .about-text { padding: 30px 6%; font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .about-header h2 { font-size: 24px; letter-spacing: 0.2em; }
+      .about-text { font-size: 12px; line-height: 1.8; }
+    }
+
+    /* CONTACT page */
+    @media (max-width: 768px) {
+      .contact-page { padding: 90px 6% 40px; }
+      .contact-inner h2 { font-size: clamp(28px, 8vw, 52px); }
+      .contact-art { width: 100%; right: -10px; opacity: 0.3; bottom: 0; }
+    }
+    @media (max-width: 480px) {
+      .contact-art { display: none; }
+      .contact-body { font-size: 12px; }
+    }
+
+    /* SUBSCRIBE page */
+    @media (max-width: 768px) {
+      .subscribe-card { padding: 30px 20px; margin-top: 60px; }
+      .subscribe-logo-top { top: 80px; gap: 20px; }
+      .subscribe-logo-top span { font-size: clamp(16px, 4vw, 28px); }
+    }
+    @media (max-width: 480px) {
+      .subscribe-card { width: 95%; }
+      .subscribe-card h3 { font-size: 14px; }
+      .subscribe-logo-top { display: none; }
+    }
+
+    /* SOCIALS page */
+    @media (max-width: 768px) {
+      .links-inner { max-width: 100%; }
+      .social-card { border-radius: 12px; }
+      .social-link, .social-pill { font-size: 13px; padding: 14px 18px; }
+      .card-thumbs { height: 90px; }
+    }
+    @media (max-width: 480px) {
+      .links-section { padding: 16px 12px 50px; }
+      .social-pill { padding: 13px 16px; font-size: 12px; }
+      .card-info { padding: 10px 12px; }
+      .card-name { font-size: 12px; }
+      .card-sub { font-size: 9px; }
+      .card-platform-icon { width: 30px; height: 30px; font-size: 14px; }
+      .subscribe-card { padding: 20px 16px; }
+      .subscribe-card h3 { font-size: 13px; }
+      .subscribe-card p { font-size: 10px; }
+      .subscribe-btn { font-size: 12px; padding: 12px; }
+    }
+
+    /* TikTok embed scroll row */
+    @media (max-width: 480px) {
+      .social-card div[style*="overflow-x"] > div {
+        width: 130px !important;
+        height: 230px !important;
+      }
+    }
+
+    /* Touch-friendly tap targets */
+    @media (hover: none) {
+      .social-link:hover, .social-pill:hover,
+      .social-card:hover, .join-btn:hover,
+      .contact-btn:hover { transform: none; filter: none; }
+      .social-link:active, .social-pill:active { opacity: 0.85; }
+    }
+
+  </style>
+<style>
+/* Full-screen Vimeo hero background */
+#heroVideo {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 177.77777778vh !important;
+  min-width: 100% !important;
+  height: 56.25vw !important;
+  min-height: 100% !important;
+  transform: translate(-50%, -50%) !important;
+  border: 0 !important;
+  pointer-events: none;
+}
+
+/* Make the hero fill the entire viewport and crop the video like background-size: cover */
+.hero, .hero-section, section:first-of-type {
+  min-height: 100vh;
+  overflow: hidden;
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&amp;display=swap" rel="stylesheet"/>
+<style>
+html, body, body * {
+  font-family: "Major Mono Display", monospace !important;
+}
+</style>
+<style id="final-responsive">
+/* ===== Final cross-device responsive pass ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  width: 100%;
+  min-width: 0;
+}
+img, video, iframe, svg {
+  max-width: 100%;
+}
+nav {
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+nav a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 700px) {
+  nav {
+    gap: 6px;
+    padding: max(10px, env(safe-area-inset-top)) 8px 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(5,2,5,0.40);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  nav a {
+    font-size: clamp(9px, 2.6vw, 11px);
+    padding: 5px 10px;
+    min-height: 30px;
+  }
+}
+@media (max-width: 360px) {
+  nav { gap: 4px; padding-left: 5px; padding-right: 5px; }
+  nav a { font-size: 8.5px; padding: 5px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+
+section#home {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+#heroVideo {
+  z-index: 0;
+}
+.hero-logo {
+  z-index: 2;
+  max-width: calc(100vw - 32px);
+  justify-content: center;
+  text-align: center;
+}
+.hero-logo span {
+  font-size: clamp(26px, 6vw, 76px);
+}
+@media (max-width: 700px) {
+  .hero-logo {
+    gap: clamp(14px, 5vw, 28px) !important;
+    width: calc(100% - 24px);
+  }
+  .hero-logo span {
+    font-size: clamp(18px, 6.8vw, 34px) !important;
+    letter-spacing: 0.08em;
+  }
+}
+@media (max-width: 360px) {
+  .hero-logo { gap: 10px !important; }
+  .hero-logo span { font-size: 17px !important; }
+}
+</style>
+<style id="mobile-ipad-fullscreen-home">
+/* Force the Vimeo background to truly cover phones, iPads, and desktops. */
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: #0a0507;
+}
+section#home {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#heroVideo {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: max(100vw, 177.7778vh) !important;
+  height: max(100vh, 56.25vw) !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  border: 0 !important;
+  pointer-events: none;
+}
+@supports (height: 100dvh) {
+  #heroVideo {
+    width: max(100vw, 177.7778dvh) !important;
+    height: max(100dvh, 56.25vw) !important;
+  }
+}
+/* iPad / tablet portrait and landscape */
+@media (min-width: 600px) and (max-width: 1180px) {
+  section#home, .hero-bg {
+    width: 100vw;
+    height: 100dvh;
+  }
+}
+/* Phone portrait: keep the centered crop edge-to-edge. */
+@media (max-width: 599px) {
+  section#home, .hero-bg {
+    width: 100vw;
+    height: 100dvh;
+  }
+}
+</style>
+<!-- PushAlert -->
+<script type="text/javascript">
+(function(d, t) {
+    var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+    g.src = "https://cdn.pushalert.co/integrate_22ac7f60f8f2dc2057b0434c83c18562.js";
+    s.parentNode.insertBefore(g, s);
+}(document, "script"));
+</script>
+<!-- End PushAlert -->
+</head>
+<body>
+<nav>
+<a class="active" href="index.html">home</a>
+<a href="socials.html">socials</a>
+<a href="about.html">about moi</a>
+<a href="contact.html">contact</a>
+<a href="subscribe.html">subscribe</a>
+</nav>
+<section id="home">
+<div class="hero-bg">
+<div class="stars" id="hero-stars"></div>
+<iframe allow="autoplay; fullscreen; picture-in-picture" frameborder="0" id="heroVideo" loading="eager" src="https://player.vimeo.com/video/1217454530?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0" title="Yourfavalien homepage video"></iframe>
+<div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);z-index:1;"></div>
+<div class="hero-logo">
+<span class="logo-your">YOUR</span>
+<span class="logo-fav"><span class="logo-fav-inner">F<span class="tri"></span>V</span></span>
+<span>ALIEN</span>
+</div>
+</div>
+</section>
+<footer>© 2026 YourFavAlien · All rights reserved</footer>
+<script>
+
+    function makeStars(containerId, count) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = (Math.random() * 3) + 's';
+        star.style.animationDuration = (2 + Math.random() * 3) + 's';
+        star.style.opacity = Math.random() * 0.7 + 0.1;
+        container.appendChild(star);
+      }
+    }
+
+
+    makeStars('hero-stars', 18);
+
+  </script>
+</body>
+</html>
