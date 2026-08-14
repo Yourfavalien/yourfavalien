@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>404 — YourFavAlien</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #090909;
+      --paper: #f7f4ee;
+      --line: rgba(255,255,255,.72);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      overflow: hidden;
+      background: #050505;
+      color: var(--paper);
+      font-family: "Major Mono Display", "Courier New", monospace;
+    }
+
+    /* Full-screen TV test signal */
+    .signal {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to bottom,
+          transparent 0 66%,
+          rgba(0,0,0,.18) 66% 67%,
+          transparent 67% 100%),
+        linear-gradient(to right,
+          #d8d8d8 0 14.285%,
+          #d4cf27 14.285% 28.57%,
+          #28c8c8 28.57% 42.855%,
+          #25b749 42.855% 57.14%,
+          #c635ba 57.14% 71.425%,
+          #c93232 71.425% 85.71%,
+          #2838bf 85.71% 100%);
+      transform: scale(1.02);
+      animation: signal-jitter 2.8s steps(1,end) infinite;
+    }
+
+    /* Dark lower TV bars, like a broadcast test screen */
+    .signal::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 33%;
+      background:
+        linear-gradient(to right,
+          #1a1a90 0 14.285%,
+          #171717 14.285% 28.57%,
+          #a92aaa 28.57% 42.855%,
+          #171717 42.855% 57.14%,
+          #1e9b9e 57.14% 71.425%,
+          #171717 71.425% 85.71%,
+          #d1d1d1 85.71% 100%);
+      opacity: .96;
+    }
+
+    /* CRT grain + scan lines */
+    .noise,
+    .scanlines,
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .noise {
+      z-index: 2;
+      opacity: .12;
+      mix-blend-mode: screen;
+      background-image:
+        repeating-radial-gradient(circle at 17% 31%, rgba(255,255,255,.6) 0 1px, transparent 1px 4px),
+        repeating-radial-gradient(circle at 73% 68%, rgba(0,0,0,.75) 0 1px, transparent 1px 3px);
+      background-size: 7px 7px, 5px 5px;
+      animation: noise-shift .08s steps(2,end) infinite;
+    }
+
+    .scanlines {
+      z-index: 3;
+      opacity: .08;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,.55) 0,
+        rgba(0,0,0,.55) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      animation: scan .55s linear infinite;
+    }
+
+    .vignette {
+      z-index: 4;
+      box-shadow: inset 0 0 10vw rgba(0,0,0,.20);
+      background: radial-gradient(circle at center, transparent 62%, rgba(0,0,0,.06) 100%);
+    }
+
+    .ui {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: clamp(18px, 2.6vw, 38px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      font-size: clamp(12px, 1.35vw, 18px);
+      letter-spacing: .14em;
+      text-transform: lowercase;
+      text-shadow: 0 2px 12px rgba(0,0,0,.75);
+      white-space: nowrap;
+    }
+
+    .menu {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .menu a {
+      color: var(--paper);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.13);
+      backdrop-filter: blur(3px);
+      padding: 8px 13px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-transform: lowercase;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+      text-shadow: 0 1px 8px rgba(0,0,0,.75);
+    }
+
+    .menu a:hover,
+    .menu a:focus-visible {
+      color: #090909;
+      background: var(--paper);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .center {
+      align-self: center;
+      justify-self: center;
+      width: min(1200px, 96vw);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(16px, 2vw, 24px);
+      transform: none;
+    }
+
+    .error-code {
+      position: relative;
+      display: inline-block;
+      margin: 0;
+      font-size: clamp(150px, 28vw, 430px);
+      line-height: .72;
+      letter-spacing: -.055em;
+      font-weight: 400;
+      white-space: nowrap;
+      text-align: center;
+      text-shadow: 5px 5px 0 rgba(0,0,0,.28), 0 0 24px rgba(255,255,255,.13);
+      transform: none;
+      animation: text-glitch-main 2.9s steps(1,end) infinite;
+    }
+
+    .error-code::before,
+    .error-code::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .error-code::before {
+      color: #ff4b7d;
+      text-shadow: -4px 0 0 rgba(255,75,125,.95);
+      animation: text-glitch-before 2.9s steps(1,end) infinite;
+    }
+
+    .error-code::after {
+      color: #35f3ff;
+      text-shadow: 4px 0 0 rgba(53,243,255,.95);
+      animation: text-glitch-after 2.9s steps(1,end) infinite;
+    }
+
+    .message {
+      margin: 0;
+      width: min(760px, 88vw);
+      max-width: 760px;
+      text-align: center;
+      font-family: "Courier New", monospace;
+      font-size: clamp(15px, 2vw, 27px);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0,0,0,.82);
+    }
+
+    .home-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: min(260px, 76vw);
+      min-width: 175px;
+      color: var(--paper);
+      text-decoration: none;
+      border: 1.5px solid var(--paper);
+      padding: 13px 22px 12px;
+      background: rgba(0,0,0,.2);
+      backdrop-filter: blur(4px);
+      font-size: 12px;
+      letter-spacing: .08em;
+      transition: color .18s ease, background .18s ease, transform .18s ease;
+      box-shadow: 0 5px 22px rgba(0,0,0,.16);
+    }
+
+    .home-link:hover,
+    .home-link:focus-visible {
+      color: #090909;
+      background: var(--paper);
+      transform: scale(1.025);
+      outline: none;
+    }
+
+    .bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0,0,0,.9);
+    }
+
+    .timecode { font-size: clamp(12px, 1.4vw, 18px); letter-spacing: .08em; }
+    .status { font-size: 9px; letter-spacing: .18em; opacity: .9; text-align: right; }
+
+    @keyframes noise-shift {
+      0% { transform: translate(0,0); }
+      25% { transform: translate(-1.5%, 1%); }
+      50% { transform: translate(1%, -1.5%); }
+      75% { transform: translate(.7%, 1.3%); }
+      100% { transform: translate(0,0); }
+    }
+
+    @keyframes scan {
+      from { transform: translateY(-4px); }
+      to { transform: translateY(4px); }
+    }
+
+    @keyframes signal-jitter {
+      0%, 84%, 100% { transform: translate(0,0) scale(1.02); filter: saturate(1.35) contrast(1.10) brightness(1.08); }
+      85% { transform: translate(10px,-3px) scale(1.03); filter: saturate(1.7) contrast(1.22) brightness(1.14); }
+      87% { transform: translate(-7px,2px) scale(1.02); filter: saturate(1.55) contrast(1.16) brightness(1.11); }
+      89% { transform: translate(5px,-1px) scale(1.025); filter: saturate(1.62) contrast(1.18) brightness(1.13); }
+      91% { transform: translate(-3px,1px) scale(1.02); filter: saturate(1.45) contrast(1.12) brightness(1.10); }
+      93% { transform: translate(2px,0) scale(1.02); filter: saturate(1.35) contrast(1.10) brightness(1.08); }
+    }
+
+    @keyframes text-glitch-main {
+      0%, 80%, 100% { transform: translate(0); }
+      81% { transform: translate(-7px, 0); }
+      83% { transform: translate(6px, 0); }
+      85% { transform: translate(-4px, 0); }
+      87% { transform: translate(5px, 0); }
+      89% { transform: translate(-3px, 0); }
+      91% { transform: translate(2px, 0); }
+      93% { transform: translate(0); }
+    }
+
+    @keyframes text-glitch-before {
+      0%, 80%, 100% {
+        opacity: 0;
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+      81% {
+        opacity: .98;
+        transform: translate(-12px, -3px);
+        clip-path: inset(0 0 62% 0);
+      }
+      83% {
+        opacity: .92;
+        transform: translate(8px, 2px);
+        clip-path: inset(28% 0 34% 0);
+      }
+      85% {
+        opacity: .95;
+        transform: translate(-9px, 1px);
+        clip-path: inset(68% 0 4% 0);
+      }
+      87% {
+        opacity: .9;
+        transform: translate(6px, -2px);
+        clip-path: inset(14% 0 46% 0);
+      }
+      89% {
+        opacity: .86;
+        transform: translate(-4px, 0);
+        clip-path: inset(44% 0 20% 0);
+      }
+      91% {
+        opacity: .7;
+        transform: translate(2px, -1px);
+        clip-path: inset(76% 0 0 0);
+      }
+      93% {
+        opacity: 0;
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    @keyframes text-glitch-after {
+      0%, 80%, 100% {
+        opacity: 0;
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+      81% {
+        opacity: .98;
+        transform: translate(12px, 3px);
+        clip-path: inset(56% 0 8% 0);
+      }
+      83% {
+        opacity: .92;
+        transform: translate(-8px, -2px);
+        clip-path: inset(10% 0 50% 0);
+      }
+      85% {
+        opacity: .95;
+        transform: translate(9px, -1px);
+        clip-path: inset(36% 0 26% 0);
+      }
+      87% {
+        opacity: .9;
+        transform: translate(-6px, 2px);
+        clip-path: inset(72% 0 0 0);
+      }
+      89% {
+        opacity: .86;
+        transform: translate(4px, 0);
+        clip-path: inset(18% 0 42% 0);
+      }
+      91% {
+        opacity: .7;
+        transform: translate(-2px, 1px);
+        clip-path: inset(48% 0 18% 0);
+      }
+      93% {
+        opacity: 0;
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .ui { padding: 16px 14px 18px; }
+      .center { gap: 18px; }
+      .error-code { font-size: clamp(130px, 42vw, 250px); line-height: .78; }
+      .message { font-size: clamp(13px, 4vw, 18px); max-width: 88vw; }
+      .home-link { font-size: 10px; padding: 12px 18px 11px; min-width: 155px; }
+      .status { display: none; }
+    }
+
+    @media (max-width: 430px) {
+      .signal { transform: scale(1.03); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="signal" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <main class="ui">
+
+    <section class="center" aria-labelledby="error-title">
+      <h1 class="error-code" id="error-title" data-text="404">404</h1>
+      <p class="message">signal lost. this page got abducted.</p>
+      <a class="home-link" href="/">beam me home</a>
+    </section>
+
+    <footer class="bottom">
+      <div class="timecode" id="timecode" aria-label="elapsed time">00:00</div>
+      <div class="status">no signal // yourfavalien.com</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const timecode = document.getElementById('timecode');
+      const start = performance.now();
+      const tick = () => {
+        const total = Math.floor((performance.now() - start) / 1000);
+        const mins = String(Math.floor(total / 60)).padStart(2, '0');
+        const secs = String(total % 60).padStart(2, '0');
+        timecode.textContent = `${mins}:${secs}`;
+      };
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
