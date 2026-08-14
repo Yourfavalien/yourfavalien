@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<base href="https://yourfavalien.com/">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<title>contact — YourFavAlien</title>
+<!-- SHARE PREVIEW START -->
+<link rel="canonical" href="https://yourfavalien.com/contact.html" />
+<meta name="description" content="Welcome to Your Fav Alien — explore my world, socials, updates, and more." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Your Fav Alien" />
+<meta property="og:title" content="Contact — Your Fav Alien" />
+<meta property="og:description" content="Welcome to Your Fav Alien — explore my world, socials, updates, and more." />
+<meta property="og:url" content="https://yourfavalien.com/contact.html" />
+<meta property="og:image" content="https://yourfavalien.com/assets/share-preview.png" />
+<meta property="og:image:secure_url" content="https://yourfavalien.com/assets/share-preview.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1584" />
+<meta property="og:image:height" content="396" />
+<meta property="og:image:alt" content="Your Fav Alien website preview" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Contact — Your Fav Alien" />
+<meta name="twitter:description" content="Welcome to Your Fav Alien — explore my world, socials, updates, and more." />
+<meta name="twitter:image" content="https://yourfavalien.com/assets/share-preview.png" />
+<meta name="twitter:image:alt" content="Your Fav Alien website preview" />
+<!-- SHARE PREVIEW END -->
+
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0507; --dark: #12080d; --magenta: #b5175e;
+      --magenta-dark: #8b1148; --cyan: #4de8d8; --yellow: #f5c518;
+      --white: #f0ece8; --gray-light: #e8e4e0; --nav-border: rgba(255,255,255,0.6);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Space Mono', monospace; background: var(--black); color: var(--white); overflow-x: hidden; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; gap: 12px; padding: 18px 20px;
+    }
+    nav a {
+      text-decoration: none; color: var(--white); font-family: 'Courier Prime', monospace;
+      font-size: 13px; letter-spacing: 0.02em; border: 1.5px solid var(--nav-border);
+      border-radius: 999px; padding: 6px 18px; transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    nav a:hover, nav a.active { background: rgba(255,255,255,0.15); }
+    .tri {
+      display: inline-block; width: 0; height: 0;
+      border-left: 0.35em solid transparent; border-right: 0.35em solid transparent;
+      border-bottom: 0.55em solid var(--white); margin: 0 1px;
+      vertical-align: middle; position: relative; top: -0.15em;
+    }
+    .stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 3px; height: 3px; background: rgba(255,255,255,0.6); border-radius: 50%; animation: twinkle 3s infinite alternate; }
+    @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 0.9; transform: scale(1.2); } }
+    footer { background: #050205; color: rgba(255,255,255,0.3); text-align: center; padding: 28px 20px; font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 2px; }
+
+
+    body { background: var(--black); }
+    .contact-page { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 8%; position: relative; overflow: hidden; }
+    .contact-inner { position: relative; z-index: 2; max-width: 580px; }
+    .contact-inner h2 { font-family: 'Playfair Display',serif; font-size: clamp(36px,6vw,72px); font-weight: 400; font-style: italic; line-height: 1.1; margin-bottom: 30px; }
+    .contact-body { font-family: 'Courier Prime',monospace; font-size: 13px; line-height: 1.9; color: rgba(255,255,255,0.75); margin-bottom: 28px; max-width: 420px; }
+    .contact-btn { display: inline-block; font-family: 'Courier Prime',monospace; font-size: 13px; color: var(--white); border: 1.5px solid rgba(255,255,255,0.5); border-radius: 999px; padding: 9px 24px; text-decoration: none; cursor: pointer; background: transparent; transition: background 0.2s; letter-spacing: 0.05em; }
+    .contact-btn:hover { background: rgba(255,255,255,0.1); }
+    .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .contact-btn.media-kit-btn { background: var(--magenta); border-color: var(--magenta); }
+    .contact-btn.media-kit-btn:hover { background: var(--magenta-dark); border-color: var(--magenta-dark); }
+    .contact-art { position: absolute; right: -40px; bottom: 0; width: 60%; max-width: 700px; opacity: 0.9; pointer-events: none; }
+    @media (max-width:600px) { .contact-art { width:100%; right:-20px; opacity:0.4; } }
+
+
+    /* ── GLOBAL RESPONSIVE ── */
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    img, video, iframe { max-width: 100%; }
+
+    /* NAV — mobile wrap */
+    @media (max-width: 480px) {
+      nav {
+        gap: 5px;
+        padding: 12px 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: rgba(0,0,0,0.35);
+        backdrop-filter: blur(8px);
+      }
+      nav a { font-size: 9px; padding: 5px 9px; }
+    }
+
+    /* HERO — full height on all screens */
+    @media (max-width: 768px) {
+      .hero-photo { height: 55vh; }
+    }
+    @media (max-width: 480px) {
+      .hero-photo { height: 50vh; }
+      .hero-handle h1 { font-size: 20px !important; }
+      .hero-handle p { font-size: 10px; }
+    }
+
+    /* HERO HOME section */
+    @media (max-width: 768px) {
+      .hero-logo { gap: 20px !important; }
+      .hero-logo span { font-size: clamp(18px, 7vw, 40px) !important; }
+    }
+
+    /* ABOUT page */
+    @media (max-width: 768px) {
+      .about-header { padding-top: 80px; }
+      .about-text { padding: 30px 6%; font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .about-header h2 { font-size: 24px; letter-spacing: 0.2em; }
+      .about-text { font-size: 12px; line-height: 1.8; }
+    }
+
+    /* CONTACT page */
+    @media (max-width: 768px) {
+      .contact-page { padding: 90px 6% 40px; }
+      .contact-inner h2 { font-size: clamp(28px, 8vw, 52px); }
+      .contact-art { width: 100%; right: -10px; opacity: 0.3; bottom: 0; }
+    }
+    @media (max-width: 480px) {
+      .contact-art { display: none; }
+      .contact-body { font-size: 12px; }
+    }
+
+    /* SUBSCRIBE page */
+    @media (max-width: 768px) {
+      .subscribe-card { padding: 30px 20px; margin-top: 60px; }
+      .subscribe-logo-top { top: 80px; gap: 20px; }
+      .subscribe-logo-top span { font-size: clamp(16px, 4vw, 28px); }
+    }
+    @media (max-width: 480px) {
+      .subscribe-card { width: 95%; }
+      .subscribe-card h3 { font-size: 14px; }
+      .subscribe-logo-top { display: none; }
+    }
+
+    /* SOCIALS page */
+    @media (max-width: 768px) {
+      .links-inner { max-width: 100%; }
+      .social-card { border-radius: 12px; }
+      .social-link, .social-pill { font-size: 13px; padding: 14px 18px; }
+      .card-thumbs { height: 90px; }
+    }
+    @media (max-width: 480px) {
+      .links-section { padding: 16px 12px 50px; }
+      .social-pill { padding: 13px 16px; font-size: 12px; }
+      .card-info { padding: 10px 12px; }
+      .card-name { font-size: 12px; }
+      .card-sub { font-size: 9px; }
+      .card-platform-icon { width: 30px; height: 30px; font-size: 14px; }
+      .subscribe-card { padding: 20px 16px; }
+      .subscribe-card h3 { font-size: 13px; }
+      .subscribe-card p { font-size: 10px; }
+      .subscribe-btn { font-size: 12px; padding: 12px; }
+    }
+
+    /* TikTok embed scroll row */
+    @media (max-width: 480px) {
+      .social-card div[style*="overflow-x"] > div {
+        width: 130px !important;
+        height: 230px !important;
+      }
+    }
+
+    /* Touch-friendly tap targets */
+    @media (hover: none) {
+      .social-link:hover, .social-pill:hover,
+      .social-card:hover, .join-btn:hover,
+      .contact-btn:hover { transform: none; filter: none; }
+      .social-link:active, .social-pill:active { opacity: 0.85; }
+    }
+
+  </style>
+<style id="final-responsive">
+/* ===== Final cross-device responsive pass ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  width: 100%;
+  min-width: 0;
+}
+img, video, iframe, svg {
+  max-width: 100%;
+}
+nav {
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+nav a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 700px) {
+  nav {
+    gap: 6px;
+    padding: max(10px, env(safe-area-inset-top)) 8px 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(5,2,5,0.40);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  nav a {
+    font-size: clamp(9px, 2.6vw, 11px);
+    padding: 5px 10px;
+    min-height: 30px;
+  }
+}
+@media (max-width: 360px) {
+  nav { gap: 4px; padding-left: 5px; padding-right: 5px; }
+  nav a { font-size: 8.5px; padding: 5px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+
+.contact-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding-top: clamp(110px, 12vw, 150px);
+  padding-bottom: clamp(48px, 7vw, 84px);
+}
+.contact-inner {
+  max-width: min(580px, 92vw);
+}
+.contact-art {
+  width: min(62vw, 760px);
+  max-height: 78vh;
+  object-fit: contain;
+  object-position: right bottom;
+}
+@media (max-width: 800px) {
+  .contact-page {
+    justify-content: flex-start;
+    padding: 110px 6% 44px;
+  }
+  .contact-inner {
+    max-width: 560px;
+  }
+  .contact-art {
+    display: block !important;
+    width: 105%;
+    max-width: none;
+    right: -16%;
+    bottom: -6%;
+    opacity: 0.24;
+    max-height: 54vh;
+    object-fit: contain;
+    object-position: right bottom;
+  }
+}
+@media (max-width: 480px) {
+  .contact-page {
+    min-height: 100svh;
+    padding: 100px 20px 38px;
+  }
+  .contact-inner h2 {
+    font-size: clamp(36px, 12vw, 54px);
+    margin-bottom: 20px;
+  }
+  .contact-body {
+    max-width: 100%;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+  .contact-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .contact-art {
+    width: 135%;
+    right: -38%;
+    bottom: -9%;
+    opacity: 0.18;
+  }
+}
+</style><style>
+#final-contact-art-fix {}
+.contact-art { mix-blend-mode: normal !important; }
+@media (max-width: 800px) { .contact-art { opacity: 0.34 !important; } }
+@media (max-width: 480px) { .contact-art { opacity: 0.28 !important; } }
+</style>
+
+<style id="yfa-site-transitions">
+@keyframes yfaPageIn {
+  from { opacity: 0; transform: scale(0.992); filter: blur(2px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+body {
+  animation: yfaPageIn 420ms cubic-bezier(.22,.8,.3,1) both;
+  transform-origin: center center;
+}
+body.yfa-page-leaving {
+  opacity: 0;
+  transform: scale(0.988);
+  filter: blur(2px);
+  transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+  pointer-events: none;
+}
+nav a {
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, opacity 180ms ease !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  nav a:hover { transform: translateY(-2px) scale(1.03); }
+  .social-card, .social-pill, .contact-btn, .join-btn, .subscribe-btn {
+    transition: transform 220ms cubic-bezier(.2,.75,.25,1), box-shadow 220ms ease, filter 220ms ease, opacity 220ms ease !important;
+  }
+  .social-card:hover { transform: translateY(-5px) scale(1.008); }
+  .social-card img, .about-art img, .contact-art img, .subscribe-video-bg img {
+    transition: transform 500ms cubic-bezier(.2,.75,.25,1), filter 300ms ease;
+  }
+  .social-card:hover img { transform: scale(1.025); }
+}
+.hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-logo-top, .subscribe-card, .links-inner {
+  animation: yfaContentRise 620ms cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes yfaContentRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.about-art, .contact-art, .subscribe-card, .links-inner { animation-delay: 90ms; }
+@media (hover: none) {
+  nav a:active, .social-card:active, .social-pill:active, .contact-btn:active, .join-btn:active, .subscribe-btn:active {
+    transform: scale(0.98);
+    opacity: 0.88;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  body, body.yfa-page-leaving, .hero-logo, .hero-handle, .about-header, .about-art, .about-text, .contact-inner, .contact-art, .subscribe-logo-top, .subscribe-card, .links-inner, nav a, .social-card, .social-pill, .contact-btn, .join-btn, .subscribe-btn, img {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+</style>
+
+<style id="yfa-orbit-popup-styles">
+/* ===== YourFavAlien custom Orbit signup popup ===== */
+:root { --yfa-orbit-ink:#17181c; --yfa-orbit-cream:#f4f3e9; --yfa-orbit-mint:#40d9bd; }
+body.yfa-orbit-open { overflow:hidden !important; }
+#yfa-orbit-popup, #yfa-orbit-popup * { box-sizing:border-box; }
+#yfa-orbit-popup {
+  position:fixed; inset:0; z-index:2147483000;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .42s cubic-bezier(.22,.8,.3,1), visibility 0s linear .42s;
+  font-family:'Space Mono','Courier New',monospace;
+}
+#yfa-orbit-popup.is-open { opacity:1; visibility:visible; pointer-events:auto; transition-delay:0s; }
+.yfa-orbit-backdrop { position:absolute; inset:0; background:rgba(5,4,7,.68); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.yfa-orbit-stage {
+  position:relative; width:100%; height:100%; min-height:100svh; min-height:100dvh;
+  display:grid; grid-template-columns:minmax(0,1.16fr) minmax(420px,.84fr);
+  background:var(--yfa-orbit-cream); overflow:hidden;
+  transform:scale(1.018); filter:blur(2px);
+  transition:transform .58s cubic-bezier(.18,.85,.25,1), filter .58s ease;
+}
+#yfa-orbit-popup.is-open .yfa-orbit-stage { transform:scale(1); filter:blur(0); }
+.yfa-orbit-visual {
+  position:relative; min-width:0; height:100%; overflow:hidden; background:#211b1e;
+}
+.yfa-orbit-visual::before {
+  content:''; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg,rgba(9,7,10,.15),rgba(9,7,10,.33)); pointer-events:none;
+}
+.yfa-orbit-visual img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; transform:scale(1.04); transition:transform 8s ease-out; }
+#yfa-orbit-popup.is-open .yfa-orbit-visual img { transform:scale(1); }
+.yfa-orbit-wordmark {
+  position:absolute; z-index:2; left:50%; top:42px; transform:translateX(-50%);
+  color:white; font-family:'Space Mono','Courier New',monospace; font-weight:700;
+  font-size:clamp(18px,2.2vw,34px); letter-spacing:.18em; white-space:nowrap; text-shadow:0 4px 24px rgba(0,0,0,.45);
+}
+.yfa-orbit-wordmark .tri { display:inline-block; width:0; height:0; border-left:.31em solid transparent; border-right:.31em solid transparent; border-bottom:.5em solid currentColor; vertical-align:.06em; margin:0 .04em; }
+.yfa-orbit-panel {
+  position:relative; z-index:3; min-width:0; height:100%; padding:clamp(28px,4vw,56px);
+  background:linear-gradient(145deg,#faf9ef 0%,#efeee4 100%);
+  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:var(--yfa-orbit-ink);
+  box-shadow:-22px 0 70px rgba(0,0,0,.14);
+}
+.yfa-orbit-close {
+  position:absolute; top:max(20px,env(safe-area-inset-top)); right:max(20px,env(safe-area-inset-right)); z-index:5;
+  width:46px; height:46px; border:0; border-radius:50%; background:transparent; color:#6c6b66;
+  font:300 34px/1 Arial,sans-serif; cursor:pointer; transition:transform .2s ease,background .2s ease,color .2s ease;
+}
+.yfa-orbit-close:hover { transform:rotate(8deg) scale(1.06); background:rgba(0,0,0,.06); color:#17181c; }
+.yfa-orbit-content { width:min(100%,520px); position:relative; }
+.yfa-orbit-ufo { width:clamp(88px,9vw,134px); max-height:150px; object-fit:contain; display:block; margin:0 auto 24px; filter:drop-shadow(0 12px 20px rgba(0,0,0,.10)); }
+.yfa-orbit-step { display:none; animation:yfaOrbitStepIn .42s cubic-bezier(.2,.8,.3,1) both; }
+.yfa-orbit-step.is-active { display:block; }
+@keyframes yfaOrbitStepIn { from { opacity:0; transform:translateY(16px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+.yfa-orbit-title { margin:0 0 16px; font-family:'Playfair Display',Georgia,serif; font-weight:400; font-size:clamp(42px,5vw,74px); line-height:.98; letter-spacing:-.035em; }
+.yfa-orbit-copy { max-width:480px; margin:0 auto 28px; color:#41413e; font-size:clamp(13px,1.35vw,18px); line-height:1.65; letter-spacing:.02em; }
+.yfa-orbit-button {
+  width:min(100%,390px); min-height:56px; border:1px solid #17181c; border-radius:0; padding:16px 22px;
+  background:#1c2028; color:white; font:700 clamp(13px,1.2vw,16px)/1.2 'Space Mono','Courier New',monospace; letter-spacing:.03em;
+  cursor:pointer; transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.yfa-orbit-button:hover { transform:translateY(-2px); background:#0f1218; box-shadow:0 12px 30px rgba(15,18,24,.22); }
+.yfa-orbit-skip { display:block; margin:18px auto 0; padding:7px 12px; border:0; background:transparent; color:#73716b; font:400 12px/1.2 'Space Mono','Courier New',monospace; letter-spacing:.12em; cursor:pointer; }
+.yfa-orbit-form { width:min(100%,410px); margin:0 auto; }
+.yfa-orbit-field { width:100%; min-height:58px; margin:0 0 12px; border:1px solid rgba(23,24,28,.18); border-radius:0; background:rgba(255,255,255,.82); color:#17181c; padding:16px 18px; font:400 15px/1.3 'Space Mono','Courier New',monospace; outline:none; transition:border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+.yfa-orbit-field:focus { border-color:#17181c; background:white; box-shadow:0 0 0 3px rgba(23,24,28,.08); }
+.yfa-orbit-consent { display:flex; gap:10px; align-items:flex-start; margin:7px 0 16px; text-align:left; color:#55534f; font-size:10px; line-height:1.5; }
+.yfa-orbit-consent input { width:16px; height:16px; flex:0 0 16px; margin-top:1px; accent-color:#17181c; }
+.yfa-orbit-status { min-height:20px; margin:10px 0 0; color:#7d2335; font-size:11px; line-height:1.5; }
+.yfa-orbit-reopen {
+  position:fixed; z-index:2147482999; left:max(18px,env(safe-area-inset-left)); bottom:max(18px,env(safe-area-inset-bottom));
+  display:inline-flex; align-items:center; gap:9px; min-height:44px; max-width:calc(100vw - 36px); padding:11px 16px;
+  border:1px solid rgba(255,255,255,.18); border-radius:999px; background:rgba(18,18,22,.92); color:white;
+  box-shadow:0 12px 35px rgba(0,0,0,.26); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  font:700 12px/1.2 'Space Mono','Courier New',monospace; letter-spacing:.02em; cursor:pointer;
+  opacity:0; transform:translateY(12px); pointer-events:none; transition:opacity .28s ease, transform .28s ease, background .2s ease;
+}
+.yfa-orbit-reopen.is-visible { opacity:1; transform:translateY(0); pointer-events:auto; }
+.yfa-orbit-reopen:hover { background:#090a0d; }
+.yfa-orbit-reopen-mark { color:#9d9b96; font-size:17px; font-weight:400; }
+@media (max-width:760px) {
+  .yfa-orbit-stage { display:flex; flex-direction:column; min-height:100dvh; background:var(--yfa-orbit-cream); }
+  .yfa-orbit-visual { flex:0 0 31dvh; min-height:190px; max-height:310px; }
+  .yfa-orbit-visual img { object-position:center; }
+  .yfa-orbit-wordmark { top:max(22px,env(safe-area-inset-top)); font-size:clamp(15px,5vw,23px); }
+  .yfa-orbit-panel { flex:1 1 auto; height:auto; min-height:0; padding:34px 22px max(24px,env(safe-area-inset-bottom)); justify-content:flex-start; overflow:auto; box-shadow:0 -18px 55px rgba(0,0,0,.14); }
+  .yfa-orbit-panel::before { content:''; position:absolute; left:-8%; width:116%; top:-54px; height:76px; background-repeat:no-repeat; background-position:center bottom; background-size:100% 100%; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%23faf9ef' d='M0 78 C145 24 280 110 420 64 C570 15 710 108 860 62 C1000 19 1108 49 1200 56 L1200 120 L0 120 Z'/%3E%3C/svg%3E"); pointer-events:none; }
+  .yfa-orbit-close { top:max(12px,env(safe-area-inset-top)); right:max(12px,env(safe-area-inset-right)); background:rgba(250,249,239,.88); }
+  .yfa-orbit-ufo { width:88px; margin-bottom:18px; }
+  .yfa-orbit-title { font-size:clamp(36px,11vw,50px); }
+  .yfa-orbit-copy { font-size:12.5px; margin-bottom:20px; }
+  .yfa-orbit-button { min-height:54px; }
+}
+@media (max-width:390px) {
+  .yfa-orbit-visual { flex-basis:27dvh; min-height:170px; }
+  .yfa-orbit-panel { padding-left:17px; padding-right:17px; }
+  .yfa-orbit-title { font-size:34px; }
+  .yfa-orbit-ufo { width:76px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #yfa-orbit-popup, .yfa-orbit-stage, .yfa-orbit-visual img, .yfa-orbit-step, .yfa-orbit-reopen, .yfa-orbit-button, .yfa-orbit-close { transition:none !important; animation:none !important; transform:none !important; filter:none !important; }
+}
+</style>
+
+</head>
+<body>
+<nav>
+<a href="index.html">home</a>
+<a href="socials.html">socials</a>
+<a href="about.html">about moi</a>
+<a class="active" href="contact.html">contact</a>
+<a href="subscribe.html">subscribe</a>
+</nav>
+<div class="contact-page">
+<div class="stars" id="contact-stars"></div>
+<img alt="Glasses art" class="contact-art" decoding="async" loading="eager" src="assets/contact-1.webp"/>
+<div class="contact-inner">
+<h2>let's connect</h2>
+<p class="contact-body">I'm excited to collaborate with you! Whether you have questions or want to explore the range of services I offer, feel free to reach out. Let's create something amazing together!</p>
+<div class="contact-actions">
+<a class="contact-btn" href="https://tally.so/r/NpxlQB" rel="noopener noreferrer" target="_blank">contact</a>
+<a class="contact-btn media-kit-btn" href="https://www.yourfavalien.site/" rel="noopener noreferrer" target="_blank">media kit</a>
+</div>
+</div>
+</div>
+<footer>© 2026 YourFavAlien · All rights reserved</footer>
+<script>
+
+    function makeStars(containerId, count) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = (Math.random() * 3) + 's';
+        star.style.animationDuration = (2 + Math.random() * 3) + 's';
+        star.style.opacity = Math.random() * 0.7 + 0.1;
+        container.appendChild(star);
+      }
+    }
+
+makeStars('contact-stars', 22);
+  </script>
+<!-- Start of Tawk.to Script -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6a7cda95d801151d4959bf86/1jvrrbmdt';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!-- End of Tawk.to Script -->
+<script id="yfa-page-transitions">
+(function () {
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  function isSameSitePageLink(anchor) {
+    if (!anchor || !anchor.href) return false;
+    const url = new URL(anchor.href, window.location.href);
+    if (url.origin !== window.location.origin) return false;
+    if (anchor.target && anchor.target !== '_self') return false;
+    if (anchor.hasAttribute('download')) return false;
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  document.addEventListener('click', function (event) {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const anchor = event.target.closest('a');
+    if (!isSameSitePageLink(anchor)) return;
+    event.preventDefault();
+    document.body.classList.add('yfa-page-leaving');
+    const destination = anchor.href;
+    window.setTimeout(function () { window.location.href = destination; }, 210);
+  });
+
+  window.addEventListener('pageshow', function () {
+    document.body.classList.remove('yfa-page-leaving');
+  });
+})();
+</script>
+
+
+<!-- ===== YourFavAlien custom Orbit signup popup ===== -->
+<div id="yfa-orbit-popup" aria-hidden="true">
+  <div class="yfa-orbit-backdrop" data-yfa-orbit-close></div>
+  <section class="yfa-orbit-stage" role="dialog" aria-modal="true" aria-labelledby="yfa-orbit-title">
+    <div class="yfa-orbit-visual" aria-hidden="true">
+      <img src="assets/yfa-popup-bg.png" alt="" />
+      <div class="yfa-orbit-wordmark">YOUR F<span class="tri"></span>V ALIEN</div>
+    </div>
+    <div class="yfa-orbit-panel">
+      <button class="yfa-orbit-close" type="button" aria-label="Close signup" data-yfa-orbit-close>×</button>
+      <div class="yfa-orbit-content">
+        <img class="yfa-orbit-ufo" src="assets/yfa-popup-ufo.png" alt="Your Fav Alien UFO" />
+
+        <div class="yfa-orbit-step is-active" data-yfa-orbit-step="offer">
+          <h2 class="yfa-orbit-title" id="yfa-orbit-title">Join the Alien Crew 👽</h2>
+          <p class="yfa-orbit-copy">Sign up to stay in the loop with updates, new content, and everything Your Fav Alien. 🛸✨</p>
+          <button class="yfa-orbit-button" type="button" data-yfa-orbit-next>Stay up to date</button>
+          <button class="yfa-orbit-skip" type="button" data-yfa-orbit-close>No, thanks</button>
+        </div>
+
+        <div class="yfa-orbit-step" data-yfa-orbit-step="capture">
+          <h2 class="yfa-orbit-title">Join the Alien Crew 👽</h2>
+          <p class="yfa-orbit-copy">Share your email to stay up-to-date.</p>
+          <form class="yfa-orbit-form" id="yfa-orbit-form" novalidate>
+            <input class="yfa-orbit-field" id="yfa-orbit-fname" name="FNAME" type="text" autocomplete="given-name" placeholder="First name" required />
+            <input class="yfa-orbit-field" id="yfa-orbit-email" name="EMAIL" type="email" autocomplete="email" inputmode="email" placeholder="Your email address" required />
+            <label class="yfa-orbit-consent"><input id="yfa-orbit-consent" type="checkbox" required /><span>I agree to receive email updates from YourFavAlien. I can unsubscribe at any time.</span></label>
+            <button class="yfa-orbit-button" type="submit">Continue</button>
+            <div class="yfa-orbit-status" id="yfa-orbit-status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <div class="yfa-orbit-step" data-yfa-orbit-step="success">
+          <h2 class="yfa-orbit-title">You're In!</h2>
+          <p class="yfa-orbit-copy">Stay tuned for exciting news and updates delivered straight to your inbox!</p>
+          <button class="yfa-orbit-button" type="button" data-yfa-orbit-close>Back to site</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<button class="yfa-orbit-reopen" id="yfa-orbit-reopen" type="button" aria-label="Open Alien Crew signup"><span class="yfa-orbit-reopen-mark">×</span> Get Pulled Into the Orbit 👽</button>
+
+<script id="yfa-orbit-popup-script">
+(function () {
+  const popup = document.getElementById('yfa-orbit-popup');
+  const reopen = document.getElementById('yfa-orbit-reopen');
+  const form = document.getElementById('yfa-orbit-form');
+  if (!popup || !reopen || !form) return;
+
+  const SESSION_KEY = 'yfaOrbitPopupSeenV1';
+  const steps = Array.from(popup.querySelectorAll('[data-yfa-orbit-step]'));
+  const emailInput = document.getElementById('yfa-orbit-email');
+  const nameInput = document.getElementById('yfa-orbit-fname');
+  const consentInput = document.getElementById('yfa-orbit-consent');
+  const status = document.getElementById('yfa-orbit-status');
+  let lastFocus = null;
+  let jsonpTimer = null;
+
+  function showStep(name) {
+    steps.forEach(step => step.classList.toggle('is-active', step.dataset.yfaOrbitStep === name));
+    if (name === 'capture') setTimeout(() => nameInput && nameInput.focus(), 80);
+  }
+
+  function openPopup() {
+    lastFocus = document.activeElement;
+    popup.classList.add('is-open');
+    popup.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('yfa-orbit-open');
+    reopen.classList.remove('is-visible');
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+    const closeBtn = popup.querySelector('.yfa-orbit-close');
+    setTimeout(() => closeBtn && closeBtn.focus(), 80);
+  }
+
+  function closePopup() {
+    popup.classList.remove('is-open');
+    popup.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('yfa-orbit-open');
+    reopen.classList.add('is-visible');
+    if (lastFocus && typeof lastFocus.focus === 'function') setTimeout(() => lastFocus.focus(), 60);
+  }
+
+  popup.querySelectorAll('[data-yfa-orbit-close]').forEach(el => el.addEventListener('click', closePopup));
+  popup.querySelector('[data-yfa-orbit-next]').addEventListener('click', () => showStep('capture'));
+  reopen.addEventListener('click', () => { showStep('offer'); openPopup(); });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && popup.classList.contains('is-open')) closePopup();
+    if (event.key === 'Tab' && popup.classList.contains('is-open')) {
+      const focusable = Array.from(popup.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href]')).filter(el => el.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
+
+  function subscribeWithMailchimp(firstName, email) {
+    return new Promise((resolve, reject) => {
+      const callbackName = 'yfaMailchimp_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      const script = document.createElement('script');
+      const params = new URLSearchParams();
+      params.set('u', '8b126b5c8a6358c93812e9ad3');
+      params.set('id', '6ad461b71d');
+      params.set('FNAME', firstName);
+      params.set('EMAIL', email);
+      params.set('gdpr[55212]', 'Y');
+      params.set('c', callbackName);
+
+      function cleanup() {
+        if (jsonpTimer) clearTimeout(jsonpTimer);
+        try { delete window[callbackName]; } catch (e) { window[callbackName] = undefined; }
+        script.remove();
+      }
+
+      window[callbackName] = result => {
+        cleanup();
+        if (result && result.result === 'success') resolve(result);
+        else reject(new Error((result && result.msg ? result.msg : 'Something went wrong.').replace(/<[^>]*>/g, '')));
+      };
+
+      script.onerror = () => { cleanup(); reject(new Error('Could not reach the signup service. Please try again.')); };
+      script.src = 'https://yourfavalien.us7.list-manage.com/subscribe/post-json?' + params.toString();
+      document.head.appendChild(script);
+      jsonpTimer = setTimeout(() => { cleanup(); reject(new Error('The signup took too long. Please try again.')); }, 12000);
+    });
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    status.textContent = '';
+    const firstName = (nameInput.value || '').trim();
+    const email = (emailInput.value || '').trim();
+
+    if (!firstName) { status.textContent = 'Add your first name so Mailchimp can accept the signup.'; nameInput.focus(); return; }
+    if (!emailInput.validity.valid) { status.textContent = 'Enter a valid email address.'; emailInput.focus(); return; }
+    if (!consentInput.checked) { status.textContent = 'Check the email consent box to continue.'; consentInput.focus(); return; }
+
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Joining orbit…';
+
+    try {
+      await subscribeWithMailchimp(firstName, email);
+      showStep('success');
+      form.reset();
+    } catch (error) {
+      status.textContent = error.message || 'Something went wrong. Please try again.';
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+
+  let alreadySeen = false;
+  try { alreadySeen = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
+  if (alreadySeen) {
+    reopen.classList.add('is-visible');
+  } else {
+    setTimeout(openPopup, 1200);
+  }
+})();
+</script>
+
+</body>
+</html>
