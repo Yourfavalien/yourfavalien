@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>Mothership — YourFavAlien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#070408;--panel:#120a11;--ink:#f3eeee;--muted:#9b8f98;--magenta:#b5175e;--line:rgba(255,255,255,.12);--ok:#9ed1b6;--bad:#ff8f9f}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 15% 10%,#23101d 0,transparent 38%),var(--bg);color:var(--ink);font-family:'Space Mono',monospace}body{min-height:100vh;padding:24px}
+    button,input{font:inherit}.shell{width:min(1100px,100%);margin:0 auto}.brand{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:26px}.brand h1{font-family:'Major Mono Display',monospace;font-size:clamp(22px,4vw,42px);margin:0;letter-spacing:.08em}.brand small{color:var(--muted)}
+    .panel{border:1px solid var(--line);background:rgba(18,10,17,.9);border-radius:24px;padding:clamp(18px,4vw,34px);box-shadow:0 24px 80px rgba(0,0,0,.35);backdrop-filter:blur(14px)}
+    .login{max-width:520px;margin:10vh auto 0}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:#d38cad;font-size:11px}.login h2,.dashboard h2{font-family:'Major Mono Display',monospace;font-weight:400}.field{display:grid;gap:7px;margin:16px 0}.field label{font-size:11px;color:var(--muted)}.field input{width:100%;padding:14px 15px;border-radius:12px;border:1px solid var(--line);background:#090509;color:#fff;outline:none}.field input:focus{border-color:#d65f96;box-shadow:0 0 0 3px rgba(181,23,94,.15)}
+    .btn{border:0;border-radius:999px;padding:12px 18px;cursor:pointer;background:var(--magenta);color:#fff;font-weight:700;transition:.18s}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}.btn.danger{background:#35131d;color:#ffd9df}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}.status{min-height:20px;margin-top:12px;color:var(--muted);font-size:12px}.status.error{color:var(--bad)}.status.ok{color:var(--ok)}
+    .hidden{display:none!important}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.user{font-size:11px;color:var(--muted)}.groups{display:grid;gap:28px}.group-title{font-family:'Major Mono Display',monospace;font-size:18px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.slot{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#0a060a}.preview{aspect-ratio:4/3;background:linear-gradient(135deg,#140b13,#24111f);display:grid;place-items:center;overflow:hidden;position:relative}.preview img{width:100%;height:100%;object-fit:cover;display:block}.preview span{color:var(--muted);font-size:11px;padding:20px;text-align:center}.slot-body{padding:14px}.slot-name{font-weight:700;font-size:13px;margin-bottom:4px}.slot-path{font-size:9px;color:var(--muted);overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.upload-label{display:inline-flex;align-items:center;justify-content:center}.upload-label input{display:none}.note{margin-top:22px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:11px;line-height:1.7}.media-note{opacity:.72}
+    @media(max-width:600px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div><div class="eyebrow">YourFavAlien private control room</div><h1>MOTHERSHIP</h1></div><small>/mothership</small></div>
+
+    <section id="loginPanel" class="panel login">
+      <div class="eyebrow">Authorized crew only</div>
+      <h2>Welcome back to the Mothership.</h2>
+      <form id="loginForm">
+        <div class="field"><label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required></div>
+        <div class="field"><label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required></div>
+        <button class="btn" type="submit">Enter Mothership</button>
+        <div id="loginStatus" class="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section id="dashboard" class="panel dashboard hidden">
+      <div class="topbar"><div><div class="eyebrow">Mission control</div><h2>Website images</h2><div id="userEmail" class="user"></div></div><button id="logoutBtn" class="btn secondary" type="button">Log out</button></div>
+      <div id="groups" class="groups"></div>
+      <div class="note">Replacing a picture uploads it to the same Mothership slot, so you do not have to edit the HTML again. The website falls back to your current local image if a Mothership image has not been uploaded yet.</div>
+      <div class="note media-note"><strong>Media Kit:</strong> The banner on your separate Media Kit site is connected to the “Media Kit banner” slot below. Uploading a replacement here updates the banner there too.</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="mothership-config.js"></script>
+  <script>
+    (() => {
+      const cfg = window.YFA_MOTHERSHIP;
+      const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
+      const loginPanel = document.getElementById('loginPanel');
+      const dashboard = document.getElementById('dashboard');
+      const loginForm = document.getElementById('loginForm');
+      const loginStatus = document.getElementById('loginStatus');
+      const groupsEl = document.getElementById('groups');
+      const userEmail = document.getElementById('userEmail');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+      const publicUrl = slot => `${publicBase}${slot.path}?v=${Date.now()}`;
+
+      function setStatus(el, text, type='') {
+        el.textContent = text || '';
+        el.className = `status ${type}`.trim();
+      }
+
+      function makeSlotCard(slot) {
+        const card = document.createElement('article');
+        card.className = 'slot';
+        card.innerHTML = `
+          <div class="preview"><span>Checking current image…</span></div>
+          <div class="slot-body">
+            <div class="slot-name"></div>
+            <div class="slot-path"></div>
+            <div class="actions">
+              <label class="btn upload-label">Replace<input type="file" accept="image/jpeg,image/png,image/webp"></label>
+              <button class="btn danger delete-btn" type="button">Remove</button>
+            </div>
+            <div class="status" aria-live="polite"></div>
+          </div>`;
+        card.querySelector('.slot-name').textContent = slot.label;
+        card.querySelector('.slot-path').textContent = slot.path;
+        const preview = card.querySelector('.preview');
+        const fileInput = card.querySelector('input[type=file]');
+        const deleteBtn = card.querySelector('.delete-btn');
+        const status = card.querySelector('.status');
+
+        async function refreshPreview() {
+          const url = publicUrl(slot);
+          const img = new Image();
+          img.alt = slot.label;
+          img.onload = () => { preview.innerHTML = ''; preview.appendChild(img); };
+          img.onerror = () => { preview.innerHTML = '<span>No Mothership image yet — website is using its original image.</span>'; };
+          img.src = url;
+        }
+
+        fileInput.addEventListener('change', async () => {
+          const file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
+            setStatus(status, 'Use a JPG, PNG, or WebP image.', 'error');
+            fileInput.value = '';
+            return;
+          }
+          if (file.size > 10 * 1024 * 1024) {
+            setStatus(status, 'That image is over 10 MB. Please use a smaller file.', 'error');
+            fileInput.value = '';
+            return;
+          }
+          setStatus(status, 'Uploading…');
+          fileInput.disabled = true;
+          deleteBtn.disabled = true;
+          try {
+            await client.storage.from(cfg.bucket).remove([slot.path]);
+            const { error } = await client.storage.from(cfg.bucket).upload(slot.path, file, {
+              cacheControl: '60',
+              contentType: file.type,
+              upsert: false
+            });
+            if (error) throw error;
+            setStatus(status, 'Updated. Your live site will use this picture.', 'ok');
+            await refreshPreview();
+          } catch (err) {
+            setStatus(status, err.message || 'Upload failed.', 'error');
+          } finally {
+            fileInput.disabled = false;
+            deleteBtn.disabled = false;
+            fileInput.value = '';
+          }
+        });
+
+        deleteBtn.addEventListener('click', async () => {
+          if (!confirm(`Remove the Mothership image for “${slot.label}”? The website will fall back to its original image.`)) return;
+          setStatus(status, 'Removing…');
+          deleteBtn.disabled = true;
+          try {
+            const { error } = await client.storage.from(cfg.bucket).remove([slot.path]);
+            if (error) throw error;
+            setStatus(status, 'Removed. Original website image is active again.', 'ok');
+            await refreshPreview();
+          } catch (err) {
+            setStatus(status, err.message || 'Remove failed.', 'error');
+          } finally {
+            deleteBtn.disabled = false;
+          }
+        });
+
+        refreshPreview();
+        return card;
+      }
+
+      function renderSlots() {
+        groupsEl.innerHTML = '';
+        const grouped = cfg.slots.reduce((acc, slot) => {
+          (acc[slot.group] ||= []).push(slot);
+          return acc;
+        }, {});
+        Object.entries(grouped).forEach(([groupName, slots]) => {
+          const section = document.createElement('section');
+          const title = document.createElement('h3');
+          title.className = 'group-title';
+          title.textContent = groupName;
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+          slots.forEach(slot => grid.appendChild(makeSlotCard(slot)));
+          section.append(title, grid);
+          groupsEl.appendChild(section);
+        });
+      }
+
+      async function showSession(session) {
+        if (session && session.user) {
+          loginPanel.classList.add('hidden');
+          dashboard.classList.remove('hidden');
+          userEmail.textContent = session.user.email || 'Authenticated user';
+          renderSlots();
+        } else {
+          dashboard.classList.add('hidden');
+          loginPanel.classList.remove('hidden');
+          groupsEl.innerHTML = '';
+        }
+      }
+
+      loginForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        setStatus(loginStatus, 'Connecting…');
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) {
+          setStatus(loginStatus, 'That login did not work. Check your email and password.', 'error');
+          return;
+        }
+        setStatus(loginStatus, '');
+        loginForm.reset();
+        await showSession(data.session);
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        await client.auth.signOut();
+        await showSession(null);
+      });
+
+      client.auth.onAuthStateChange((_event, session) => showSession(session));
+      client.auth.getSession().then(({ data }) => showSession(data.session));
+    })();
+  </script>
+</body>
+</html>
