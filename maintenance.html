@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Transmission in Progress — YourFavAlien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#070408;--ink:#f4eef2;--muted:#a895a1;--magenta:#b5175e;--cyan:#4de8d8;--line:rgba(255,255,255,.14)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+    body{min-height:100vh;min-height:100dvh;display:grid;place-items:center;overflow:hidden;font-family:'Space Mono',monospace;padding:24px}
+    .space{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(circle at 18% 16%,rgba(181,23,94,.22),transparent 34%),radial-gradient(circle at 82% 72%,rgba(77,232,216,.10),transparent 30%),linear-gradient(#09050a,#050306)}
+    .space::before,.space::after{content:"";position:absolute;inset:-30%;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.6px);background-size:67px 67px;opacity:.18;animation:drift 32s linear infinite}
+    .space::after{background-size:103px 103px;opacity:.10;animation-duration:48s;animation-direction:reverse}
+    @keyframes drift{to{transform:translate3d(80px,55px,0)}}
+    .card{position:relative;z-index:1;width:min(760px,100%);padding:clamp(28px,6vw,64px);border:1px solid var(--line);border-radius:28px;background:rgba(12,7,12,.82);box-shadow:0 28px 100px rgba(0,0,0,.5);backdrop-filter:blur(16px);text-align:center}
+    .signal{display:inline-flex;align-items:center;gap:9px;margin-bottom:24px;padding:8px 13px;border:1px solid rgba(77,232,216,.28);border-radius:999px;color:var(--cyan);font-size:10px;letter-spacing:.17em;text-transform:uppercase}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan);animation:pulse 1.8s ease-in-out infinite}
+    @keyframes pulse{50%{opacity:.35;transform:scale(.75)}}
+    h1{font-family:'Major Mono Display',monospace;font-weight:400;font-size:clamp(34px,8vw,72px);line-height:1.05;letter-spacing:.04em;margin:0 0 22px;text-transform:uppercase}
+    p{max-width:580px;margin:0 auto;color:var(--muted);font-size:clamp(12px,2.3vw,15px);line-height:1.9}
+    .brand{margin-top:34px;color:#d68aaf;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+    .bar{width:min(300px,75%);height:3px;margin:30px auto 0;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+    .bar::after{content:"";display:block;width:38%;height:100%;background:linear-gradient(90deg,var(--magenta),var(--cyan));border-radius:99px;animation:scan 2.2s ease-in-out infinite}
+    @keyframes scan{0%{transform:translateX(-105%)}100%{transform:translateX(365%)}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+</head>
+<body>
+  <div class="space" aria-hidden="true"></div>
+  <main class="card">
+    <div class="signal"><span class="dot"></span> Mothership transmission active</div>
+    <h1>Transmission<br>in progress</h1>
+    <p id="maintenanceMessage">The Mothership is recalibrating this sector. New transmission incoming — check back soon.</p>
+    <div class="bar" aria-hidden="true"></div>
+    <div class="brand">YourFavAlien · Mothership</div>
+  </main>
+
+  <script>
+    (() => {
+      const statusUrl = 'https://qpwjfsigvoktsaeiypyy.supabase.co/storage/v1/object/public/mothership-images/system/maintenance.json';
+      const message = document.getElementById('maintenanceMessage');
+      const fallback = 'The Mothership is recalibrating this sector. New transmission incoming — check back soon.';
+
+      async function refreshStatus() {
+        try {
+          const response = await fetch(`${statusUrl}?v=${Date.now()}`, { cache: 'no-store' });
+          if (!response.ok) return;
+          const data = await response.json();
+          if (data.enabled === false) {
+            window.location.replace('/');
+            return;
+          }
+          message.textContent = String(data.message || fallback).slice(0, 240);
+        } catch (error) {}
+      }
+
+      refreshStatus();
+      window.setInterval(refreshStatus, 30000);
+    })();
+  </script>
+</body>
+</html>
