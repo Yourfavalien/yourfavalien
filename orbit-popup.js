@@ -42,13 +42,23 @@
         </div>
       </section>
     </div>
-    <button class="yfa-orbit-reopen" id="yfa-orbit-reopen" type="button" aria-label="Open Alien Crew signup"><span class="yfa-orbit-reopen-mark">×</span> Get Pulled Into the Orbit 👽</button>`;
+    <div class="yfa-orbit-reopen" id="yfa-orbit-reopen" aria-hidden="true" hidden>
+      <button class="yfa-orbit-reopen-trigger" id="yfa-orbit-reopen-trigger" type="button" aria-label="Show Alien Crew signup" aria-expanded="false">
+        <span class="yfa-orbit-reopen-alien" aria-hidden="true">👽</span>
+        <span class="yfa-orbit-reopen-text">Get Pulled Into the Orbit</span>
+      </button>
+      <button class="yfa-orbit-reopen-dismiss" id="yfa-orbit-reopen-dismiss" type="button" aria-label="Dismiss signup teaser">×</button>
+    </div>`;
   document.body.appendChild(host);
 
   const popup = document.getElementById('yfa-orbit-popup');
   const reopen = document.getElementById('yfa-orbit-reopen');
+  const reopenTrigger = document.getElementById('yfa-orbit-reopen-trigger');
+  const reopenDismiss = document.getElementById('yfa-orbit-reopen-dismiss');
   const form = document.getElementById('yfa-orbit-form');
   const SESSION_KEY = 'yfaOrbitPopupSeenV1';
+  const DISMISSED_KEY = 'yfaOrbitTeaserDismissedV1';
+  const SIGNED_UP_KEY = 'yfaOrbitSignedUpV1';
   const steps = Array.from(popup.querySelectorAll('[data-yfa-orbit-step]'));
   const emailInput = document.getElementById('yfa-orbit-email');
   const nameInput = document.getElementById('yfa-orbit-fname');
@@ -56,6 +66,47 @@
   const status = document.getElementById('yfa-orbit-status');
   let lastFocus = null;
   let jsonpTimer = null;
+  let teaserTimer = null;
+  let teaserDismissed = false;
+  let hasSignedUp = false;
+
+  try { teaserDismissed = sessionStorage.getItem(DISMISSED_KEY) === '1'; } catch (error) {}
+  try { hasSignedUp = localStorage.getItem(SIGNED_UP_KEY) === '1'; } catch (error) {}
+
+  function isCompactTeaser() {
+    return window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+  }
+  function collapseTeaser() {
+    if (teaserTimer) clearTimeout(teaserTimer);
+    teaserTimer = null;
+    reopen.classList.remove('is-expanded');
+    reopenTrigger.setAttribute('aria-expanded', 'false');
+  }
+  function hideTeaser() {
+    collapseTeaser();
+    reopen.classList.remove('is-visible');
+    reopen.setAttribute('aria-hidden', 'true');
+    reopen.hidden = true;
+  }
+  function showTeaser() {
+    if (teaserDismissed || hasSignedUp) {
+      hideTeaser();
+      return;
+    }
+    reopen.hidden = false;
+    reopen.classList.add('is-visible');
+    reopen.setAttribute('aria-hidden', 'false');
+  }
+  function dismissTeaser() {
+    teaserDismissed = true;
+    try { sessionStorage.setItem(DISMISSED_KEY, '1'); } catch (error) {}
+    hideTeaser();
+  }
+  function rememberSignup() {
+    hasSignedUp = true;
+    try { localStorage.setItem(SIGNED_UP_KEY, '1'); } catch (error) {}
+    hideTeaser();
+  }
 
   function showStep(name) {
     steps.forEach(step => step.classList.toggle('is-active', step.dataset.yfaOrbitStep === name));
@@ -66,7 +117,7 @@
     popup.classList.add('is-open');
     popup.setAttribute('aria-hidden', 'false');
     document.body.classList.add('yfa-orbit-open');
-    reopen.classList.remove('is-visible');
+    hideTeaser();
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (error) {}
     setTimeout(() => popup.querySelector('.yfa-orbit-close').focus(), 80);
   }
@@ -74,13 +125,28 @@
     popup.classList.remove('is-open');
     popup.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('yfa-orbit-open');
-    reopen.classList.add('is-visible');
-    if (lastFocus && typeof lastFocus.focus === 'function') setTimeout(() => lastFocus.focus(), 60);
+    showTeaser();
+    if (!hasSignedUp && !teaserDismissed && lastFocus && typeof lastFocus.focus === 'function') {
+      setTimeout(() => lastFocus.focus(), 60);
+    }
   }
 
   popup.querySelectorAll('[data-yfa-orbit-close]').forEach(element => element.addEventListener('click', closePopup));
   popup.querySelector('[data-yfa-orbit-next]').addEventListener('click', () => showStep('capture'));
-  reopen.addEventListener('click', () => { showStep('offer'); openPopup(); });
+  reopenTrigger.addEventListener('click', () => {
+    if (isCompactTeaser() && !reopen.classList.contains('is-expanded')) {
+      reopen.classList.add('is-expanded');
+      reopenTrigger.setAttribute('aria-expanded', 'true');
+      teaserTimer = setTimeout(collapseTeaser, 4500);
+      return;
+    }
+    showStep('offer');
+    openPopup();
+  });
+  reopenDismiss.addEventListener('click', event => {
+    event.stopPropagation();
+    dismissTeaser();
+  });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && popup.classList.contains('is-open')) closePopup();
     if (event.key !== 'Tab' || !popup.classList.contains('is-open')) return;
@@ -135,6 +201,7 @@
         });
         if (!response.ok) throw new Error('Welcome email request failed (' + response.status + ')');
       } catch (error) { console.error('Welcome email error:', error); }
+      rememberSignup();
       showStep('success');
       form.reset();
     } catch (error) { status.textContent = error.message || 'Something went wrong. Please try again.'; }
@@ -143,7 +210,8 @@
 
   let alreadySeen = false;
   try { alreadySeen = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (error) {}
-  if (alreadySeen) reopen.classList.add('is-visible');
+  if (hasSignedUp || teaserDismissed) hideTeaser();
+  else if (alreadySeen) showTeaser();
   else setTimeout(openPopup, 1200);
 
   if (window.YFA_MOTHERSHIP && typeof window.YFA_MOTHERSHIP.refreshImages === 'function') {

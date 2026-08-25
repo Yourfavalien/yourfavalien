@@ -13,7 +13,7 @@
     if (!['/', '/index.html', '/about.html', '/contact.html'].includes(path)) return;
     if (document.querySelector('script[data-yfa-orbit-component]')) return;
     const script = document.createElement('script');
-    script.src = '/orbit-popup.js?v=20260825-1';
+    script.src = '/orbit-popup.js?v=20260825-2';
     script.defer = true;
     script.dataset.yfaOrbitComponent = 'true';
     document.head.appendChild(script);
