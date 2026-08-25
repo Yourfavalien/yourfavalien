@@ -6,7 +6,6 @@
 
   const config = Object.assign({
     endpoint: 'https://xilo.yourfavalien.com/api/chat',
-    contactUrl: 'https://tally.so/r/NpxlQB',
     maxHistory: 10,
     timeoutMs: 30000,
     minResponseMs: 1400,
@@ -92,21 +91,6 @@
   messages.setAttribute('aria-live', 'polite');
   messages.setAttribute('aria-relevant', 'additions');
 
-  const quickReplies = createElement('div', 'xilo-quick-replies');
-  ['What do you offer?', 'How do I collaborate?', 'Contact Ayden'].forEach(function (label) {
-    const button = createElement('button', 'xilo-quick-reply', label);
-    button.type = 'button';
-    button.addEventListener('click', function () {
-      if (label === 'Contact Ayden') {
-        window.open(config.contactUrl, '_blank', 'noopener,noreferrer');
-        return;
-      }
-      input.value = label;
-      form.requestSubmit();
-    });
-    quickReplies.appendChild(button);
-  });
-
   const form = createElement('form', 'xilo-form');
   const input = createElement('textarea', 'xilo-input');
   input.name = 'message';
@@ -120,7 +104,7 @@
   const disclaimer = createElement('p', 'xilo-disclaimer', 'Xilo is AI and may make mistakes. For official inquiries, use the contact form.');
   form.append(input, sendButton, disclaimer);
 
-  panel.append(header, messages, quickReplies, form);
+  panel.append(header, messages, form);
   root.append(panel, launcher);
   // Mount outside the animated body so fixed positioning stays locked to the viewport.
   document.documentElement.appendChild(root);
@@ -129,7 +113,7 @@
     if (!Array.isArray(actions) || !actions.length) return;
     const actionBar = createElement('div', 'xilo-message-actions');
     actions.forEach(function (action) {
-      if (!action || typeof action.url !== 'string' || !/^https:\/\//i.test(action.url)) return;
+      if (!action || typeof action.url !== 'string' || !/^(https:\/\/|mailto:)/i.test(action.url)) return;
       const link = createElement('a', 'xilo-action', action.label || 'Open link');
       link.href = action.url;
       link.target = '_blank';
