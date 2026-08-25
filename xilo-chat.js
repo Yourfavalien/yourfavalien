@@ -8,12 +8,18 @@
     endpoint: 'https://xilo.yourfavalien.com/api/chat',
     contactUrl: 'https://tally.so/r/NpxlQB',
     maxHistory: 10,
-    timeoutMs: 30000
+    timeoutMs: 30000,
+    minResponseMs: 1400,
+    typeSpeedMs: 14,
+    pollMs: 3000
   }, window.XILO_CONFIG || {});
 
   const state = {
     busy: false,
-    history: loadHistory()
+    history: loadHistory(),
+    conversation: loadConversation(),
+    seenMessageIds: new Set(),
+    pollTimer: null
   };
 
   function loadHistory() {
@@ -29,6 +35,26 @@
     try {
       sessionStorage.setItem('xilo-chat-history', JSON.stringify(state.history.slice(-config.maxHistory)));
     } catch (_) {}
+  }
+
+  function loadConversation() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('xilo-conversation') || 'null');
+      return saved && saved.id && saved.token ? saved : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveConversation(conversation) {
+    state.conversation = conversation;
+    try {
+      sessionStorage.setItem('xilo-conversation', JSON.stringify(conversation));
+    } catch (_) {}
+  }
+
+  function wait(ms) {
+    return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
   }
 
   function createElement(tag, className, text) {
@@ -99,6 +125,29 @@
   // Mount outside the animated body so fixed positioning stays locked to the viewport.
   document.documentElement.appendChild(root);
 
+  function addActionButtons(row, actions) {
+    if (!Array.isArray(actions) || !actions.length) return;
+    const actionBar = createElement('div', 'xilo-message-actions');
+    actions.forEach(function (action) {
+      if (!action || typeof action.url !== 'string' || !/^https:\/\//i.test(action.url)) return;
+      const link = createElement('a', 'xilo-action', action.label || 'Open link');
+      link.href = action.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      actionBar.appendChild(link);
+    });
+    if (actionBar.childElementCount) row.appendChild(actionBar);
+  }
+
+  function cleanReplyText(text) {
+    return String(text || '')
+      .replace(/\[([^\]]+)\]\((https:\/\/[^)]+)\)/g, '$1')
+      .replace(/https:\/\/[^\s]+/g, '')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
   function addMessage(role, text, options) {
     const row = createElement('div', 'xilo-message-row' + (role === 'user' ? ' is-user' : ''));
     if (options && options.typing) row.classList.add('xilo-typing');
@@ -109,9 +158,30 @@
       bubble.textContent = text;
     }
     row.appendChild(bubble);
+    if (!(options && options.typing)) addActionButtons(row, options && options.actions);
     messages.appendChild(row);
     messages.scrollTop = messages.scrollHeight;
     return row;
+  }
+
+  async function revealAssistantMessage(text, actions) {
+    const cleanText = cleanReplyText(text);
+    const row = addMessage('assistant', '');
+    const bubble = row.querySelector('.xilo-message');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !cleanText) {
+      bubble.textContent = cleanText;
+    } else {
+      const duration = Math.min(2400, Math.max(500, cleanText.length * config.typeSpeedMs));
+      const steps = Math.max(1, Math.ceil(duration / 32));
+      for (let step = 1; step <= steps; step += 1) {
+        bubble.textContent = cleanText.slice(0, Math.ceil((step / steps) * cleanText.length));
+        messages.scrollTop = messages.scrollHeight;
+        await wait(duration / steps);
+      }
+    }
+    addActionButtons(row, actions);
+    messages.scrollTop = messages.scrollHeight;
   }
 
   function renderHistory() {
@@ -128,6 +198,42 @@
     panel.hidden = !open;
     launcher.setAttribute('aria-expanded', String(open));
     if (open) window.setTimeout(function () { input.focus({ preventScroll: true }); }, 180);
+  }
+
+  function updateStatus(mode) {
+    const status = header.querySelector('.xilo-status');
+    if (!status) return;
+    status.innerHTML = mode === 'human'
+      ? '<span class="xilo-status-dot is-human">●</span> Ayden joined the chat'
+      : '<span class="xilo-status-dot">●</span> YourFavAlien assistant';
+  }
+
+  async function pollConversation() {
+    if (!state.conversation || !state.conversation.id || !state.conversation.token) return;
+    try {
+      const url = config.endpoint + '/' + encodeURIComponent(state.conversation.id)
+        + '/messages?token=' + encodeURIComponent(state.conversation.token);
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) return;
+      const data = await response.json();
+      updateStatus(data.mode);
+      (data.messages || []).forEach(function (message) {
+        if (!message || state.seenMessageIds.has(String(message.id))) return;
+        state.seenMessageIds.add(String(message.id));
+        if (message.sender === 'ayden') {
+          addMessage('assistant', message.body, { actions: message.actions || [] });
+          state.history.push({ role: 'assistant', content: message.body });
+          state.history = state.history.slice(-config.maxHistory);
+          saveHistory();
+        }
+      });
+    } catch (_) {}
+  }
+
+  function startPolling() {
+    if (state.pollTimer) return;
+    pollConversation();
+    state.pollTimer = window.setInterval(pollConversation, config.pollMs);
   }
 
   launcher.addEventListener('click', function () { setOpen(panel.hidden); });
@@ -157,6 +263,7 @@
     saveHistory();
 
     const typing = addMessage('assistant', '', { typing: true });
+    const startedAt = Date.now();
     const controller = new AbortController();
     const timeout = window.setTimeout(function () { controller.abort(); }, config.timeoutMs);
 
@@ -164,18 +271,34 @@
       const response = await fetch(config.endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: state.history }),
+        body: JSON.stringify({
+          messages: state.history,
+          conversationId: state.conversation && state.conversation.id,
+          visitorToken: state.conversation && state.conversation.token,
+          pageUrl: window.location.href
+        }),
         signal: controller.signal
       });
       const data = await response.json().catch(function () { return {}; });
       if (!response.ok) throw new Error(data.error || 'Xilo could not answer right now.');
       if (!data.reply || typeof data.reply !== 'string') throw new Error('Xilo returned an empty reply.');
 
+      if (data.conversationId && data.visitorToken) {
+        saveConversation({ id: data.conversationId, token: data.visitorToken });
+        startPolling();
+      }
+      updateStatus(data.mode);
+      const remainingDelay = Math.max(0, config.minResponseMs - (Date.now() - startedAt));
+      if (remainingDelay) await wait(remainingDelay);
       typing.remove();
-      addMessage('assistant', data.reply);
-      state.history.push({ role: 'assistant', content: data.reply });
-      state.history = state.history.slice(-config.maxHistory);
-      saveHistory();
+      if (data.reply) {
+        await revealAssistantMessage(data.reply, data.actions || []);
+        state.history.push({ role: 'assistant', content: data.reply });
+        state.history = state.history.slice(-config.maxHistory);
+        saveHistory();
+      } else if (data.mode === 'human') {
+        addMessage('assistant', 'Ayden has joined this chat. Your message was sent to him.');
+      }
     } catch (error) {
       typing.remove();
       const message = error && error.name === 'AbortError'
@@ -191,4 +314,5 @@
   });
 
   renderHistory();
+  if (state.conversation) startPolling();
 })();
