@@ -760,19 +760,20 @@ body.yfa-orbit-open { overflow:hidden !important; }
 
 makeStars('contact-stars', 22);
   </script>
-<!-- Start of Tawk.to Script -->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a7cda95d801151d4959bf86/1jvrrbmdt';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
+<script id="xilo-chat-loader">
+(function () {
+  const root = window.location.origin + '/';
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = root + 'xilo-chat.css?v=20260824-1';
+  document.head.appendChild(stylesheet);
+
+  const script = document.createElement('script');
+  script.src = root + 'xilo-chat.js?v=20260824-1';
+  script.defer = true;
+  document.head.appendChild(script);
 })();
 </script>
-<!-- End of Tawk.to Script -->
 <script id="yfa-page-transitions">
 (function () {
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

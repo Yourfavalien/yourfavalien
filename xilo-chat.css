@@ -1,0 +1,251 @@
+:root {
+  --xilo-ink: #f7f2f4;
+  --xilo-muted: rgba(247, 242, 244, 0.7);
+  --xilo-panel: rgba(15, 7, 12, 0.97);
+  --xilo-panel-soft: #24131c;
+  --xilo-accent: #b5175e;
+  --xilo-accent-deep: #8b1148;
+  --xilo-cyan: #4de8d8;
+}
+
+.xilo-chat,
+.xilo-chat * {
+  box-sizing: border-box;
+}
+
+.xilo-chat {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 2147482900;
+  font-family: "Space Mono", "Courier New", monospace;
+  color: var(--xilo-ink);
+}
+
+.xilo-launcher {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 118px;
+  min-height: 48px;
+  padding: 11px 17px;
+  border: 1px solid rgba(255, 255, 255, 0.23);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--xilo-accent), #6f103e);
+  color: #fff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4), 0 0 28px rgba(181, 23, 94, 0.2);
+  font: 700 12px/1 "Space Mono", "Courier New", monospace;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.xilo-launcher:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.xilo-launcher:focus-visible,
+.xilo-close:focus-visible,
+.xilo-send:focus-visible,
+.xilo-input:focus-visible,
+.xilo-quick-reply:focus-visible {
+  outline: 3px solid var(--xilo-cyan);
+  outline-offset: 2px;
+}
+
+.xilo-launcher-mark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(8, 5, 8, 0.35);
+  font-size: 15px;
+}
+
+.xilo-panel {
+  position: absolute;
+  right: 0;
+  bottom: 62px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  width: min(380px, calc(100vw - 36px));
+  height: min(590px, calc(100vh - 118px));
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  background: var(--xilo-panel);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.56);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transform-origin: bottom right;
+  transition: opacity 170ms ease, transform 170ms ease, visibility 170ms;
+}
+
+.xilo-panel[hidden] {
+  display: grid;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.97);
+}
+
+.xilo-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 17px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(181, 23, 94, 0.28), rgba(77, 232, 216, 0.07));
+}
+
+.xilo-avatar {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 1px solid rgba(77, 232, 216, 0.55);
+  border-radius: 50%;
+  background: #15131a;
+  font-size: 21px;
+  box-shadow: 0 0 18px rgba(77, 232, 216, 0.13);
+}
+
+.xilo-identity { min-width: 0; flex: 1; }
+.xilo-name { margin: 0 0 3px; font-size: 14px; letter-spacing: 0.08em; }
+.xilo-status { margin: 0; color: var(--xilo-muted); font-size: 10px; line-height: 1.4; }
+.xilo-status-dot { color: var(--xilo-cyan); }
+
+.xilo-close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.xilo-messages {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 15px 12px;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.xilo-message-row { display: flex; margin: 0 0 12px; }
+.xilo-message-row.is-user { justify-content: flex-end; }
+.xilo-message {
+  max-width: 86%;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 15px 15px 15px 4px;
+  background: var(--xilo-panel-soft);
+  color: var(--xilo-ink);
+  font: 400 12px/1.55 "Space Mono", "Courier New", monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.xilo-message-row.is-user .xilo-message {
+  border-color: rgba(181, 23, 94, 0.4);
+  border-radius: 15px 15px 4px 15px;
+  background: var(--xilo-accent-deep);
+}
+
+.xilo-message a { color: var(--xilo-cyan); }
+.xilo-typing .xilo-message { color: var(--xilo-muted); }
+.xilo-dots { letter-spacing: 3px; animation: xilo-pulse 1s infinite alternate; }
+@keyframes xilo-pulse { to { opacity: 0.35; } }
+
+.xilo-quick-replies {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 0 15px 10px;
+}
+
+.xilo-quick-reply {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid rgba(77, 232, 216, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--xilo-cyan);
+  font: 700 10px/1.2 "Space Mono", "Courier New", monospace;
+  cursor: pointer;
+}
+
+.xilo-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.xilo-input {
+  width: 100%;
+  min-height: 44px;
+  max-height: 110px;
+  resize: none;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 12px;
+  font: 400 12px/1.45 "Space Mono", "Courier New", monospace;
+}
+
+.xilo-input::placeholder { color: rgba(255, 255, 255, 0.45); }
+.xilo-send {
+  align-self: end;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--xilo-accent);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+.xilo-send:disabled { cursor: wait; opacity: 0.55; }
+
+.xilo-disclaimer {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 8.5px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .xilo-chat {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .xilo-panel {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 60px;
+    left: auto;
+    width: calc(100vw - 28px);
+    height: calc(100dvh - 117px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    max-height: calc(100vh - 117px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: 0;
+    border-radius: 18px;
+  }
+  .xilo-launcher { min-width: 104px; min-height: 46px; padding: 10px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xilo-panel,
+  .xilo-launcher,
+  .xilo-dots { transition: none; animation: none; }
+}
