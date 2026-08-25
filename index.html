@@ -371,10 +371,10 @@ section#home {
 <style id="yfa-site-transitions">
 @keyframes yfaPageIn {
   from { opacity: 0; transform: scale(0.992); filter: blur(2px); }
-  to { opacity: 1; transform: scale(1); filter: blur(0); }
+  to { opacity: 1; transform: none; filter: none; }
 }
 body {
-  animation: yfaPageIn 420ms cubic-bezier(.22,.8,.3,1) both;
+  animation: yfaPageIn 420ms cubic-bezier(.22,.8,.3,1);
   transform-origin: center center;
 }
 body.yfa-page-leaving {
@@ -763,16 +763,16 @@ body.yfa-orbit-open { overflow:hidden !important; }
   }
   .yfa-orbit-reopen.is-expanded .yfa-orbit-reopen-trigger {
     justify-content:flex-start;
-    width:min(252px,calc(100vw - 70px));
+    width:min(280px,calc(100vw - 72px));
     padding:0 15px;
     gap:9px;
   }
-  .yfa-orbit-reopen.is-expanded .yfa-orbit-reopen-text { max-width:190px; opacity:1; }
+  .yfa-orbit-reopen.is-expanded .yfa-orbit-reopen-text { max-width:210px; opacity:1; }
   .yfa-orbit-reopen-dismiss {
     align-self:center;
-    width:34px;
-    min-width:34px;
-    height:34px;
+    width:40px;
+    min-width:40px;
+    height:40px;
     padding:0 0 2px;
     border:1px solid rgba(255,255,255,.2);
     border-radius:50%;

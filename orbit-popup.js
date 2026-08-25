@@ -45,7 +45,7 @@
     <div class="yfa-orbit-reopen" id="yfa-orbit-reopen" aria-hidden="true" hidden>
       <button class="yfa-orbit-reopen-trigger" id="yfa-orbit-reopen-trigger" type="button" aria-label="Show Alien Crew signup" aria-expanded="false">
         <span class="yfa-orbit-reopen-alien" aria-hidden="true">👽</span>
-        <span class="yfa-orbit-reopen-text">Get Pulled Into the Orbit</span>
+        <span class="yfa-orbit-reopen-text">Get Pulled Into Orbit</span>
       </button>
       <button class="yfa-orbit-reopen-dismiss" id="yfa-orbit-reopen-dismiss" type="button" aria-label="Dismiss signup teaser">×</button>
     </div>`;
