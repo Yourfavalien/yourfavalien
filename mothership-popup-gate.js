@@ -24,8 +24,12 @@
       if (!response.ok) return { enabled: true };
       return response.json();
     })
-    .then(data => {
-      if (!data || data.enabled !== false) enablePopup();
-    })
-    .catch(enablePopup);
+   .then(data => {
+  if (!data || data.enabled !== false) {
+    setTimeout(enablePopup, 10000);
+  }
+})
+.catch(() => {
+  setTimeout(enablePopup, 10000);
+});
 })();
