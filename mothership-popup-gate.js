@@ -8,33 +8,15 @@
   const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const statusUrl = `${publicBase}${popupPath}?v=${Date.now()}`;
 
-  // Hide it briefly while status loads so an OFF popup never flashes on-screen.
-  const shield = document.createElement('style');
-  shield.id = 'yfaOrbitPopupGlobalSwitch';
-  shield.textContent = `
-    #yfa-orbit-popup,.yfa-orbit-reopen{
-      opacity:0!important;
-      visibility:hidden!important;
-      pointer-events:none!important;
-    }
-  `;
-  (document.head || document.documentElement).appendChild(shield);
-
   function enablePopup() {
-    shield.remove();
-  }
-
-  function disablePopup() {
-    shield.textContent = `
-      #yfa-orbit-popup,.yfa-orbit-reopen{
-        display:none!important;
-        opacity:0!important;
-        visibility:hidden!important;
-        pointer-events:none!important;
-      }
-      body.yfa-orbit-open{overflow:auto!important;}
-    `;
-    if (document.body) document.body.classList.remove('yfa-orbit-open');
+    const path = (window.location.pathname || '/').toLowerCase();
+    if (!['/', '/index.html', '/about.html', '/contact.html'].includes(path)) return;
+    if (document.querySelector('script[data-yfa-orbit-component]')) return;
+    const script = document.createElement('script');
+    script.src = '/orbit-popup.js?v=20260825-1';
+    script.defer = true;
+    script.dataset.yfaOrbitComponent = 'true';
+    document.head.appendChild(script);
   }
 
   fetch(statusUrl, { cache: 'no-store' })
@@ -43,8 +25,7 @@
       return response.json();
     })
     .then(data => {
-      if (data && data.enabled === false) disablePopup();
-      else enablePopup();
+      if (!data || data.enabled !== false) enablePopup();
     })
     .catch(enablePopup);
 })();

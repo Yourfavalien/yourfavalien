@@ -13,33 +13,32 @@ window.YFA_MOTHERSHIP = {
     { id: 'socials-instagram-profile', group: 'Socials', label: 'Instagram profile photo', path: 'slots/socials-instagram-profile' },
     { id: 'socials-snapchat-profile', group: 'Socials', label: 'Snapchat profile photo', path: 'slots/socials-snapchat-profile' },
     { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' },
-    { id: 'subscribe-main', group: 'Subscribe', label: 'Subscribe page photo', path: 'slots/subscribe-main' },
     { id: 'media-kit-banner', group: 'Media Kit', label: 'Media Kit banner', path: 'slots/media-kit-banner' }
   ],
   colorGroups: [
     {
       group: 'Main Site',
-      note: 'These colors are shared by the main Home, About, Contact, and Subscribe design.',
+      note: 'These colors are shared by the main Home, About, Contact, and Privacy design.',
       colors: [
-        { id:'main-bg', label:'Main background', cssVar:'--black', default:'#0a0507', pages:['home','about','contact','subscribe'] },
-        { id:'main-dark', label:'Dark secondary', cssVar:'--dark', default:'#12080d', pages:['home','about','contact','subscribe'] },
-        { id:'main-accent', label:'Main accent', cssVar:'--magenta', default:'#b5175e', pages:['home','about','contact','subscribe'] },
-        { id:'main-accent-hover', label:'Accent hover', cssVar:'--magenta-dark', default:'#8b1148', pages:['home','about','contact','subscribe'] },
-        { id:'main-cyan', label:'Cyan accent', cssVar:'--cyan', default:'#4de8d8', pages:['home','about','contact','subscribe'] },
-        { id:'main-yellow', label:'Yellow accent', cssVar:'--yellow', default:'#f5c518', pages:['home','about','contact','subscribe'] },
-        { id:'main-text', label:'Main text', cssVar:'--white', default:'#f0ece8', pages:['home','about','contact','subscribe'] },
-        { id:'main-light', label:'Light panel', cssVar:'--gray-light', default:'#e8e4e0', pages:['home','about','contact','subscribe'] }
+        { id:'main-bg', label:'Main background', cssVar:'--black', default:'#0a0507', pages:['home','about','contact','privacy'] },
+        { id:'main-dark', label:'Dark secondary', cssVar:'--dark', default:'#12080d', pages:['home','about','contact','privacy'] },
+        { id:'main-accent', label:'Main accent', cssVar:'--magenta', default:'#b5175e', pages:['home','about','contact','privacy'] },
+        { id:'main-accent-hover', label:'Accent hover', cssVar:'--magenta-dark', default:'#8b1148', pages:['home','about','contact','privacy'] },
+        { id:'main-cyan', label:'Cyan accent', cssVar:'--cyan', default:'#4de8d8', pages:['home','about','contact','privacy'] },
+        { id:'main-yellow', label:'Yellow accent', cssVar:'--yellow', default:'#f5c518', pages:['home','about','contact','privacy'] },
+        { id:'main-text', label:'Main text', cssVar:'--white', default:'#f0ece8', pages:['home','about','contact','privacy'] },
+        { id:'main-light', label:'Light panel', cssVar:'--gray-light', default:'#e8e4e0', pages:['home','about','contact','privacy'] }
       ]
     },
     {
       group: 'Orbit Popup',
       note: 'Controls the cream signup popup that appears on the main-site pages.',
       colors: [
-        { id:'orbit-text', label:'Orbit text / ink', cssVar:'--yfa-orbit-ink', default:'#17181c', pages:['home','about','contact','subscribe'] },
-        { id:'orbit-bg', label:'Orbit cream', cssVar:'--yfa-orbit-cream', default:'#f8f6ec', pages:['home','about','contact','subscribe'] },
-        { id:'orbit-bg-deep', label:'Orbit cream shade', cssVar:'--yfa-orbit-cream-deep', default:'#f1eedf', pages:['home','about','contact','subscribe'] },
-        { id:'orbit-button', label:'Orbit button', cssVar:'--yfa-orbit-button', default:'#1c2028', pages:['home','about','contact','subscribe'] },
-        { id:'orbit-button-hover', label:'Orbit button hover', cssVar:'--yfa-orbit-button-hover', default:'#0f1218', pages:['home','about','contact','subscribe'] }
+        { id:'orbit-text', label:'Orbit text / ink', cssVar:'--yfa-orbit-ink', default:'#17181c', pages:['home','about','contact'] },
+        { id:'orbit-bg', label:'Orbit cream', cssVar:'--yfa-orbit-cream', default:'#f8f6ec', pages:['home','about','contact'] },
+        { id:'orbit-bg-deep', label:'Orbit cream shade', cssVar:'--yfa-orbit-cream-deep', default:'#f1eedf', pages:['home','about','contact'] },
+        { id:'orbit-button', label:'Orbit button', cssVar:'--yfa-orbit-button', default:'#1c2028', pages:['home','about','contact'] },
+        { id:'orbit-button-hover', label:'Orbit button hover', cssVar:'--yfa-orbit-button-hover', default:'#0f1218', pages:['home','about','contact'] }
       ]
     },
     {
@@ -56,17 +55,6 @@ window.YFA_MOTHERSHIP = {
         { id:'socials-snapchat', label:'Snapchat accent', cssVar:'--yfa-social-snapchat', default:'#fffc00', pages:['socials'] },
         { id:'socials-pinterest', label:'Pinterest button', cssVar:'--yfa-social-pinterest', default:'#e60023', pages:['socials'] },
         { id:'socials-media-warm', label:'Media Kit warm tone', cssVar:'--yfa-social-media-warm', default:'#8e4e36', pages:['socials'] }
-      ]
-    },
-    {
-      group: 'Subscribe',
-      note: 'Extra colors used only on the Subscribe page.',
-      colors: [
-        { id:'subscribe-grad-start', label:'Background gradient start', cssVar:'--yfa-subscribe-bg-start', default:'#8898aa', pages:['subscribe'] },
-        { id:'subscribe-grad-mid', label:'Background gradient middle', cssVar:'--yfa-subscribe-bg-mid', default:'#c0ccd8', pages:['subscribe'] },
-        { id:'subscribe-grad-end', label:'Background gradient end', cssVar:'--yfa-subscribe-bg-end', default:'#6878a0', pages:['subscribe'] },
-        { id:'subscribe-heading', label:'Card heading', cssVar:'--yfa-subscribe-heading', default:'#222222', pages:['subscribe'] },
-        { id:'subscribe-copy', label:'Card copy', cssVar:'--yfa-subscribe-copy', default:'#555555', pages:['subscribe'] }
       ]
     },
     {
@@ -94,7 +82,7 @@ window.YFA_MOTHERSHIP = {
   const script = document.createElement('script');
   script.src = isMothership
     ? '/mothership-popup-admin.js?v=20260819-1'
-    : '/mothership-popup-gate.js?v=20260819-1';
+    : '/mothership-popup-gate.js?v=20260825-1';
   script.defer = true;
   document.head.appendChild(script);
 })();
