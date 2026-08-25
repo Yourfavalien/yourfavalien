@@ -115,6 +115,7 @@
 .xilo-name { margin: 0 0 3px; font-size: 14px; letter-spacing: 0.08em; }
 .xilo-status { margin: 0; color: var(--xilo-muted); font-size: 10px; line-height: 1.4; }
 .xilo-status-dot { color: var(--xilo-cyan); }
+.xilo-status-dot.is-human { color: #7dff9b; }
 
 .xilo-close {
   display: grid;
@@ -136,7 +137,7 @@
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-.xilo-message-row { display: flex; margin: 0 0 12px; }
+.xilo-message-row { display: flex; flex-wrap: wrap; margin: 0 0 12px; }
 .xilo-message-row.is-user { justify-content: flex-end; }
 .xilo-message {
   max-width: 86%;
@@ -157,6 +158,27 @@
 }
 
 .xilo-message a { color: var(--xilo-cyan); }
+.xilo-message-actions {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 7px 0 0;
+}
+.xilo-message-row.is-user .xilo-message-actions { justify-content: flex-end; }
+.xilo-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 8px 11px;
+  border: 1px solid rgba(77, 232, 216, 0.42);
+  border-radius: 999px;
+  background: rgba(77, 232, 216, 0.09);
+  color: var(--xilo-cyan);
+  font: 700 10px/1.2 "Space Mono", "Courier New", monospace;
+  text-decoration: none;
+}
+.xilo-action:hover { background: rgba(77, 232, 216, 0.17); }
 .xilo-typing .xilo-message { color: var(--xilo-muted); }
 .xilo-dots { letter-spacing: 3px; animation: xilo-pulse 1s infinite alternate; }
 @keyframes xilo-pulse { to { opacity: 0.35; } }
