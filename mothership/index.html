@@ -20,7 +20,8 @@
     .section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:8px 0 16px}.section-head h2{margin:0}.section-copy{max-width:700px;color:var(--muted);font-size:11px;line-height:1.65;margin-top:6px}
     .divider{height:1px;background:var(--line);margin:34px 0}
     .color-groups{display:grid;gap:24px}.color-group{border:1px solid var(--line);border-radius:18px;padding:16px;background:#0a060a}.color-group h3{margin:0 0 5px;font-family:'Major Mono Display',monospace;font-size:16px}.color-note{color:var(--muted);font-size:10px;line-height:1.55;margin-bottom:14px}.color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.color-row{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:#090509}.color-picker{width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:10px;background:transparent;cursor:pointer;overflow:hidden}.color-picker::-webkit-color-swatch-wrapper{padding:3px}.color-picker::-webkit-color-swatch{border:0;border-radius:7px}.color-meta{min-width:0}.color-label{font-size:11px;font-weight:700;margin-bottom:5px}.hex-input{width:100%;min-width:0;padding:8px 9px;border-radius:8px;border:1px solid var(--line);background:#050305;color:var(--ink);font-size:11px;text-transform:uppercase;outline:none}.hex-input:focus{border-color:#d65f96}.tiny-btn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:7px 9px;font-size:9px;cursor:pointer}.tiny-btn:hover{color:var(--ink);background:rgba(255,255,255,.05)}.theme-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.theme-actions .btn{min-width:150px}
-    @media(max-width:600px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}}}
+    .chat-console{display:grid;grid-template-columns:minmax(220px,32%) minmax(0,1fr);min-height:540px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#090509}.chat-list{border-right:1px solid var(--line);overflow:auto}.chat-list-empty{padding:22px;color:var(--muted);font-size:11px;line-height:1.6}.chat-card{display:block;width:100%;padding:14px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;cursor:pointer}.chat-card:hover,.chat-card.active{background:rgba(181,23,94,.13)}.chat-card-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700}.chat-card-time{color:var(--muted);font-size:9px}.mode-badge{display:inline-block;margin-top:8px;padding:4px 7px;border-radius:999px;background:rgba(77,232,216,.1);color:#4de8d8;font-size:8px;text-transform:uppercase}.mode-badge.human{background:rgba(125,255,155,.1);color:#7dff9b}.chat-detail{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0}.chat-detail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}.chat-detail-title{font-size:11px;color:var(--muted)}.chat-messages{padding:16px;overflow:auto}.crew-message{max-width:82%;margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#171018;font-size:11px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.crew-message.visitor{margin-left:auto;background:#351329}.crew-message.ayden{border-color:rgba(125,255,155,.35);background:#102016}.crew-sender{display:block;margin-bottom:4px;color:var(--muted);font-size:8px;text-transform:uppercase}.chat-reply{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:13px;border-top:1px solid var(--line)}.chat-reply textarea{min-height:48px;max-height:120px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#050305;color:#fff;padding:11px;font:inherit;font-size:11px;outline:none}.chat-reply textarea:focus{border-color:#d65f96}.chat-reply .status{grid-column:1/-1;margin:0}
+    @media(max-width:700px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}.chat-console{grid-template-columns:1fr;min-height:680px}.chat-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.chat-detail{min-height:450px}}
   </style>
 </head>
 <body>
@@ -51,6 +52,21 @@
       <div id="colorGroups" class="color-groups"></div>
       <div class="theme-actions"><button id="saveThemeBtn" class="btn" type="button">Save colors</button><button id="resetThemeBtn" class="btn secondary" type="button">Load original colors</button></div>
       <div id="themeStatus" class="status" aria-live="polite"></div>
+
+      <div class="divider"></div>
+      <div class="section-head"><div><div class="eyebrow">Xilo live inbox</div><h2>Conversations</h2><div class="section-copy">See visitor chats, take over from Xilo, and reply as yourself. Xilo pauses automatically while a conversation is in human mode.</div></div><button id="refreshChatsBtn" class="btn secondary" type="button">Refresh chats</button></div>
+      <div class="chat-console">
+        <div id="chatList" class="chat-list"><div class="chat-list-empty">No conversations yet.</div></div>
+        <section class="chat-detail">
+          <div class="chat-detail-head"><div id="chatTitle" class="chat-detail-title">Choose a conversation</div><button id="takeoverBtn" class="btn secondary" type="button" disabled>Take over</button></div>
+          <div id="crewMessages" class="chat-messages"><div class="chat-list-empty">Visitor messages will appear here.</div></div>
+          <form id="crewReplyForm" class="chat-reply">
+            <textarea id="crewReply" maxlength="4000" placeholder="Reply as Ayden…" aria-label="Reply as Ayden" disabled></textarea>
+            <button id="crewSendBtn" class="btn" type="submit" disabled>Send</button>
+            <div id="crewChatStatus" class="status" aria-live="polite"></div>
+          </form>
+        </section>
+      </div>
     </section>
   </main>
 
@@ -71,9 +87,20 @@
       const saveThemeBtn = document.getElementById('saveThemeBtn');
       const resetThemeBtn = document.getElementById('resetThemeBtn');
       const themeStatus = document.getElementById('themeStatus');
+      const chatList = document.getElementById('chatList');
+      const chatTitle = document.getElementById('chatTitle');
+      const crewMessages = document.getElementById('crewMessages');
+      const takeoverBtn = document.getElementById('takeoverBtn');
+      const refreshChatsBtn = document.getElementById('refreshChatsBtn');
+      const crewReplyForm = document.getElementById('crewReplyForm');
+      const crewReply = document.getElementById('crewReply');
+      const crewSendBtn = document.getElementById('crewSendBtn');
+      const crewChatStatus = document.getElementById('crewChatStatus');
       const themeDefs = (cfg.colorGroups || []).flatMap(group => group.colors || []);
       const defaultTheme = Object.fromEntries(themeDefs.map(def => [def.id, def.default]));
       let themeState = { ...defaultTheme };
+      let selectedConversation = null;
+      let chatRefreshTimer = null;
       const themePublicUrl = () => `${publicBase}${cfg.themePath}?v=${Date.now()}`;
       const isHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
 
@@ -353,6 +380,147 @@
         });
       }
 
+      function formatChatTime(value) {
+        if (!value) return '';
+        return new Intl.DateTimeFormat(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }).format(new Date(value));
+      }
+
+      function renderConversationList(conversations) {
+        chatList.innerHTML = '';
+        if (!conversations.length) {
+          chatList.innerHTML = '<div class="chat-list-empty">No conversations yet. New Xilo chats will show up here.</div>';
+          return;
+        }
+        conversations.forEach((conversation, index) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'chat-card' + (selectedConversation && selectedConversation.id === conversation.id ? ' active' : '');
+          const top = document.createElement('div');
+          top.className = 'chat-card-top';
+          const label = document.createElement('span');
+          label.textContent = `Visitor ${conversation.id.slice(0, 6).toUpperCase()}`;
+          const time = document.createElement('span');
+          time.className = 'chat-card-time';
+          time.textContent = formatChatTime(conversation.last_message_at);
+          const badge = document.createElement('span');
+          badge.className = 'mode-badge' + (conversation.mode === 'human' ? ' human' : '');
+          badge.textContent = conversation.mode === 'human' ? 'Ayden answering' : 'Xilo answering';
+          top.append(label, time);
+          button.append(top, badge);
+          button.addEventListener('click', () => openConversation(conversation));
+          chatList.appendChild(button);
+          if (!selectedConversation && index === 0) openConversation(conversation);
+        });
+      }
+
+      async function loadConversations(options = {}) {
+        if (!options.quiet) setStatus(crewChatStatus, 'Loading conversations…');
+        const { data, error } = await client
+          .from('xilo_conversations')
+          .select('id,mode,page_url,created_at,last_message_at')
+          .order('last_message_at', { ascending: false })
+          .limit(50);
+        if (error) {
+          setStatus(crewChatStatus, 'The Xilo inbox needs its database setup before it can connect.', 'error');
+          return;
+        }
+        renderConversationList(data || []);
+        if (!options.quiet) setStatus(crewChatStatus, '');
+      }
+
+      async function openConversation(conversation) {
+        selectedConversation = conversation;
+        chatTitle.textContent = `Visitor ${conversation.id.slice(0, 6).toUpperCase()} · ${conversation.mode === 'human' ? 'you are answering' : 'Xilo is answering'}`;
+        takeoverBtn.disabled = false;
+        takeoverBtn.textContent = conversation.mode === 'human' ? 'Return to Xilo' : 'Take over';
+        crewReply.disabled = false;
+        crewSendBtn.disabled = false;
+        await loadConversationMessages();
+        await loadConversations({ quiet: true });
+      }
+
+      async function loadConversationMessages() {
+        if (!selectedConversation) return;
+        const activeId = selectedConversation.id;
+        const { data, error } = await client
+          .from('xilo_messages')
+          .select('id,sender,body,created_at')
+          .eq('conversation_id', activeId)
+          .order('created_at', { ascending: true });
+        if (error || !selectedConversation || selectedConversation.id !== activeId) return;
+        crewMessages.innerHTML = '';
+        (data || []).forEach(message => {
+          const bubble = document.createElement('div');
+          bubble.className = `crew-message ${message.sender}`;
+          const sender = document.createElement('span');
+          sender.className = 'crew-sender';
+          sender.textContent = message.sender === 'visitor' ? 'Visitor' : message.sender === 'ayden' ? 'You' : 'Xilo';
+          const body = document.createElement('span');
+          body.textContent = message.body;
+          bubble.append(sender, body);
+          crewMessages.appendChild(bubble);
+        });
+        if (!(data || []).length) crewMessages.innerHTML = '<div class="chat-list-empty">No messages in this conversation yet.</div>';
+        crewMessages.scrollTop = crewMessages.scrollHeight;
+      }
+
+      takeoverBtn.addEventListener('click', async () => {
+        if (!selectedConversation) return;
+        takeoverBtn.disabled = true;
+        const nextMode = selectedConversation.mode === 'human' ? 'bot' : 'human';
+        const { error } = await client.from('xilo_conversations').update({
+          mode: nextMode,
+          updated_at: new Date().toISOString()
+        }).eq('id', selectedConversation.id);
+        takeoverBtn.disabled = false;
+        if (error) {
+          setStatus(crewChatStatus, 'Could not switch who is answering.', 'error');
+          return;
+        }
+        selectedConversation.mode = nextMode;
+        setStatus(crewChatStatus, nextMode === 'human' ? 'You are now answering. Xilo is paused for this visitor.' : 'Xilo is answering this visitor again.', 'ok');
+        await openConversation(selectedConversation);
+      });
+
+      crewReplyForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!selectedConversation) return;
+        const body = crewReply.value.trim();
+        if (!body) return;
+        crewSendBtn.disabled = true;
+        if (selectedConversation.mode !== 'human') {
+          const { error: modeError } = await client.from('xilo_conversations').update({ mode: 'human', updated_at: new Date().toISOString() }).eq('id', selectedConversation.id);
+          if (modeError) {
+            setStatus(crewChatStatus, 'Could not pause Xilo for this conversation.', 'error');
+            crewSendBtn.disabled = false;
+            return;
+          }
+          selectedConversation.mode = 'human';
+        }
+        const { error } = await client.from('xilo_messages').insert({
+          conversation_id: selectedConversation.id,
+          sender: 'ayden',
+          body,
+          actions: []
+        });
+        if (!error) {
+          await client.from('xilo_conversations').update({
+            last_message_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }).eq('id', selectedConversation.id);
+        }
+        crewSendBtn.disabled = false;
+        if (error) {
+          setStatus(crewChatStatus, 'Your reply could not be sent.', 'error');
+          return;
+        }
+        crewReply.value = '';
+        setStatus(crewChatStatus, 'Reply sent to the visitor.', 'ok');
+        await openConversation(selectedConversation);
+      });
+
+      refreshChatsBtn.addEventListener('click', () => loadConversations());
+
       async function showSession(session) {
         if (session && session.user) {
           loginPanel.classList.add('hidden');
@@ -360,12 +528,22 @@
           userEmail.textContent = session.user.email || 'Authenticated user';
           renderSlots();
           await loadTheme();
+          await loadConversations();
+          if (!chatRefreshTimer) chatRefreshTimer = window.setInterval(async () => {
+            await loadConversations({ quiet: true });
+            await loadConversationMessages();
+          }, 4000);
         } else {
+          if (chatRefreshTimer) window.clearInterval(chatRefreshTimer);
+          chatRefreshTimer = null;
+          selectedConversation = null;
           dashboard.classList.add('hidden');
           loginPanel.classList.remove('hidden');
           groupsEl.innerHTML = '';
           colorGroupsEl.innerHTML = '';
           setStatus(themeStatus, '');
+          chatList.innerHTML = '<div class="chat-list-empty">No conversations yet.</div>';
+          crewMessages.innerHTML = '<div class="chat-list-empty">Visitor messages will appear here.</div>';
         }
       }
 
