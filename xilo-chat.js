@@ -126,6 +126,8 @@
   function cleanReplyText(text) {
     return String(text || '')
       .replace(/\[([^\]]+)\]\((https:\/\/[^)]+)\)/g, '$1')
+      .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+      .replace(/__([^_\n]+)__/g, '$1')
       .replace(/https:\/\/[^\s]+/g, '')
       .replace(/[ \t]+\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
