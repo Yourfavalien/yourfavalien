@@ -82,6 +82,15 @@
     legal.className = 'yfa-menu-legal';
     legal.innerHTML = '© 2026 YourFavAlien · All rights reserved · <a href="privacy.html">Privacy</a>';
     nav.appendChild(legal);
+    const privacyLink = legal.querySelector('a');
+    function keepPrivacyInFooter() {
+      if (!privacyLink) return;
+      if (privacyLink.parentElement !== legal) legal.appendChild(privacyLink);
+      privacyLink.textContent = 'Privacy';
+      privacyLink.hidden = false;
+      privacyLink.style.display = '';
+    }
+    new MutationObserver(keepPrivacyInFooter).observe(nav, { childList: true, subtree: true });
 
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
