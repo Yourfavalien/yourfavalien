@@ -136,3 +136,13 @@
     if (data && data.session && data.session.user) loadStatus();
   });
 })();
+
+// Load the expanded Mothership control layer without rewriting the existing dashboard.
+(function () {
+  if (document.querySelector('script[data-yfa-mothership-power]')) return;
+  const script = document.createElement('script');
+  script.src = '/mothership-power.js?v=20260830-1';
+  script.defer = true;
+  script.dataset.yfaMothershipPower = 'true';
+  document.head.appendChild(script);
+})();
