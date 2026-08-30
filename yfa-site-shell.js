@@ -4,9 +4,7 @@
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
-  let introAlreadyPlayed = false;
-  try { introAlreadyPlayed = sessionStorage.getItem('yfa-intro-played') === '1'; } catch (error) {}
-  const shouldPlayIntro = isHomePage && !reduceMotion && !introAlreadyPlayed;
+  const shouldPlayIntro = isHomePage && !reduceMotion;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
   if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
@@ -151,7 +149,6 @@
   }
 
   function playIntro(menuButton) {
-    try { sessionStorage.setItem('yfa-intro-played', '1'); } catch (error) {}
     const overlay = document.createElement('div');
     overlay.className = 'yfa-intro';
     overlay.setAttribute('role', 'dialog');
