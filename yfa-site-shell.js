@@ -84,9 +84,9 @@
     function keepPrivacyInFooter() {
       if (!privacyLink) return;
       if (privacyLink.parentElement !== legal) legal.appendChild(privacyLink);
-      privacyLink.textContent = 'Privacy';
-      privacyLink.hidden = false;
-      privacyLink.style.display = '';
+      if (privacyLink.textContent !== 'Privacy') privacyLink.textContent = 'Privacy';
+      if (privacyLink.hidden) privacyLink.hidden = false;
+      if (privacyLink.style.display === 'none') privacyLink.style.removeProperty('display');
     }
     new MutationObserver(keepPrivacyInFooter).observe(nav, { childList: true, subtree: true });
 
