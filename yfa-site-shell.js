@@ -2,7 +2,9 @@
   'use strict';
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const shouldPlayIntro = !reduceMotion;
+  const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
+  const shouldPlayIntro = isHomePage && !reduceMotion;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
   function currentPage() {
