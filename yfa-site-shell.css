@@ -1,0 +1,250 @@
+:root {
+  --yfa-ufo-x: calc(100vw - 32px);
+  --yfa-ufo-y: 74px;
+  --yfa-menu-right: 18px;
+}
+
+html.yfa-intro-pending,
+html.yfa-intro-pending body {
+  background: #050205 !important;
+}
+
+html.yfa-intro-pending body > *:not(.yfa-intro) {
+  visibility: hidden;
+}
+
+.yfa-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  overflow: hidden;
+  visibility: visible !important;
+  background: #050205;
+  opacity: 1;
+  transition: opacity 180ms ease-out;
+}
+
+.yfa-intro.is-ending {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.yfa-intro__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  object-fit: cover;
+  object-position: center;
+  background: #050205;
+}
+
+.yfa-intro__skip {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  min-height: 38px;
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, .76);
+  background: rgba(5, 2, 5, .38);
+  font: 10px/1.2 "Space Mono", monospace;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.yfa-menu-button {
+  position: fixed;
+  left: var(--yfa-ufo-x);
+  top: var(--yfa-ufo-y);
+  z-index: 2147482001;
+  display: grid;
+  width: 76px;
+  height: 64px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease-out, filter 180ms ease, visibility 0s linear 160ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.yfa-menu-button.is-ready {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.yfa-menu-button img {
+  display: block;
+  width: 52px;
+  height: auto;
+  max-width: none !important;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(207, 217, 255, .72)) drop-shadow(0 4px 9px rgba(0, 0, 0, .48));
+  animation: yfa-ufo-float 3.6s ease-in-out infinite;
+  transform-origin: 50% 55%;
+}
+
+.yfa-menu-button:hover img,
+.yfa-menu-button:focus-visible img {
+  filter: drop-shadow(0 0 9px rgba(224, 230, 255, .95)) drop-shadow(0 5px 11px rgba(0, 0, 0, .58));
+}
+
+.yfa-menu-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, .88);
+  outline-offset: 1px;
+}
+
+.yfa-menu-button[aria-expanded="true"] img {
+  animation: yfa-ufo-open .46s ease both;
+}
+
+@keyframes yfa-ufo-float {
+  0%, 100% { transform: translateY(-2px) rotate(-1.2deg); }
+  50% { transform: translateY(3px) rotate(1.3deg); }
+}
+
+@keyframes yfa-ufo-open {
+  0% { transform: translateY(0) rotate(0); }
+  45% { transform: translateY(-3px) rotate(-7deg); }
+  100% { transform: translateY(1px) rotate(0); }
+}
+
+.yfa-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147481998;
+  border: 0;
+  padding: 0;
+  background: rgba(3, 1, 3, .46);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 220ms ease, visibility 0s linear 220ms;
+  backdrop-filter: blur(2px);
+}
+
+.yfa-menu-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+nav.yfa-menu-panel {
+  position: fixed !important;
+  top: calc(var(--yfa-ufo-y) + 34px) !important;
+  right: var(--yfa-menu-right) !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 2147482000 !important;
+  display: flex !important;
+  width: min(330px, calc(100vw - 32px)) !important;
+  max-height: calc(100dvh - var(--yfa-ufo-y) - 54px) !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  overflow: auto !important;
+  margin: 0 !important;
+  padding: 17px !important;
+  border: 1px solid rgba(255, 255, 255, .19) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(145deg, rgba(12, 6, 11, .96), rgba(28, 12, 23, .94)) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .56), inset 0 1px rgba(255, 255, 255, .05) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-9px) scale(.975) !important;
+  transform-origin: top right !important;
+  pointer-events: none !important;
+  transition: opacity 180ms ease, transform 220ms cubic-bezier(.2, .8, .2, 1), visibility 0s linear 220ms !important;
+  backdrop-filter: blur(18px) saturate(1.15) !important;
+}
+
+nav.yfa-menu-panel.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: auto !important;
+  transition-delay: 0s !important;
+}
+
+nav.yfa-menu-panel a {
+  display: flex !important;
+  min-height: 48px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 11px 15px !important;
+  border: 1px solid rgba(255, 255, 255, .14) !important;
+  border-radius: 14px !important;
+  color: #f0ece8 !important;
+  background: rgba(255, 255, 255, .025) !important;
+  font: 700 12px/1.2 "Courier Prime", monospace !important;
+  letter-spacing: .08em !important;
+  text-decoration: none !important;
+  text-transform: lowercase !important;
+  white-space: nowrap !important;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease !important;
+}
+
+nav.yfa-menu-panel a::after {
+  content: "↗";
+  color: rgba(255, 255, 255, .45);
+  font-size: 12px;
+}
+
+nav.yfa-menu-panel a:hover,
+nav.yfa-menu-panel a:focus-visible,
+nav.yfa-menu-panel a.active {
+  border-color: rgba(255, 255, 255, .36) !important;
+  color: #fff !important;
+  background: rgba(255, 255, 255, .1) !important;
+  transform: translateX(-2px) !important;
+}
+
+nav.yfa-menu-panel a:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, .78) !important;
+  outline-offset: 2px !important;
+}
+
+@media (max-width: 767px) {
+  .yfa-menu-button {
+    width: 66px;
+    height: 58px;
+  }
+
+  .yfa-menu-button img {
+    width: 38px;
+  }
+
+  nav.yfa-menu-panel {
+    right: 14px !important;
+    width: min(292px, calc(100vw - 28px)) !important;
+    padding: 14px !important;
+    border-radius: 19px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yfa-menu-button img,
+  .yfa-menu-button[aria-expanded="true"] img {
+    animation: none !important;
+  }
+
+  .yfa-intro {
+    display: none !important;
+  }
+}
