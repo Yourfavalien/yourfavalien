@@ -92,7 +92,7 @@ window.YFA_MOTHERSHIP = {
   const script = document.createElement('script');
   script.src = isMothership
     ? '/mothership-popup-admin.js?v=20260830-7'
-    : '/mothership-popup-gate.js?v=20260830-5';
+    : '/mothership-popup-gate.js?v=20260830-6';
   script.defer = true;
   document.head.appendChild(script);
 })();
