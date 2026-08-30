@@ -9,7 +9,7 @@
   function css(color){
     if(document.getElementById('yfa-site-badge-css'))return;
     const s=document.createElement('style');s.id='yfa-site-badge-css';
-    s.textContent=`.yfa-official-wrap{display:inline-flex!important;align-items:center!important;gap:.18em!important}.yfa-official-badge{display:inline-grid;place-items:center;flex:0 0 auto;width:.72em;height:.72em;min-width:15px;min-height:15px;max-width:23px;max-height:23px;border-radius:50%;background:${color};color:#fff;font-family:Arial,sans-serif;font-size:.48em;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.15);transform:translateY(.02em)}.yfa-official-badge::before{content:'✓'} .yfa-official-badge[data-small='1']{width:17px;height:17px;font-size:10px}`;
+    s.textContent=`.yfa-official-wrap{display:inline-flex!important;align-items:center!important;gap:.2em!important}.yfa-official-badge{display:inline-block;flex:0 0 auto;width:.82em;height:.82em;min-width:20px;min-height:20px;max-width:28px;max-height:28px;color:${color};line-height:0;vertical-align:middle;filter:drop-shadow(0 1px 1px rgba(0,0,0,.22));transform:translateY(.02em)}.yfa-official-badge svg{display:block;width:100%;height:100%;overflow:visible}.yfa-official-badge[data-small='1']{width:19px;height:19px;min-width:19px;min-height:19px}`;
     document.head.appendChild(s);
   }
 
@@ -34,6 +34,7 @@
       if(seen.has(el)||el.querySelector('.yfa-official-badge'))return;seen.add(el);
       el.classList.add('yfa-official-wrap');
       const badge=document.createElement('span');badge.className='yfa-official-badge';badge.setAttribute('role','img');badge.setAttribute('aria-label',data.label||defaults.label);badge.title=data.label||defaults.label;
+      badge.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 1.35l2.08 1.7 2.66-.35 1.2 2.4 2.4 1.2-.35 2.66 1.7 2.08-1.7 2.08.35 2.66-2.4 1.2-1.2 2.4-2.66-.35L12 22.65l-2.08-1.7-2.66.35-1.2-2.4-2.4-1.2.35-2.66L2.31 12l1.7-2.08-.35-2.66 2.4-1.2 1.2-2.4 2.66.35z"/><path d="m7.5 12.1 2.85 2.85 6.15-6.1" fill="none" stroke="#fff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       if(getComputedStyle(el).fontSize&&parseFloat(getComputedStyle(el).fontSize)<22)badge.dataset.small='1';
       el.appendChild(badge);
     });

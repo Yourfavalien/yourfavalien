@@ -30,7 +30,7 @@
   }
   loadScript('/site-enhancements.js?v=20260830-2','yfa-site-enhancements');
   loadScript('/site-complete.js?v=20260830-5','yfa-site-complete');
-  loadScript('/site-badge.js?v=20260830-3','yfa-site-badge');
+  loadScript('/site-badge.js?v=20260830-4','yfa-site-badge');
 
   const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';
