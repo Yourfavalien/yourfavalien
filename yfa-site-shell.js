@@ -4,7 +4,9 @@
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
-  const shouldPlayIntro = isHomePage && !reduceMotion;
+  let introAlreadyPlayed = false;
+  try { introAlreadyPlayed = sessionStorage.getItem('yfa-intro-played') === '1'; } catch (error) {}
+  const shouldPlayIntro = isHomePage && !reduceMotion && !introAlreadyPlayed;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
   if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
@@ -140,6 +142,7 @@
   }
 
   function playIntro(menuButton) {
+    try { sessionStorage.setItem('yfa-intro-played', '1'); } catch (error) {}
     const overlay = document.createElement('div');
     overlay.className = 'yfa-intro';
     overlay.setAttribute('role', 'dialog');
@@ -149,7 +152,12 @@
     video.className = 'yfa-intro__video';
     video.autoplay = true;
     video.muted = true;
+    video.defaultMuted = true;
     video.playsInline = true;
+    video.setAttribute('autoplay', '');
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
     video.preload = 'auto';
     video.disablePictureInPicture = true;
     video.setAttribute('aria-hidden', 'true');
@@ -163,7 +171,7 @@
     let finished = false;
     let failSafe;
     const introStartedAt = Date.now();
-    const minimumIntroTime = 3000;
+    const minimumIntroTime = 1200;
     function completeFinish() {
       if (finished) return;
       finished = true;
@@ -186,9 +194,13 @@
 
     video.addEventListener('ended', finish, { once: true });
     video.addEventListener('error', finish, { once: true });
-    const playback = video.play();
-    if (playback && typeof playback.catch === 'function') playback.catch(finish);
-    failSafe = window.setTimeout(finish, 4500);
+    function startPlayback() {
+      const playback = video.play();
+      if (playback && typeof playback.catch === 'function') playback.catch(function () {});
+    }
+    video.addEventListener('loadedmetadata', startPlayback, { once: true });
+    startPlayback();
+    failSafe = window.setTimeout(finish, 2800);
   }
 
   let initialized = false;

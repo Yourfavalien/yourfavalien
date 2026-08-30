@@ -29,7 +29,7 @@
     const script=document.createElement('script');script.src=src;script.defer=true;script.setAttribute(`data-${dataKey}`,'true');document.head.appendChild(script);
   }
   loadScript('/site-enhancements.js?v=20260830-1','yfa-site-enhancements');
-  loadScript('/site-complete.js?v=20260830-3','yfa-site-complete');
+  loadScript('/site-complete.js?v=20260830-4','yfa-site-complete');
   loadScript('/site-badge.js?v=20260830-2','yfa-site-badge');
 
   const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;

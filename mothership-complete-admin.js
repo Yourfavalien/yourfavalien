@@ -25,7 +25,7 @@
         {id:'about',label:'About',url:'/about.html',enabled:true},
         {id:'socials',label:'Socials',url:'/socials.html',enabled:true},
         {id:'contact',label:'Contact',url:'/contact.html',enabled:true},
-        {id:'privacy',label:'Privacy',url:'/privacy.html',enabled:true}
+        {id:'privacy',label:'Privacy',url:'/privacy.html',enabled:false}
       ]
     },
     design: {headingFont:'Playfair Display',bodyFont:'Space Mono',contentWidth:1380,sectionSpacing:100,buttonRadius:999,cardRadius:18,motion:true},
@@ -124,7 +124,7 @@
 
   function renderNav(){
     const host=document.getElementById('cNavList'); if(!host)return; host.innerHTML='';
-    (state.navigation.items||[]).forEach((item,i)=>{const row=document.createElement('div');row.className='c-card c-nav-item';row.innerHTML=`<input data-enabled type="checkbox" ${item.enabled!==false?'checked':''}><input data-label value="${esc(item.label)}"><input class="url" data-url value="${esc(item.url)}"><button class="c-mini" data-up type="button">↑</button><button class="c-mini" data-down type="button">↓</button>`;const sync=()=>{item.enabled=row.querySelector('[data-enabled]').checked;item.label=row.querySelector('[data-label]').value;item.url=row.querySelector('[data-url]').value;mark();};row.querySelectorAll('input').forEach(x=>{x.oninput=sync;x.onchange=sync;});row.querySelector('[data-up]').onclick=()=>{if(i>0){[state.navigation.items[i-1],state.navigation.items[i]]=[state.navigation.items[i],state.navigation.items[i-1]];mark();renderNav();}};row.querySelector('[data-down]').onclick=()=>{if(i<state.navigation.items.length-1){[state.navigation.items[i+1],state.navigation.items[i]]=[state.navigation.items[i],state.navigation.items[i+1]];mark();renderNav();}};host.appendChild(row);});
+    (state.navigation.items||[]).forEach((item,i)=>{if(item.id==='privacy')return;const row=document.createElement('div');row.className='c-card c-nav-item';row.innerHTML=`<input data-enabled type="checkbox" ${item.enabled!==false?'checked':''}><input data-label value="${esc(item.label)}"><input class="url" data-url value="${esc(item.url)}"><button class="c-mini" data-up type="button">↑</button><button class="c-mini" data-down type="button">↓</button>`;const sync=()=>{item.enabled=row.querySelector('[data-enabled]').checked;item.label=row.querySelector('[data-label]').value;item.url=row.querySelector('[data-url]').value;mark();};row.querySelectorAll('input').forEach(x=>{x.oninput=sync;x.onchange=sync;});row.querySelector('[data-up]').onclick=()=>{if(i>0){[state.navigation.items[i-1],state.navigation.items[i]]=[state.navigation.items[i],state.navigation.items[i-1]];mark();renderNav();}};row.querySelector('[data-down]').onclick=()=>{if(i<state.navigation.items.length-1){[state.navigation.items[i+1],state.navigation.items[i]]=[state.navigation.items[i],state.navigation.items[i+1]];mark();renderNav();}};host.appendChild(row);});
   }
 
   function fill(){

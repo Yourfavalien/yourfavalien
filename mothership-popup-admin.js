@@ -85,7 +85,7 @@
 (function () {
   const scripts = [
     ['/mothership-power.js?v=20260830-2', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20260830-1', 'yfaMothershipComplete'],
+    ['/mothership-complete-admin.js?v=20260830-2', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260830-1', 'yfaMothershipBadge']
   ];
   scripts.forEach(([src,key]) => {
