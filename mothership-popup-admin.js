@@ -56,93 +56,39 @@
   const toggleBtn = document.getElementById('yfaPopupToggle');
   const statusEl = document.getElementById('yfaPopupStatus');
 
-  function setStatus(text, type = '') {
-    statusEl.textContent = text || '';
-    statusEl.className = `status ${type}`.trim();
-  }
-
-  function statusUrl() {
-    return `${publicBase}${popupPath}?v=${Date.now()}`;
-  }
-
-  function render() {
-    const enabled = state.enabled !== false;
-    badge.classList.toggle('off', !enabled);
-    badge.querySelector('span:last-child').textContent = enabled ? 'POPUP ON' : 'POPUP OFF';
-    toggleBtn.textContent = enabled ? 'Turn Orbit popup OFF' : 'Turn Orbit popup ON';
-    toggleBtn.classList.toggle('danger', !enabled);
-    toggleBtn.disabled = false;
-  }
+  function setStatus(text, type = '') { statusEl.textContent = text || ''; statusEl.className = `status ${type}`.trim(); }
+  function statusUrl() { return `${publicBase}${popupPath}?v=${Date.now()}`; }
+  function render() { const enabled = state.enabled !== false; badge.classList.toggle('off', !enabled); badge.querySelector('span:last-child').textContent = enabled ? 'POPUP ON' : 'POPUP OFF'; toggleBtn.textContent = enabled ? 'Turn Orbit popup OFF' : 'Turn Orbit popup ON'; toggleBtn.classList.toggle('danger', !enabled); toggleBtn.disabled = false; }
 
   async function loadStatus() {
-    toggleBtn.disabled = true;
-    setStatus('Checking popup status…');
-    try {
-      const response = await fetch(statusUrl(), { cache: 'no-store' });
-      if (response.ok) {
-        const data = await response.json();
-        state = { enabled: !(data && data.enabled === false) };
-      } else {
-        state = { enabled: true };
-      }
-      render();
-      setStatus(state.enabled ? 'Orbit popup is ON.' : 'Orbit popup is OFF for public visitors.', state.enabled ? 'ok' : '');
-    } catch (error) {
-      state = { enabled: true };
-      render();
-      setStatus('Could not check the saved popup status. The safe default is ON.', 'error');
-    }
+    toggleBtn.disabled = true; setStatus('Checking popup status…');
+    try { const response = await fetch(statusUrl(), { cache: 'no-store' }); state = response.ok ? { enabled: !((await response.json())?.enabled === false) } : { enabled: true }; render(); setStatus(state.enabled ? 'Orbit popup is ON.' : 'Orbit popup is OFF for public visitors.', state.enabled ? 'ok' : ''); }
+    catch { state = { enabled: true }; render(); setStatus('Could not check the saved popup status. The safe default is ON.', 'error'); }
   }
 
   async function publish(enabled) {
-    toggleBtn.disabled = true;
-    setStatus(enabled ? 'Turning Orbit popup on…' : 'Turning Orbit popup off…');
+    toggleBtn.disabled = true; setStatus(enabled ? 'Turning Orbit popup on…' : 'Turning Orbit popup off…');
     try {
-      const payload = new Blob([JSON.stringify({
-        enabled: Boolean(enabled),
-        updatedAt: new Date().toISOString()
-      }, null, 2)], { type: 'application/json' });
-
+      const payload = new Blob([JSON.stringify({ enabled: Boolean(enabled), updatedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
       await client.storage.from(cfg.bucket).remove([popupPath]);
-      const { error } = await client.storage.from(cfg.bucket).upload(popupPath, payload, {
-        cacheControl: '30',
-        contentType: 'application/json',
-        upsert: false
-      });
+      const { error } = await client.storage.from(cfg.bucket).upload(popupPath, payload, { cacheControl: '30', contentType: 'application/json', upsert: false });
       if (error) throw error;
-
-      state = { enabled: Boolean(enabled) };
-      render();
-      setStatus(enabled ? 'Orbit popup is ON again.' : 'Orbit popup is OFF. Visitors will not see it.', 'ok');
-    } catch (error) {
-      toggleBtn.disabled = false;
-      setStatus(error.message || 'Could not change the popup status.', 'error');
-    }
+      state = { enabled: Boolean(enabled) }; render(); setStatus(enabled ? 'Orbit popup is ON again.' : 'Orbit popup is OFF. Visitors will not see it.', 'ok');
+    } catch (error) { toggleBtn.disabled = false; setStatus(error.message || 'Could not change the popup status.', 'error'); }
   }
 
-  toggleBtn.addEventListener('click', () => {
-    const next = !state.enabled;
-    const copy = next
-      ? 'Turn the Orbit popup ON for public visitors?'
-      : 'Turn the Orbit popup OFF? Visitors will not see the automatic popup or its reopen button.';
-    if (!window.confirm(copy)) return;
-    publish(next);
-  });
-
-  client.auth.onAuthStateChange((_event, session) => {
-    if (session && session.user) loadStatus();
-  });
-  client.auth.getSession().then(({ data }) => {
-    if (data && data.session && data.session.user) loadStatus();
-  });
+  toggleBtn.addEventListener('click', () => { const next = !state.enabled; if (!window.confirm(next ? 'Turn the Orbit popup ON for public visitors?' : 'Turn the Orbit popup OFF? Visitors will not see the automatic popup or its reopen button.')) return; publish(next); });
+  client.auth.onAuthStateChange((_event, session) => { if (session && session.user) loadStatus(); });
+  client.auth.getSession().then(({ data }) => { if (data && data.session && data.session.user) loadStatus(); });
 })();
 
-// Load the expanded Mothership control layer without rewriting the existing dashboard.
 (function () {
-  if (document.querySelector('script[data-yfa-mothership-power]')) return;
-  const script = document.createElement('script');
-  script.src = '/mothership-power.js?v=20260830-1';
-  script.defer = true;
-  script.dataset.yfaMothershipPower = 'true';
-  document.head.appendChild(script);
+  const scripts = [
+    ['/mothership-power.js?v=20260830-1', 'yfaMothershipPower'],
+    ['/mothership-complete-admin.js?v=20260830-1', 'yfaMothershipComplete']
+  ];
+  scripts.forEach(([src,key]) => {
+    if (document.querySelector(`script[data-${key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}]`)) return;
+    const script=document.createElement('script');script.src=src;script.defer=true;script.dataset[key]='true';document.head.appendChild(script);
+  });
 })();
