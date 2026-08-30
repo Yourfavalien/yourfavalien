@@ -36,9 +36,9 @@
   // cannot accidentally take the whole website offline.
   const safetyTimer = window.setTimeout(reveal, 4500);
 
-  const statusUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${STATUS_PATH}?v=${Date.now()}`;
+  const statusUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${STATUS_PATH}?v=${Math.floor(Date.now() / 60000)}`;
 
-  fetch(statusUrl, { cache: 'no-store' })
+  fetch(statusUrl)
     .then(response => {
       if (!response.ok) return { enabled: false };
       return response.json();

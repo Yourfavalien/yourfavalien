@@ -8,7 +8,7 @@
   function remoteUrl(slotId) {
     const slot = slotMap.get(slotId);
     if (!slot) return null;
-    return `${publicBase}${slot.path}?v=${Date.now()}`;
+    return `${publicBase}${slot.path}?v=${Math.floor(Date.now() / 60000)}`;
   }
 
   function applyImage(img) {
@@ -51,7 +51,7 @@
     if (!url) return;
 
     try {
-      const response = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+      const response = await fetch(url, { method: 'HEAD' });
       if (!response.ok) return;
       const contentType = (response.headers.get('content-type') || '').toLowerCase();
       let replacement = null;

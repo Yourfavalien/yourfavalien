@@ -4,7 +4,7 @@
 
   const page = document.documentElement.dataset.yfaThemePage || '';
   const defs = (cfg.colorGroups || []).flatMap(group => group.colors || []);
-  const url = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/${cfg.themePath}?v=${Date.now()}`;
+  const url = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/${cfg.themePath}?v=${Math.floor(Date.now() / 60000)}`;
   const validHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
 
   function apply(colors) {
@@ -16,7 +16,7 @@
   }
 
   // Defaults are already in each page's CSS; this only applies saved overrides.
-  fetch(url, { cache: 'no-store' })
+  fetch(url)
     .then(response => {
       if (!response.ok) throw new Error('No saved Mothership theme yet.');
       return response.json();

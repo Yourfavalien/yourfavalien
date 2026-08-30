@@ -3,7 +3,7 @@
   window.__YFA_SITE_BADGE__ = true;
   const cfg=window.YFA_MOTHERSHIP;if(!cfg)return;
   const base=`${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
-  const url=`${base}system/brand-badge.json?v=${Date.now()}`;
+  const url=`${base}system/brand-badge.json?v=${Math.floor(Date.now()/60000)}`;
   const defaults={enabled:true,label:'Official YourFavAlien site',color:'#1d9bf0'};
 
   function css(color){
@@ -39,5 +39,5 @@
     });
   }
 
-  fetch(url,{cache:'no-store'}).then(r=>r.ok?r.json():defaults).then(d=>apply({...defaults,...d})).catch(()=>apply(defaults));
+  fetch(url).then(r=>r.ok?r.json():defaults).then(d=>apply({...defaults,...d})).catch(()=>apply(defaults));
 })();

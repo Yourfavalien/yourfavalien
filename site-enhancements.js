@@ -20,7 +20,7 @@
   async function loadContent() {
     if (!contentUrl) return defaults;
     try {
-      const response = await fetch(`${contentUrl}?v=${Date.now()}`, { cache: 'no-store' });
+      const response = await fetch(`${contentUrl}?v=${Math.floor(Date.now() / 60000)}`);
       if (!response.ok) return defaults;
       const data = await response.json();
       return {

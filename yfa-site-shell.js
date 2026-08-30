@@ -94,8 +94,8 @@
 
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
-      const settingsUrl = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.themePath + '?v=' + Date.now();
-      fetch(settingsUrl, { cache: 'no-store' })
+      const settingsUrl = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.themePath + '?v=' + Math.floor(Date.now() / 60000);
+      fetch(settingsUrl)
         .then(function (response) { return response.ok ? response.json() : null; })
         .then(function (data) { if (data && data.menu) applyMenuSettings(data.menu); })
         .catch(function () {});

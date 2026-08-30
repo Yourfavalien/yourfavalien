@@ -15,7 +15,7 @@
         <div class="yfa-orbit-panel">
           <button class="yfa-orbit-close" type="button" aria-label="Close signup" data-yfa-orbit-close>×</button>
           <div class="yfa-orbit-content">
-            <img class="yfa-orbit-ufo" src="/assets/yfa-popup-ufo.png" alt="Your Fav Alien UFO">
+            <img class="yfa-orbit-ufo" src="/assets/yfa-popup-ufo.webp" alt="Your Fav Alien UFO" decoding="async">
             <div class="yfa-orbit-step is-active" data-yfa-orbit-step="offer">
               <h2 class="yfa-orbit-title" id="yfa-orbit-title">Join the Alien Crew 👽</h2>
               <p class="yfa-orbit-copy">Sign up to stay in the loop with updates, new content, and everything Your Fav Alien. 🛸✨</p>

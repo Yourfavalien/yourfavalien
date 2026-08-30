@@ -28,21 +28,22 @@
     if (document.querySelector(`script[data-${dataKey}]`)) return;
     const script=document.createElement('script');script.src=src;script.defer=true;script.setAttribute(`data-${dataKey}`,'true');document.head.appendChild(script);
   }
-  loadScript('/site-enhancements.js?v=20260830-1','yfa-site-enhancements');
-  loadScript('/site-complete.js?v=20260830-4','yfa-site-complete');
-  loadScript('/site-badge.js?v=20260830-2','yfa-site-badge');
+  loadScript('/site-enhancements.js?v=20260830-2','yfa-site-enhancements');
+  loadScript('/site-complete.js?v=20260830-5','yfa-site-complete');
+  loadScript('/site-badge.js?v=20260830-3','yfa-site-badge');
 
   const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';
-  const statusUrl = `${publicBase}${popupPath}?v=${Date.now()}`;
-  const advancedUrl = `${publicBase}system/site-advanced.json?v=${Date.now()}`;
+  const cacheVersion = Math.floor(Date.now() / 60000);
+  const statusUrl = `${publicBase}${popupPath}?v=${cacheVersion}`;
+  const advancedUrl = `${publicBase}system/site-advanced.json?v=${cacheVersion}`;
 
   function pageKey(){const p=(location.pathname||'/').replace(/\/+$/,'').toLowerCase()||'/';if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k)||p.endsWith('/'+k+'.html'))return k;return'';}
-  function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20260830-4';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
+  function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20260830-5';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
 
   Promise.all([
-    fetch(statusUrl,{cache:'no-store'}).then(r=>r.ok?r.json():{enabled:true}).catch(()=>({enabled:true})),
-    fetch(advancedUrl,{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
+    fetch(statusUrl).then(r=>r.ok?r.json():{enabled:true}).catch(()=>({enabled:true})),
+    fetch(advancedUrl).then(r=>r.ok?r.json():null).catch(()=>null)
   ]).then(([status,advanced])=>{
     if(status?.enabled===false)return;
     const popup=advanced?.popup||{};
