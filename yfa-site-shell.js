@@ -1,22 +1,9 @@
 (function () {
   'use strict';
 
-  const INTRO_KEY = 'yfaIntroSeenV11';
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let introSeen = false;
-
-  try {
-    introSeen = window.sessionStorage.getItem(INTRO_KEY) === '1';
-  } catch (error) {
-    introSeen = false;
-  }
-
-  const shouldPlayIntro = !reduceMotion && !introSeen;
+  const shouldPlayIntro = !reduceMotion;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
-
-  function markIntroSeen() {
-    try { window.sessionStorage.setItem(INTRO_KEY, '1'); } catch (error) { /* Storage can be unavailable. */ }
-  }
 
   function currentPage() {
     const name = window.location.pathname.split('/').pop() || 'index.html';
@@ -78,7 +65,7 @@
     button.setAttribute('aria-label', 'Open site navigation');
     button.setAttribute('aria-controls', nav.id);
     button.setAttribute('aria-expanded', 'false');
-    button.innerHTML = '<img src="/assets/yfa-ufo-menu.svg?v=20260830-2" alt="" aria-hidden="true">';
+    button.innerHTML = '<span class="yfa-menu-mark" aria-hidden="true"><svg class="yfa-menu-ship" viewBox="0 0 54 34"><path class="yfa-ship-dome" d="M19.5 15.6c.5-6.1 3.2-9.4 7.5-9.4 4.5 0 7.1 3.4 7.6 9.4"/><path class="yfa-ship-body" d="M5.5 19.5c5.1-4.2 13-5.7 21.4-5.7 8.6 0 16.5 1.5 21.7 5.7-3.4 5.2-11.9 7.4-21.7 7.4-9.7 0-18-2.2-21.4-7.4Z"/><path class="yfa-ship-line" d="M8.7 20.2c8.7 3.5 27.3 3.5 36.7-.1"/><circle cx="17" cy="21.2" r="1.2"/><circle cx="27.2" cy="22.6" r="1.2"/><circle cx="37.4" cy="21.1" r="1.2"/><path class="yfa-ship-motion" d="M3.6 13.5 0 12m4.2 5.2-3.8.2m49.5-4.1 3.4-1.7m-2.6 5.7 3.2.3"/></svg><span class="yfa-menu-word">menu</span></span>';
 
     document.body.append(backdrop, button);
     positionUfo();
@@ -88,6 +75,8 @@
       open = nextOpen;
       button.setAttribute('aria-expanded', String(open));
       button.setAttribute('aria-label', open ? 'Close site navigation' : 'Open site navigation');
+      const menuWord = button.querySelector('.yfa-menu-word');
+      if (menuWord) menuWord.textContent = open ? 'close' : 'menu';
       nav.setAttribute('aria-hidden', String(!open));
       nav.classList.toggle('is-open', open);
       backdrop.classList.toggle('is-open', open);
@@ -142,8 +131,7 @@
       if (finished) return;
       finished = true;
       window.clearTimeout(failSafe);
-      markIntroSeen();
-      menuButton.classList.add('is-ready');
+      menuButton.classList.add('is-ready', 'is-arriving');
       document.documentElement.classList.remove('yfa-intro-pending');
       overlay.classList.add('is-ending');
       window.setTimeout(function () { overlay.remove(); }, 220);
@@ -176,7 +164,7 @@
       playIntro(menuButton);
     } else {
       document.documentElement.classList.remove('yfa-intro-pending');
-      menuButton.classList.add('is-ready');
+      menuButton.classList.add('is-ready', 'is-arriving');
     }
   }
 
