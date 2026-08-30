@@ -250,7 +250,7 @@
     const powerTab=el('button',{id:'powerTab',class:'dashboard-tab',type:'button',role:'tab'},'Power Tools');powerTab.setAttribute('aria-selected','false');tabs.appendChild(powerTab);
     const view=makeView();controlsView.parentNode.insertBefore(view,chatsView||controlsView.nextSibling);
 
-    const showPower=()=>{document.querySelectorAll('.dashboard-tab').forEach(t=>t.setAttribute('aria-selected',String(t===powerTab)));controlsView.classList.add('hidden');if(chatsView)chatsView.classList.add('hidden');view.classList.remove('hidden');};
+    const showPower=()=>{document.querySelectorAll('.dashboard-tab').forEach(t=>t.setAttribute('aria-selected',String(t===powerTab)));controlsView.classList.add('hidden');if(chatsView)chatsView.classList.add('hidden');document.getElementById('completeView')?.classList.add('hidden');view.classList.remove('hidden');};
     powerTab.onclick=showPower;
     document.getElementById('controlsTab')?.addEventListener('click',()=>{view.classList.add('hidden');powerTab.setAttribute('aria-selected','false');});
     document.getElementById('chatsTab')?.addEventListener('click',()=>{view.classList.add('hidden');powerTab.setAttribute('aria-selected','false');});

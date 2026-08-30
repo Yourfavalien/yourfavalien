@@ -91,7 +91,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20260830-6'
+    ? '/mothership-popup-admin.js?v=20260830-7'
     : '/mothership-popup-gate.js?v=20260830-5';
   script.defer = true;
   document.head.appendChild(script);
