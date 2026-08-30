@@ -3,12 +3,33 @@
   const cfg = window.YFA_MOTHERSHIP;
   if (!cfg) return;
 
+  // Preview mode keeps drafts private: the public loaders receive this browser's
+  // local Mothership drafts instead of the published JSON configuration.
+  if (new URLSearchParams(location.search).get('yfa-preview') === '1' && !window.__YFA_PREVIEW_FETCH__) {
+    window.__YFA_PREVIEW_FETCH__ = true;
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = function(input, init) {
+      const requestUrl = typeof input === 'string' ? input : (input && input.url) || '';
+      let key = '';
+      if (requestUrl.includes('/system/site-content.json')) key = 'yfa-site-content-draft';
+      if (requestUrl.includes('/system/site-advanced.json')) key = 'yfa-site-advanced-draft';
+      if (key) {
+        try {
+          const draft = localStorage.getItem(key);
+          if (draft) return Promise.resolve(new Response(draft, { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }));
+        } catch (error) {}
+      }
+      return nativeFetch(input, init);
+    };
+    const badge=document.createElement('div');badge.textContent='MOTHERSHIP DRAFT PREVIEW';badge.style.cssText='position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:2147483646;background:#090509;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:8px 12px;font:700 9px Space Mono,monospace;letter-spacing:.1em;box-shadow:0 8px 28px rgba(0,0,0,.35)';document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(badge),{once:true});
+  }
+
   function loadScript(src, dataKey) {
     if (document.querySelector(`script[data-${dataKey}]`)) return;
     const script=document.createElement('script');script.src=src;script.defer=true;script.setAttribute(`data-${dataKey}`,'true');document.head.appendChild(script);
   }
   loadScript('/site-enhancements.js?v=20260830-1','yfa-site-enhancements');
-  loadScript('/site-complete.js?v=20260830-1','yfa-site-complete');
+  loadScript('/site-complete.js?v=20260830-2','yfa-site-complete');
 
   const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';
