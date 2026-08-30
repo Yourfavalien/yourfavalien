@@ -7,8 +7,8 @@
   const shouldPlayIntro = isHomePage && !reduceMotion;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
-  if (/\/(about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
-    const cleanPath = normalizedPath.replace(/\.html$/i, '');
+  if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
+    const cleanPath = /\/index\.html$/i.test(normalizedPath) ? (normalizedPath.replace(/\/index\.html$/i, '') || '/') : normalizedPath.replace(/\.html$/i, '');
     window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
   }
 
@@ -60,6 +60,30 @@
     nav.id = 'yfa-site-menu';
     nav.setAttribute('aria-label', nav.getAttribute('aria-label') || 'Primary navigation');
     nav.setAttribute('aria-hidden', 'true');
+
+    const menuDefaults = { layout: 'editorial', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
+    const menuLinks = Array.from(nav.querySelectorAll('a')).slice(0, 4);
+    function applyMenuSettings(settings) {
+      const menu = settings && typeof settings === 'object' ? settings : menuDefaults;
+      const allowedLayouts = ['editorial', 'centered', 'split'];
+      nav.dataset.yfaMenuLayout = allowedLayouts.includes(menu.layout) ? menu.layout : menuDefaults.layout;
+      const labels = menu.labels || {};
+      const keys = ['home', 'socials', 'about', 'contact'];
+      menuLinks.forEach(function (link, index) {
+        const value = String(labels[keys[index]] || menuDefaults.labels[keys[index]]).trim();
+        link.textContent = value.slice(0, 28) || menuDefaults.labels[keys[index]];
+      });
+    }
+    applyMenuSettings(menuDefaults);
+
+    const cfg = window.YFA_MOTHERSHIP;
+    if (cfg && cfg.themePath) {
+      const settingsUrl = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.themePath + '?v=' + Date.now();
+      fetch(settingsUrl, { cache: 'no-store' })
+        .then(function (response) { return response.ok ? response.json() : null; })
+        .then(function (data) { if (data && data.menu) applyMenuSettings(data.menu); })
+        .catch(function () {});
+    }
 
     const backdrop = document.createElement('button');
     backdrop.type = 'button';
