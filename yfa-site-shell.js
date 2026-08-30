@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const INTRO_KEY = 'yfaIntroSeenV10';
+  const INTRO_KEY = 'yfaIntroSeenV11';
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let introSeen = false;
 
@@ -78,7 +78,7 @@
     button.setAttribute('aria-label', 'Open site navigation');
     button.setAttribute('aria-controls', nav.id);
     button.setAttribute('aria-expanded', 'false');
-    button.innerHTML = '<img src="/assets/yfa-ufo-menu.svg?v=20260829-1" alt="" aria-hidden="true">';
+    button.innerHTML = '<img src="/assets/yfa-ufo-menu.svg?v=20260830-2" alt="" aria-hidden="true">';
 
     document.body.append(backdrop, button);
     positionUfo();
@@ -131,17 +131,14 @@
       ? '/assets/yfa-intro-mobile.mp4?v=20260829-1'
       : '/assets/yfa-intro-desktop.mp4?v=20260829-1';
 
-    const skip = document.createElement('button');
-    skip.type = 'button';
-    skip.className = 'yfa-intro__skip';
-    skip.textContent = 'skip intro';
-
-    overlay.append(video, skip);
+    overlay.append(video);
     document.body.append(overlay);
 
     let finished = false;
     let failSafe;
-    function finish() {
+    const introStartedAt = Date.now();
+    const minimumIntroTime = 3000;
+    function completeFinish() {
       if (finished) return;
       finished = true;
       window.clearTimeout(failSafe);
@@ -152,14 +149,18 @@
       window.setTimeout(function () { overlay.remove(); }, 220);
     }
 
-    skip.addEventListener('click', finish);
+    function finish() {
+      if (finished) return;
+      const remaining = minimumIntroTime - (Date.now() - introStartedAt);
+      if (remaining > 0) {
+        window.setTimeout(completeFinish, remaining);
+        return;
+      }
+      completeFinish();
+    }
+
     video.addEventListener('ended', finish, { once: true });
     video.addEventListener('error', finish, { once: true });
-    document.addEventListener('keydown', function skipWithEscape(event) {
-      if (event.key !== 'Escape' || finished) return;
-      document.removeEventListener('keydown', skipWithEscape);
-      finish();
-    });
     const playback = video.play();
     if (playback && typeof playback.catch === 'function') playback.catch(finish);
     failSafe = window.setTimeout(finish, 4500);
