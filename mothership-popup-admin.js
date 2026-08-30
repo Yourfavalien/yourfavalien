@@ -85,7 +85,8 @@
 (function () {
   const scripts = [
     ['/mothership-power.js?v=20260830-1', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20260830-1', 'yfaMothershipComplete']
+    ['/mothership-complete-admin.js?v=20260830-1', 'yfaMothershipComplete'],
+    ['/mothership-badge-admin.js?v=20260830-1', 'yfaMothershipBadge']
   ];
   scripts.forEach(([src,key]) => {
     if (document.querySelector(`script[data-${key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}]`)) return;
