@@ -366,6 +366,18 @@ section#home {
     height: 100dvh;
   }
 }
+#heroVideo.yfa-hero-fallback {
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  transform: none !important;
+  object-fit: cover;
+  object-position: center;
+}
 </style>
 
 <style id="yfa-site-transitions">
@@ -867,7 +879,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <section id="home">
 <div class="hero-bg">
 <div class="stars" id="hero-stars"></div>
-<iframe allow="autoplay; fullscreen; picture-in-picture" frameborder="0" id="heroVideo" loading="eager" src="https://player.vimeo.com/video/1217454530?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0" title="Yourfavalien homepage video"></iframe>
+<img alt="YourFavAlien" class="yfa-hero-fallback" decoding="async" fetchpriority="high" id="heroVideo" src="assets/home-fallback.webp">
 <div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);z-index:1;"></div>
 <div class="hero-logo">
 <span class="logo-your">YOUR</span>
