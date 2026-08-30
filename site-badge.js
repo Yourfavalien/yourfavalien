@@ -14,10 +14,10 @@
   }
 
   function score(el){
-    const text=(el.textContent||'').trim().toLowerCase().replace(/\s+/g,' ');
+    const text=(el.textContent||'').trim().toLowerCase().replace(/^@/,'').replace(/\s+/g,' ');
     if(!text)return 0;
-    if(text==='yourfavalien'||text==='your fav alien')return 100;
-    if(text.includes('yourfavalien')||text.includes('your fav alien'))return 70;
+    if(text==='yourfavalien'||text==='yourrfavalien'||text==='your fav alien')return 100;
+    if(text.includes('yourfavalien')||text.includes('yourrfavalien')||text.includes('your fav alien'))return 70;
     return 0;
   }
 
@@ -25,8 +25,9 @@
     if(data.enabled===false)return;
     const color=/^#[0-9a-f]{6}$/i.test(data.color||'')?data.color:defaults.color;
     css(color);
+    if(/^\/mothership(?:\/|$)/i.test(location.pathname))return;
     const candidates=[...document.querySelectorAll('h1,h2,.brand,.logo,.wordmark,[class*="brand"],[class*="logo"]')]
-      .filter(el=>!el.closest('#yfa-orbit-popup-host')&&!el.closest('/mothership'));
+      .filter(el=>!el.closest('#yfa-orbit-popup-host'));
     const ranked=candidates.map(el=>({el,s:score(el)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
     const seen=new Set();
     ranked.slice(0,3).forEach(({el})=>{

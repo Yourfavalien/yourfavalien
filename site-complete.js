@@ -4,7 +4,7 @@
   const cfg=window.YFA_MOTHERSHIP;if(!cfg)return;
   const base=`${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const advancedUrl=`${base}system/site-advanced.json?v=${Date.now()}`;
-  const pageKey=()=>{const p=(location.pathname||'/').toLowerCase();if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k+'.html'))return k;return'';};
+  const pageKey=()=>{const p=(location.pathname||'/').replace(/\/+$/,'').toLowerCase()||'/';if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k)||p.endsWith('/'+k+'.html'))return k;return'';};
   const safeFont=f=>String(f||'').replace(/["'<>;]/g,'');
 
   async function load(){try{const r=await fetch(advancedUrl,{cache:'no-store'});return r.ok?await r.json():null;}catch{return null;}}
