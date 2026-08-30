@@ -76,6 +76,11 @@
     }
     applyMenuSettings(menuDefaults);
 
+    const legal = document.createElement('div');
+    legal.className = 'yfa-menu-legal';
+    legal.innerHTML = '© 2026 YourFavAlien · All rights reserved · <a href="privacy.html">Privacy</a>';
+    nav.appendChild(legal);
+
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
       const settingsUrl = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.themePath + '?v=' + Date.now();
