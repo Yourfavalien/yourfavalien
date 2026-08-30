@@ -17,6 +17,16 @@ window.YFA_MOTHERSHIP = {
   ],
   colorGroups: [
     {
+      group: 'Site Menu',
+      note: 'Controls the full-screen UFO menu on every active website page.',
+      colors: [
+        { id:'menu-bg', label:'Menu background', cssVar:'--yfa-menu-bg', default:'#0a0507', pages:['home','about','contact','privacy','socials'] },
+        { id:'menu-text', label:'Menu lettering', cssVar:'--yfa-menu-text', default:'#f0ece8', pages:['home','about','contact','privacy','socials'] },
+        { id:'menu-active', label:'Current page', cssVar:'--yfa-menu-active', default:'#b5175e', pages:['home','about','contact','privacy','socials'] },
+        { id:'menu-hover', label:'Hover / focus', cssVar:'--yfa-menu-hover', default:'#4de8d8', pages:['home','about','contact','privacy','socials'] }
+      ]
+    },
+    {
       group: 'Main Site',
       note: 'These colors are shared by the main Home, About, Contact, and Privacy design.',
       colors: [
@@ -81,7 +91,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20260819-1'
+    ? '/mothership-popup-admin.js?v=20260830-6'
     : '/mothership-popup-gate.js?v=20260825-3';
   script.defer = true;
   document.head.appendChild(script);

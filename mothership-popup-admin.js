@@ -48,7 +48,9 @@
     <div id="yfaPopupStatus" class="status" aria-live="polite"></div>
     <div class="yfa-popup-note">ON means the popup behaves normally. OFF globally hides it until you switch it back on.</div>
   `;
-  topbar.insertAdjacentElement('afterend', panel);
+  const statusAnchor = document.getElementById('siteStatus');
+  if (statusAnchor) statusAnchor.insertAdjacentElement('afterend', panel);
+  else topbar.insertAdjacentElement('afterend', panel);
 
   const badge = document.getElementById('yfaPopupBadge');
   const toggleBtn = document.getElementById('yfaPopupToggle');

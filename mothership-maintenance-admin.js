@@ -57,7 +57,9 @@
     <div id="yfaMaintenanceStatus" class="status" aria-live="polite"></div>
     <div class="yfa-maint-warning">Preview access follows your Mothership login in this browser. Use a private/incognito window to check exactly what public visitors see.</div>
   `;
-  topbar.insertAdjacentElement('afterend', panel);
+  const statusAnchor = document.getElementById('siteStatus');
+  if (statusAnchor) statusAnchor.insertAdjacentElement('afterend', panel);
+  else topbar.insertAdjacentElement('afterend', panel);
 
   const badge = document.getElementById('yfaMaintenanceBadge');
   const messageInput = document.getElementById('yfaMaintenanceMessage');
