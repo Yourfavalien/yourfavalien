@@ -2,6 +2,7 @@
 :root { --yfa-ufo-x:calc(100vw - 32px); --yfa-ufo-y:74px; --yfa-menu-bg:#0a0507; --yfa-menu-text:#f0ece8; --yfa-menu-active:#b5175e; --yfa-menu-hover:#4de8d8; }
 html.yfa-intro-pending,html.yfa-intro-pending body { background:#050205 !important; }
 html.yfa-intro-pending body > *:not(.yfa-intro) { visibility:hidden; }
+body > nav:not(.yfa-menu-panel) { visibility:hidden!important;opacity:0!important;pointer-events:none!important; }
 .yfa-intro { position:fixed;inset:0;z-index:2147483000;overflow:hidden;visibility:visible!important;background:#050205;opacity:1;transition:opacity 180ms ease-out; }
 .yfa-intro.is-ending { opacity:0;pointer-events:none; }
 .yfa-intro__video { display:block;width:100%;height:100%;max-width:none!important;object-fit:cover;object-position:center;background:#050205; }

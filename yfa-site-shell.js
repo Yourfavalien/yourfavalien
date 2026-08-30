@@ -203,7 +203,6 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize, { once: true });
     window.addEventListener('load', initialize, { once: true });
-    window.setTimeout(initialize, 0);
   } else {
     initialize();
   }
