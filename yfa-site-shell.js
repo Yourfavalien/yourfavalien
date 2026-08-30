@@ -7,8 +7,14 @@
   const shouldPlayIntro = isHomePage && !reduceMotion;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
+  if (/\/(about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
+    const cleanPath = normalizedPath.replace(/\.html$/i, '');
+    window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
+  }
+
   function currentPage() {
-    const name = window.location.pathname.split('/').pop() || 'index.html';
+    let name = window.location.pathname.split('/').pop() || 'index.html';
+    if (!name.includes('.')) name += '.html';
     return name.toLowerCase();
   }
 
@@ -178,3 +184,4 @@
     initialize();
   }
 })();
+
