@@ -1,10 +1,9 @@
 (function () {
   'use strict';
 
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
-  const shouldPlayIntro = isHomePage && !reduceMotion;
+  const shouldPlayIntro = isHomePage;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
 
   if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
@@ -157,6 +156,7 @@
     const video = document.createElement('video');
     video.className = 'yfa-intro__video';
     video.autoplay = true;
+    video.controls = false;
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
@@ -164,6 +164,7 @@
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x-webkit-airplay', 'deny');
     video.preload = 'auto';
     video.disablePictureInPicture = true;
     video.setAttribute('aria-hidden', 'true');
@@ -202,11 +203,27 @@
     video.addEventListener('error', finish, { once: true });
     function startPlayback() {
       const playback = video.play();
-      if (playback && typeof playback.catch === 'function') playback.catch(function () {});
+      if (playback && typeof playback.catch === 'function') {
+        playback.catch(function () {
+          video.muted = true;
+          video.defaultMuted = true;
+        });
+      }
     }
     video.addEventListener('loadedmetadata', startPlayback, { once: true });
+    video.addEventListener('loadeddata', startPlayback, { once: true });
+    video.addEventListener('canplay', startPlayback, { once: true });
+    document.addEventListener('visibilitychange', function retryVisibleIntro() {
+      if (!document.hidden && !finished && video.paused) startPlayback();
+    }, { once: true });
+    window.addEventListener('pointerdown', function retryInteractiveIntro() {
+      if (!finished && video.paused) startPlayback();
+    }, { once: true, passive: true });
+    video.load();
     startPlayback();
-    failSafe = window.setTimeout(finish, 2800);
+    window.setTimeout(startPlayback, 120);
+    window.setTimeout(startPlayback, 450);
+    failSafe = window.setTimeout(finish, 5000);
   }
 
   let initialized = false;
