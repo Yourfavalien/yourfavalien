@@ -162,11 +162,16 @@
     video.controls = false;
     video.muted = true;
     video.defaultMuted = true;
+    video.volume = 0;
     video.playsInline = true;
+    video.disableRemotePlayback = true;
+    video.removeAttribute('controls');
     video.setAttribute('autoplay', '');
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('disableRemotePlayback', '');
+    video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback noplaybackrate');
     video.setAttribute('x-webkit-airplay', 'deny');
     video.preload = 'auto';
     video.disablePictureInPicture = true;
@@ -261,12 +266,23 @@
     video.addEventListener('error', function () {
       window.setTimeout(completeFinish, 600);
     }, { once: true });
+    function enforceMobileAutoplay() {
+      video.controls = false;
+      video.removeAttribute('controls');
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.playsInline = true;
+    }
     function startPlayback() {
+      enforceMobileAutoplay();
       const playback = video.play();
       if (playback && typeof playback.catch === 'function') {
         playback.catch(function () {
-          video.muted = true;
-          video.defaultMuted = true;
+          enforceMobileAutoplay();
+          window.setTimeout(function () {
+            if (!finished && video.paused) video.play().catch(function () {});
+          }, 180);
         });
       }
     }
@@ -287,6 +303,9 @@
     window.addEventListener('pointerdown', function retryInteractiveIntro() {
       if (!finished && video.paused) startPlayback();
     }, { once: true, passive: true });
+    window.addEventListener('touchstart', function retryTouchIntro() {
+      if (!finished && video.paused) startPlayback();
+    }, { once: true, passive: true, capture: true });
     window.addEventListener('resize', function () {
       const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 3.2;
       placeFlightShip(video.currentTime / duration);
