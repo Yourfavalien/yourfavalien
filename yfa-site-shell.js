@@ -172,17 +172,28 @@
       ? '/assets/yfa-intro-mobile.mp4?v=20260829-1'
       : '/assets/yfa-intro-desktop.mp4?v=20260829-1';
 
-    overlay.append(video);
+    const goat = document.createElement('img');
+    goat.className = 'yfa-intro__goat';
+    goat.alt = '';
+    goat.setAttribute('aria-hidden', 'true');
+    goat.decoding = 'async';
+    goat.src = window.matchMedia('(max-width: 767px)').matches
+      ? '/assets/yfa-goat-reveal-mobile.jpg?v=20260831-1'
+      : '/assets/yfa-goat-reveal-desktop.jpg?v=20260831-1';
+
+    overlay.append(video, goat);
     document.body.append(overlay);
 
     let finished = false;
     let failSafe;
+    let revealTimer;
     const introStartedAt = Date.now();
     const minimumIntroTime = 1200;
     function completeFinish() {
       if (finished) return;
       finished = true;
       window.clearTimeout(failSafe);
+      window.clearTimeout(revealTimer);
       menuButton.classList.add('is-ready', 'is-arriving');
       document.documentElement.classList.remove('yfa-intro-pending');
       overlay.classList.add('is-ending');
@@ -201,6 +212,13 @@
 
     video.addEventListener('ended', finish, { once: true });
     video.addEventListener('error', finish, { once: true });
+    video.addEventListener('playing', function scheduleGoatReveal() {
+      if (revealTimer) return;
+      revealTimer = window.setTimeout(function () { goat.classList.add('is-visible'); }, 1950);
+    }, { once: true });
+    video.addEventListener('timeupdate', function revealGoatFallback() {
+      if (video.currentTime >= 1.95) goat.classList.add('is-visible');
+    });
     function startPlayback() {
       const playback = video.play();
       if (playback && typeof playback.catch === 'function') {
