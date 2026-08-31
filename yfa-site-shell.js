@@ -5,6 +5,9 @@
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
   const shouldPlayIntro = isHomePage;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
+  window.addEventListener('pageshow', function (event) {
+    if (shouldPlayIntro && event.persisted) window.location.reload();
+  }, { once: true });
 
   if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
     const cleanPath = /\/index\.html$/i.test(normalizedPath) ? (normalizedPath.replace(/\/index\.html$/i, '') || '/') : normalizedPath.replace(/\.html$/i, '');
@@ -169,38 +172,95 @@
     video.disablePictureInPicture = true;
     video.setAttribute('aria-hidden', 'true');
     video.src = window.matchMedia('(max-width: 767px)').matches
-      ? '/assets/yfa-intro-mobile.mp4?v=20260831-2'
-      : '/assets/yfa-intro-desktop.mp4?v=20260831-2';
+      ? '/assets/yfa-intro-mobile.mp4?v=20260831-3'
+      : '/assets/yfa-intro-desktop.mp4?v=20260831-3';
 
-    overlay.append(video);
+    const menuShip = menuButton.querySelector('.yfa-menu-ship');
+    const flightShip = menuShip.cloneNode(true);
+    flightShip.classList.add('yfa-intro__ship');
+    flightShip.setAttribute('aria-hidden', 'true');
+
+    overlay.append(video, flightShip);
     document.body.append(overlay);
 
     let finished = false;
-    let failSafe;
-    const introStartedAt = Date.now();
-    const minimumIntroTime = 1200;
+    let playbackStarted = false;
+    let animationFrame = 0;
+    let startupTimer = 0;
+    let stallTimer = 0;
+
+    function ease(value) {
+      return 1 - Math.pow(1 - value, 3);
+    }
+
+    function shipTarget() {
+      const rect = menuShip.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    }
+
+    function placeFlightShip(progress) {
+      const p = Math.max(0, Math.min(1, progress || 0));
+      const width = flightShip.getBoundingClientRect().width || (window.innerWidth < 768 ? 39 : 44);
+      const height = flightShip.getBoundingClientRect().height || (window.innerWidth < 768 ? 27 : 30);
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const target = shipTarget();
+      let x;
+      let y;
+      let rotation;
+      let scale;
+
+      if (p < .68) {
+        const orbit = p / .68;
+        const angle = -2.7 + orbit * Math.PI * 3.1;
+        x = centerX + Math.cos(angle) * window.innerWidth * (.27 - orbit * .08);
+        y = centerY + Math.sin(angle) * window.innerHeight * (.22 - orbit * .05);
+        rotation = Math.sin(angle) * 14;
+        scale = .82 + orbit * .18;
+      } else {
+        const q = ease((p - .68) / .32);
+        const angle = -2.7 + Math.PI * 3.1;
+        const startX = centerX + Math.cos(angle) * window.innerWidth * .19;
+        const startY = centerY + Math.sin(angle) * window.innerHeight * .17;
+        const controlX = window.innerWidth * .78;
+        const controlY = Math.min(startY, target.y) - window.innerHeight * .12;
+        const inverse = 1 - q;
+        x = inverse * inverse * startX + 2 * inverse * q * controlX + q * q * target.x;
+        y = inverse * inverse * startY + 2 * inverse * q * controlY + q * q * target.y;
+        rotation = (1 - q) * -11;
+        scale = 1;
+      }
+
+      flightShip.style.transform = 'translate3d(' + (x - width / 2).toFixed(2) + 'px,' + (y - height / 2).toFixed(2) + 'px,0) rotate(' + rotation.toFixed(2) + 'deg) scale(' + scale.toFixed(3) + ')';
+    }
+
+    function animateFlight() {
+      if (finished) return;
+      const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 3.2;
+      placeFlightShip(video.currentTime / duration);
+      animationFrame = window.requestAnimationFrame(animateFlight);
+    }
+
     function completeFinish() {
       if (finished) return;
       finished = true;
-      window.clearTimeout(failSafe);
-      menuButton.classList.add('is-ready', 'is-arriving');
+      window.clearTimeout(startupTimer);
+      window.clearInterval(stallTimer);
+      window.cancelAnimationFrame(animationFrame);
+      placeFlightShip(1);
+      menuButton.classList.add('is-ready', 'is-docked');
       document.documentElement.classList.remove('yfa-intro-pending');
       overlay.classList.add('is-ending');
-      window.setTimeout(function () { overlay.remove(); }, 220);
+      window.setTimeout(function () { overlay.remove(); }, 260);
     }
 
-    function finish() {
-      if (finished) return;
-      const remaining = minimumIntroTime - (Date.now() - introStartedAt);
-      if (remaining > 0) {
-        window.setTimeout(completeFinish, remaining);
-        return;
-      }
-      completeFinish();
-    }
-
-    video.addEventListener('ended', finish, { once: true });
-    video.addEventListener('error', finish, { once: true });
+    video.addEventListener('ended', function () {
+      placeFlightShip(1);
+      window.setTimeout(completeFinish, 480);
+    }, { once: true });
+    video.addEventListener('error', function () {
+      window.setTimeout(completeFinish, 600);
+    }, { once: true });
     function startPlayback() {
       const playback = video.play();
       if (playback && typeof playback.catch === 'function') {
@@ -210,20 +270,40 @@
         });
       }
     }
-    video.addEventListener('loadedmetadata', startPlayback, { once: true });
+    video.addEventListener('loadedmetadata', function () {
+      video.currentTime = 0;
+      placeFlightShip(0);
+      startPlayback();
+    }, { once: true });
     video.addEventListener('loadeddata', startPlayback, { once: true });
     video.addEventListener('canplay', startPlayback, { once: true });
+    video.addEventListener('playing', function () {
+      playbackStarted = true;
+      window.clearTimeout(startupTimer);
+    });
     document.addEventListener('visibilitychange', function retryVisibleIntro() {
       if (!document.hidden && !finished && video.paused) startPlayback();
-    }, { once: true });
+    });
     window.addEventListener('pointerdown', function retryInteractiveIntro() {
       if (!finished && video.paused) startPlayback();
     }, { once: true, passive: true });
+    window.addEventListener('resize', function () {
+      const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 3.2;
+      placeFlightShip(video.currentTime / duration);
+    }, { passive: true });
+
+    placeFlightShip(0);
+    animationFrame = window.requestAnimationFrame(animateFlight);
     video.load();
     startPlayback();
     window.setTimeout(startPlayback, 120);
     window.setTimeout(startPlayback, 450);
-    failSafe = window.setTimeout(finish, 5000);
+    startupTimer = window.setTimeout(function () {
+      if (!playbackStarted) completeFinish();
+    }, 15000);
+    stallTimer = window.setInterval(function () {
+      if (!finished && playbackStarted && !document.hidden && video.paused && !video.ended) startPlayback();
+    }, 1000);
   }
 
   let initialized = false;
