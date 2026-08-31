@@ -169,8 +169,8 @@
     video.disablePictureInPicture = true;
     video.setAttribute('aria-hidden', 'true');
     video.src = window.matchMedia('(max-width: 767px)').matches
-      ? '/assets/yfa-intro-mobile.mp4?v=20260829-1'
-      : '/assets/yfa-intro-desktop.mp4?v=20260829-1';
+      ? '/assets/yfa-intro-mobile.mp4?v=20260831-2'
+      : '/assets/yfa-intro-desktop.mp4?v=20260831-2';
 
     overlay.append(video);
     document.body.append(overlay);
