@@ -186,3 +186,126 @@ button, input, textarea, select { font-family: inherit; }
   .dashboard-view { padding: 22px 16px; }
   .section-head { align-items: flex-start; }
 }
+
+/* Normalize every legacy module that is injected after the page loads. */
+.dashboard,
+.dashboard * { color: var(--ink); }
+.dashboard .eyebrow { color: var(--magenta); }
+.dashboard .btn:not(.secondary) { color: white !important; }
+.dashboard .section-copy,
+.dashboard .status,
+.dashboard .user,
+.dashboard .slot-path,
+.dashboard .color-note,
+.dashboard .training-help,
+.dashboard .chat-list-empty,
+.dashboard .chat-detail-title,
+.dashboard .yfa-maint-copy,
+.dashboard .yfa-maint-warning,
+.dashboard .yfa-popup-copy,
+.dashboard .yfa-popup-note,
+.dashboard .yfa-badge-copy,
+.dashboard .power-copy,
+.dashboard .power-muted,
+.dashboard .c-copy,
+.dashboard .c-muted { color: var(--muted) !important; }
+
+#yfaMaintenanceControl,
+#yfaPopupControl,
+#yfaBadgeControl,
+.power-section,
+.c-section {
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  background: white !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
+#yfaMaintenanceControl,
+#yfaPopupControl,
+#yfaBadgeControl { padding: 22px !important; }
+
+.yfa-maint-field textarea,
+.yfa-badge-field input,
+.power-field input,
+.power-field textarea,
+.power-field select,
+.power-media input,
+.c-field input,
+.c-field textarea,
+.c-field select,
+.c-nav-item input {
+  border: 1px solid var(--line) !important;
+  background: white !important;
+  color: var(--ink) !important;
+  font-family: inherit !important;
+}
+
+.power-view,
+.complete-view { gap: 18px !important; }
+.power-head h3,
+.c-head h3 {
+  color: var(--ink) !important;
+  font-family: inherit !important;
+  font-weight: 750 !important;
+  letter-spacing: -.02em;
+}
+.power-card,
+.power-status-card,
+.power-media,
+.c-card,
+.c-status {
+  border-color: var(--line) !important;
+  background: var(--soft) !important;
+  color: var(--ink) !important;
+}
+.power-mini,
+.c-mini {
+  border-color: #cfc5cb !important;
+  background: white !important;
+  color: var(--ink) !important;
+  font-family: inherit !important;
+}
+.power-mini.danger,
+.c-mini.danger { color: var(--bad) !important; border-color: #e8bcc4 !important; }
+.power-link,
+.power-code { color: var(--magenta) !important; }
+.power-badge,
+.c-badge { background: #e5f4ec !important; color: var(--ok) !important; }
+.power-badge.draft,
+.c-badge.warn { background: #fff1cc !important; color: #7d5700 !important; }
+.power-sticky,
+.c-sticky {
+  border: 1px solid #d4c8cf !important;
+  background: rgba(255,255,255,.96) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 14px 34px rgba(36,16,29,.12) !important;
+}
+.c-page-tabs button[aria-pressed="true"] { color: white !important; }
+.yfa-maint-badge,
+.yfa-popup-badge,
+.yfa-badge-preview { color: var(--ink) !important; background: var(--soft) !important; }
+.status.ok { color: var(--ok) !important; }
+.status.error { color: var(--bad) !important; }
+
+/* A clearer Pixpa-style workspace rhythm. */
+.dashboard-view > .section-head:not(:first-child) { padding-top: 4px; }
+.directory-target { animation: directoryFlash .9s ease; }
+@keyframes directoryFlash {
+  0%, 100% { outline: 0 solid rgba(169,22,89,0); }
+  35% { outline: 5px solid rgba(169,22,89,.13); outline-offset: 8px; }
+}
+.power-view > .power-section,
+.complete-view > .c-section { padding: 24px !important; }
+.power-status-grid,
+.c-status-grid { gap: 12px !important; }
+.power-status-card,
+.c-status { min-height: 82px; }
+
+@media (max-width: 760px) {
+  #yfaMaintenanceControl,
+  #yfaPopupControl,
+  #yfaBadgeControl,
+  .power-view > .power-section,
+  .complete-view > .c-section { padding: 18px !important; }
+}

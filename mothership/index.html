@@ -27,7 +27,7 @@
     .chat-console{display:grid;grid-template-columns:minmax(220px,32%) minmax(0,1fr);min-height:540px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#090509}.chat-list{border-right:1px solid var(--line);overflow:auto}.chat-list-empty{padding:22px;color:var(--muted);font-size:11px;line-height:1.6}.chat-card{display:block;width:100%;padding:14px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;cursor:pointer}.chat-card:hover,.chat-card.active{background:rgba(181,23,94,.13)}.chat-card-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700}.chat-card-time{color:var(--muted);font-size:9px}.mode-badge{display:inline-block;margin-top:8px;padding:4px 7px;border-radius:999px;background:rgba(77,232,216,.1);color:#4de8d8;font-size:8px;text-transform:uppercase}.mode-badge.human{background:rgba(125,255,155,.1);color:#7dff9b}.chat-detail{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0}.chat-detail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}.chat-detail-title{font-size:11px;color:var(--muted)}.chat-messages{padding:16px;overflow:auto}.crew-message{max-width:82%;margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#171018;font-size:11px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.crew-message.visitor{margin-left:auto;background:#351329}.crew-message.ayden{border-color:rgba(125,255,155,.35);background:#102016}.crew-sender{display:block;margin-bottom:4px;color:var(--muted);font-size:8px;text-transform:uppercase}.chat-reply{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:13px;border-top:1px solid var(--line)}.chat-reply textarea{min-height:48px;max-height:120px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#050305;color:#fff;padding:11px;font:inherit;font-size:11px;outline:none}.chat-reply textarea:focus{border-color:#d65f96}.chat-reply .status{grid-column:1/-1;margin:0}
     @media(max-width:700px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.dashboard-tabs{width:100%}.dashboard-tab{flex:1;padding:10px 8px}.control-directory{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-presets,.menu-label-grid{grid-template-columns:1fr}.grid,.training-grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}.chat-console{grid-template-columns:1fr;min-height:680px}.chat-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.chat-detail{min-height:450px}}
   </style>
-  <link rel="stylesheet" href="./dashboard-redesign.css?v=20260901-1">
+  <link rel="stylesheet" href="./dashboard-redesign.css?v=20260901-2">
 </head>
 <body>
   <main class="shell">
@@ -748,5 +748,6 @@
     })();
   </script>
   <script src="../mothership-maintenance-admin.js?v=20260830-6"></script>
+  <script src="./dashboard-redesign.js?v=20260901-2"></script>
 </body>
 </html>
