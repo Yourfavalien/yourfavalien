@@ -41,7 +41,7 @@
   function normalizeTabs() {
     document.querySelectorAll('.dashboard-tab').forEach(tab => {
       const label = friendlyTabNames.get(tab.id);
-      if (label) tab.textContent = label;
+      if (label && tab.textContent !== label) tab.textContent = label;
     });
   }
 
