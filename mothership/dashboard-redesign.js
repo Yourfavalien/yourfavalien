@@ -3,8 +3,31 @@
   const chatsTab = document.getElementById('chatsTab');
   const directory = document.querySelector('.control-directory');
 
-  // The separate Media Kit was rebuilt, so the old Mothership note is retired.
-  document.querySelector('.media-note')?.remove();
+  function scrubRetiredMediaKit() {
+    document.querySelector('.media-note')?.remove();
+
+    document.querySelectorAll('#groups > section').forEach(section => {
+      const heading = section.querySelector('.group-title');
+      if ((heading?.textContent || '').trim().toLowerCase() === 'media kit') section.remove();
+    });
+
+    document.querySelectorAll('#colorGroups > .color-group').forEach(section => {
+      const heading = section.querySelector('h3');
+      if ((heading?.textContent || '').trim().toLowerCase() === 'media kit') section.remove();
+    });
+
+    document.querySelectorAll('.slot').forEach(card => {
+      const name = (card.querySelector('.slot-name')?.textContent || '').trim().toLowerCase();
+      const path = (card.querySelector('.slot-path')?.textContent || '').trim().toLowerCase();
+      if (name.includes('media kit') || path.includes('media-kit')) card.remove();
+    });
+  }
+
+  scrubRetiredMediaKit();
+  new MutationObserver(scrubRetiredMediaKit).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 
   function openSection(link) {
     const selector = link.getAttribute('href');
