@@ -3,6 +3,9 @@
   const chatsTab = document.getElementById('chatsTab');
   const directory = document.querySelector('.control-directory');
 
+  // The separate Media Kit was rebuilt, so the old Mothership note is retired.
+  document.querySelector('.media-note')?.remove();
+
   function openSection(link) {
     const selector = link.getAttribute('href');
     if (!selector || !selector.startsWith('#')) return;
