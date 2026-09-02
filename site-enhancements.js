@@ -140,7 +140,8 @@
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
       }
-      nav.appendChild(a);
+      const footer = nav.querySelector('.yfa-menu-legal');
+      nav.insertBefore(a, footer || null);
     });
   }
 
@@ -216,3 +217,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
+
