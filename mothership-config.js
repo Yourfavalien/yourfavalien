@@ -12,8 +12,7 @@ window.YFA_MOTHERSHIP = {
     { id: 'socials-tiktok-profile', group: 'Socials', label: 'TikTok profile photo', path: 'slots/socials-tiktok-profile' },
     { id: 'socials-instagram-profile', group: 'Socials', label: 'Instagram profile photo', path: 'slots/socials-instagram-profile' },
     { id: 'socials-snapchat-profile', group: 'Socials', label: 'Snapchat profile photo', path: 'slots/socials-snapchat-profile' },
-    { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' },
-    { id: 'media-kit-banner', group: 'Media Kit', label: 'Media Kit banner', path: 'slots/media-kit-banner' }
+    { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' }
   ],
   colorGroups: [
     {
@@ -64,20 +63,7 @@ window.YFA_MOTHERSHIP = {
         { id:'socials-facebook', label:'Facebook button', cssVar:'--yfa-social-facebook', default:'#1877f2', pages:['socials'] },
         { id:'socials-snapchat', label:'Snapchat accent', cssVar:'--yfa-social-snapchat', default:'#fffc00', pages:['socials'] },
         { id:'socials-pinterest', label:'Pinterest button', cssVar:'--yfa-social-pinterest', default:'#e60023', pages:['socials'] },
-        { id:'socials-media-warm', label:'Media Kit warm tone', cssVar:'--yfa-social-media-warm', default:'#8e4e36', pages:['socials'] }
-      ]
-    },
-    {
-      group: 'Media Kit',
-      note: 'Controls the separate YourFavAlien Media Kit site.',
-      colors: [
-        { id:'media-bg', label:'Lilac background', cssVar:'--lilac', default:'#c7b6c3', pages:['media-kit'] },
-        { id:'media-ink', label:'Ink / text', cssVar:'--ink', default:'#191817', pages:['media-kit'] },
-        { id:'media-paper', label:'Paper / light cards', cssVar:'--paper', default:'#ece4e8', pages:['media-kit'] },
-        { id:'media-contact', label:'Partnership section', cssVar:'--yfa-media-contact', default:'#8e4e36', pages:['media-kit'] },
-        { id:'media-contact-text', label:'Partnership text', cssVar:'--yfa-media-contact-text', default:'#f2e9e4', pages:['media-kit'] },
-        { id:'media-available', label:'Available status dot', cssVar:'--yfa-media-available', default:'#2fae4e', pages:['media-kit'] },
-        { id:'media-modal', label:'Form / modal background', cssVar:'--yfa-media-modal', default:'#f3ecef', pages:['media-kit'] }
+        { id:'socials-media-warm', label:'Warm tone', cssVar:'--yfa-social-media-warm', default:'#8e4e36', pages:['socials'] }
       ]
     }
   ]
