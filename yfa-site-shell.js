@@ -64,16 +64,52 @@
     nav.setAttribute('aria-hidden', 'true');
 
     const menuDefaults = { layout: 'editorial', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
-    const menuLinks = Array.from(nav.querySelectorAll('a')).slice(0, 4);
+    const corePages = [
+      { key: 'home', files: ['/', 'index', 'index.html'] },
+      { key: 'socials', files: ['socials', 'socials.html'] },
+      { key: 'about', files: ['about', 'about.html'] },
+      { key: 'contact', files: ['contact', 'contact.html'] }
+    ];
+    function linkPage(link) {
+      try {
+        const path = new URL(link.getAttribute('href') || '', window.location.href).pathname.replace(/\/+$/, '');
+        return (path.split('/').pop() || '/').toLowerCase();
+      } catch (error) {
+        return '';
+      }
+    }
+    function corePageFor(link) {
+      const page = linkPage(link);
+      return corePages.find(function (item) { return item.files.includes(page); });
+    }
+    function enforceMenuOrder() {
+      const links = Array.from(nav.children).filter(function (child) {
+        return child.tagName === 'A' && !child.closest('.yfa-menu-legal');
+      });
+      const orderedCore = corePages.map(function (item) {
+        return links.find(function (link) { return corePageFor(link)?.key === item.key; });
+      }).filter(Boolean);
+      const extras = links.filter(function (link) { return !corePageFor(link); });
+      const footer = nav.querySelector('.yfa-menu-legal');
+      const desired = orderedCore.concat(extras);
+      const alreadyOrdered = desired.length === links.length && desired.every(function (link, index) {
+        return link === links[index];
+      });
+      if (alreadyOrdered && (!footer || footer === nav.lastElementChild)) return;
+      desired.forEach(function (link) { nav.appendChild(link); });
+      if (footer) nav.appendChild(footer);
+    }
+    enforceMenuOrder();
     function applyMenuSettings(settings) {
       const menu = settings && typeof settings === 'object' ? settings : menuDefaults;
       const allowedLayouts = ['editorial', 'centered', 'split'];
       nav.dataset.yfaMenuLayout = allowedLayouts.includes(menu.layout) ? menu.layout : menuDefaults.layout;
       const labels = menu.labels || {};
-      const keys = ['home', 'socials', 'about', 'contact'];
-      menuLinks.forEach(function (link, index) {
-        const value = String(labels[keys[index]] || menuDefaults.labels[keys[index]]).trim();
-        link.textContent = value.slice(0, 28) || menuDefaults.labels[keys[index]];
+      Array.from(nav.children).filter(function (child) { return child.tagName === 'A'; }).forEach(function (link) {
+        const page = corePageFor(link);
+        if (!page) return;
+        const value = String(labels[page.key] || menuDefaults.labels[page.key]).trim();
+        link.textContent = value.slice(0, 28) || menuDefaults.labels[page.key];
       });
     }
     applyMenuSettings(menuDefaults);
@@ -89,6 +125,7 @@
       if (privacyLink.textContent !== 'Privacy') privacyLink.textContent = 'Privacy';
       if (privacyLink.hidden) privacyLink.hidden = false;
       if (privacyLink.style.display === 'none') privacyLink.style.removeProperty('display');
+      enforceMenuOrder();
     }
     new MutationObserver(keepPrivacyInFooter).observe(nav, { childList: true, subtree: true });
 
@@ -383,4 +420,5 @@
     initialize();
   }
 })();
+
 
