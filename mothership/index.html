@@ -15,7 +15,7 @@
     .panel{border:1px solid var(--line);background:rgba(18,10,17,.9);border-radius:24px;padding:clamp(18px,4vw,34px);box-shadow:0 24px 80px rgba(0,0,0,.35);backdrop-filter:blur(14px)}
     .login{max-width:520px;margin:10vh auto 0}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:#d38cad;font-size:11px}.login h2,.dashboard h2{font-family:'Major Mono Display',monospace;font-weight:400}.field{display:grid;gap:7px;margin:16px 0}.field label{font-size:11px;color:var(--muted)}.field input{width:100%;padding:14px 15px;border-radius:12px;border:1px solid var(--line);background:#090509;color:#fff;outline:none}.field input:focus{border-color:#d65f96;box-shadow:0 0 0 3px rgba(181,23,94,.15)}
     .btn{border:0;border-radius:999px;padding:12px 18px;cursor:pointer;background:var(--magenta);color:#fff;font-weight:700;transition:.18s}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}.btn.danger{background:#35131d;color:#ffd9df}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}.status{min-height:20px;margin-top:12px;color:var(--muted);font-size:12px}.status.error{color:var(--bad)}.status.ok{color:var(--ok)}
-    .hidden{display:none!important}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.user{font-size:11px;color:var(--muted)}.groups{display:grid;gap:28px}.group-title{font-family:'Major Mono Display',monospace;font-size:18px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.slot{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#0a060a}.preview{aspect-ratio:4/3;background:linear-gradient(135deg,#140b13,#24111f);display:grid;place-items:center;overflow:hidden;position:relative}.preview img,.preview video{width:100%;height:100%;object-fit:cover;display:block}.preview span{color:var(--muted);font-size:11px;padding:20px;text-align:center}.slot-body{padding:14px}.slot-name{font-weight:700;font-size:13px;margin-bottom:4px}.slot-path{font-size:9px;color:var(--muted);overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.upload-label{display:inline-flex;align-items:center;justify-content:center}.upload-label input{display:none}.note{margin-top:22px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:11px;line-height:1.7}.media-note{opacity:.72}
+    .hidden{display:none!important}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.user{font-size:11px;color:var(--muted)}.groups{display:grid;gap:28px}.group-title{font-family:'Major Mono Display',monospace;font-size:18px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.slot{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#0a060a}.preview{aspect-ratio:4/3;background:linear-gradient(135deg,#140b13,#24111f);display:grid;place-items:center;overflow:hidden;position:relative}.preview img,.preview video{width:100%;height:100%;object-fit:cover;display:block}.preview span{color:var(--muted);font-size:11px;padding:20px;text-align:center}.slot-body{padding:14px}.slot-name{font-weight:700;font-size:13px;margin-bottom:4px}.slot-path{font-size:9px;color:var(--muted);overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.upload-label{display:inline-flex;align-items:center;justify-content:center}.upload-label input{display:none}.note{margin-top:22px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:11px;line-height:1.7}
     .dashboard-tabs{display:flex;gap:8px;margin:0 0 26px;padding:6px;border:1px solid var(--line);border-radius:999px;background:#090509;width:max-content;max-width:100%}.dashboard-tab{border:0;border-radius:999px;padding:10px 16px;background:transparent;color:var(--muted);font:700 10px/1.2 'Space Mono',monospace;cursor:pointer}.dashboard-tab[aria-selected="true"]{background:var(--magenta);color:#fff}.dashboard-tab:focus-visible{outline:3px solid #4de8d8;outline-offset:2px}.dashboard-view{min-width:0}
     .control-directory{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:0 0 30px}.control-link{display:flex;min-height:72px;flex-direction:column;justify-content:space-between;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0a060a;color:var(--ink);text-decoration:none;font-size:10px;transition:.18s}.control-link span{color:#d38cad;font-size:9px}.control-link:hover,.control-link:focus-visible{border-color:#d65f96;background:#160b13;transform:translateY(-1px)}.control-anchor{scroll-margin-top:18px}
 
@@ -25,40 +25,41 @@
     .menu-editor{margin:0 0 24px;padding:18px;border:1px solid var(--line);border-radius:18px;background:#0a060a}.menu-editor h3{margin:0 0 5px;font-family:'Major Mono Display',monospace;font-size:16px}.menu-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}.menu-preset{display:grid;gap:8px;min-height:118px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#090509;color:var(--ink);text-align:left;cursor:pointer}.menu-preset strong{font-size:11px}.menu-preset span{color:var(--muted);font-size:9px;line-height:1.5}.menu-preset[aria-pressed="true"]{border-color:#d65f96;box-shadow:0 0 0 2px rgba(181,23,94,.18);background:#190c15}.menu-label-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.menu-label-field{display:grid;gap:6px}.menu-label-field label{color:var(--muted);font-size:9px}.menu-label-field input{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#050305;color:var(--ink);font:11px 'Space Mono',monospace;outline:none}.menu-label-field input:focus{border-color:#d65f96}
     .training-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.training-field{display:grid;gap:7px;padding:15px;border:1px solid var(--line);border-radius:16px;background:#0a060a}.training-field label{font-size:11px;font-weight:700}.training-help{min-height:30px;color:var(--muted);font-size:9px;line-height:1.55}.training-field textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#050305;color:#fff;padding:12px;font:400 11px/1.55 'Space Mono',monospace;outline:none}.training-field textarea:focus{border-color:#d65f96;box-shadow:0 0 0 3px rgba(181,23,94,.12)}.training-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}.training-actions .btn{min-width:160px}
     .chat-console{display:grid;grid-template-columns:minmax(220px,32%) minmax(0,1fr);min-height:540px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#090509}.chat-list{border-right:1px solid var(--line);overflow:auto}.chat-list-empty{padding:22px;color:var(--muted);font-size:11px;line-height:1.6}.chat-card{display:block;width:100%;padding:14px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;cursor:pointer}.chat-card:hover,.chat-card.active{background:rgba(181,23,94,.13)}.chat-card-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700}.chat-card-time{color:var(--muted);font-size:9px}.mode-badge{display:inline-block;margin-top:8px;padding:4px 7px;border-radius:999px;background:rgba(77,232,216,.1);color:#4de8d8;font-size:8px;text-transform:uppercase}.mode-badge.human{background:rgba(125,255,155,.1);color:#7dff9b}.chat-detail{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0}.chat-detail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}.chat-detail-title{font-size:11px;color:var(--muted)}.chat-messages{padding:16px;overflow:auto}.crew-message{max-width:82%;margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#171018;font-size:11px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.crew-message.visitor{margin-left:auto;background:#351329}.crew-message.ayden{border-color:rgba(125,255,155,.35);background:#102016}.crew-sender{display:block;margin-bottom:4px;color:var(--muted);font-size:8px;text-transform:uppercase}.chat-reply{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:13px;border-top:1px solid var(--line)}.chat-reply textarea{min-height:48px;max-height:120px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#050305;color:#fff;padding:11px;font:inherit;font-size:11px;outline:none}.chat-reply textarea:focus{border-color:#d65f96}.chat-reply .status{grid-column:1/-1;margin:0}
-    @media(max-width:700px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.dashboard-tabs{width:100%}.dashboard-tab{flex:1;padding:10px 8px}.control-directory{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-presets,.menu-label-grid{grid-template-columns:1fr}.grid,.training-grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}.chat-console{grid-template-columns:1fr;min-height:680px}.chat-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.chat-detail{min-height:450px}}
+    .xilo-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.xilo-control-card{padding:17px;border:1px solid var(--line);border-radius:18px;background:#0a060a}.xilo-control-card.wide{grid-column:1/-1}.xilo-control-card h3{margin:0 0 5px;font-family:'Major Mono Display',monospace;font-size:16px}.xilo-control-card p{margin:0 0 15px;color:var(--muted);font-size:10px;line-height:1.6}.xilo-setting{display:grid;gap:6px;margin-top:12px}.xilo-setting label{color:var(--muted);font-size:9px}.xilo-setting input,.xilo-setting select,.xilo-setting textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#050305;color:var(--ink);font:11px/1.5 'Space Mono',monospace;outline:none}.xilo-setting textarea{min-height:105px;resize:vertical}.xilo-setting input:focus,.xilo-setting select:focus,.xilo-setting textarea:focus{border-color:#d65f96}.xilo-check{display:flex;align-items:center;gap:9px;margin-top:12px;color:var(--ink);font-size:10px}.xilo-check input{width:auto}.xilo-control-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.xilo-test-result{min-height:90px;margin-top:12px;padding:13px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:11px;line-height:1.6;white-space:pre-wrap}
+    @media(max-width:700px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.dashboard-tabs{width:100%;border-radius:18px;flex-wrap:wrap}.dashboard-tab{flex:1;padding:10px 8px}.control-directory{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-presets,.menu-label-grid,.xilo-control-grid{grid-template-columns:1fr}.xilo-control-card.wide{grid-column:auto}.grid,.training-grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}.chat-console{grid-template-columns:1fr;min-height:680px}.chat-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.chat-detail{min-height:450px}}
   </style>
-  <link rel="stylesheet" href="./dashboard-redesign.css?v=20260901-2">
 </head>
 <body>
   <main class="shell">
-    <div class="brand"><div><div class="eyebrow">Private dashboard</div><h1>YourFavoriteAlien</h1></div><small>Website manager</small></div>
+    <div class="brand"><div><div class="eyebrow">YourFavAlien private control room</div><h1>MOTHERSHIP</h1></div><small>/mothership</small></div>
 
     <section id="loginPanel" class="panel login">
-      <div class="eyebrow">Private dashboard</div>
-      <h2>Welcome back.</h2>
-      <p class="login-copy">Sign in to manage the website, Xilo, images, and publishing.</p>
+      <div class="eyebrow">Authorized crew only</div>
+      <h2>Welcome back to the Mothership.</h2>
       <form id="loginForm">
         <div class="field"><label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required></div>
         <div class="field"><label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required></div>
-        <button class="btn" type="submit">Sign in</button>
+        <button class="btn" type="submit">Enter Mothership</button>
         <div id="loginStatus" class="status" aria-live="polite"></div>
       </form>
     </section>
 
     <section id="dashboard" class="panel dashboard hidden">
-      <div class="topbar"><div><div class="eyebrow">Website manager</div><h2>Dashboard</h2><div id="userEmail" class="user"></div></div><div class="topbar-actions"><a class="btn secondary" href="../index.html" target="_blank" rel="noopener">View website ↗</a><button id="logoutBtn" class="btn secondary" type="button">Sign out</button></div></div>
+      <div class="topbar"><div><div class="eyebrow">Mission control</div><h2>Website controls</h2><div id="userEmail" class="user"></div></div><button id="logoutBtn" class="btn secondary" type="button">Log out</button></div>
 
       <nav class="dashboard-tabs" role="tablist" aria-label="Mothership sections">
-        <button id="controlsTab" class="dashboard-tab" type="button" role="tab" aria-selected="true" aria-controls="controlsView">Website</button>
-        <button id="chatsTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="chatsView">Xilo inbox</button>
+        <button id="controlsTab" class="dashboard-tab" type="button" role="tab" aria-selected="true" aria-controls="controlsView">Website &amp; Training</button>
+        <button id="xiloTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="xiloView">Xylo Control Center</button>
+        <button id="chatsTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="chatsView">Xylo Chats</button>
       </nav>
 
       <nav class="control-directory" aria-label="Mothership control directory">
-        <a class="control-link" href="#siteStatus"><span>System</span>Site status</a>
-        <a class="control-link" href="#websiteImages"><span>Content</span>Images</a>
-        <a class="control-link" href="#themeColors"><span>Design</span>Appearance</a>
-        <a class="control-link" href="#xiloTraining"><span>Xilo</span>Training</a>
-        <a id="openChatsDirectory" class="control-link" href="#chatsView"><span>Inbox</span>Conversations</a>
+        <a class="control-link" href="#siteStatus"><span>01 / SYSTEM</span>Site status</a>
+        <a class="control-link" href="#websiteImages"><span>02 / CONTENT</span>Website images</a>
+        <a class="control-link" href="#themeColors"><span>03 / DESIGN</span>Appearance</a>
+        <a class="control-link" href="#xiloTraining"><span>04 / XILO</span>Training</a>
+        <a id="openChatsDirectory" class="control-link" href="#chatsView"><span>05 / INBOX</span>Chats</a>
+        <a id="openXiloDirectory" class="control-link" href="#xiloView"><span>06 / XYLO</span>Control center</a>
       </nav>
 
       <div id="siteStatus" class="control-anchor"></div>
@@ -68,7 +69,6 @@
       <div id="websiteImages" class="section-head control-anchor"><div><h2>Website images</h2><div class="section-copy">Replace your live website photos without editing GitHub.</div></div></div>
       <div id="groups" class="groups"></div>
       <div class="note">Replacing a picture uploads it to the same Mothership slot, so you do not have to edit the HTML again. The website falls back to your current local image if a Mothership image has not been uploaded yet.</div>
-      <div class="note media-note"><strong>Media Kit:</strong> The banner on your separate Media Kit site is connected to the “Media Kit banner” slot above. Uploading a replacement here updates the banner there too.</div>
 
       <div class="divider"></div>
       <div id="themeColors" class="section-head control-anchor"><div><div class="eyebrow">Live theme editor</div><h2>Theme colors</h2><div class="section-copy">Pick a color or type an exact six-digit HEX code. The Site Menu group controls the UFO menu. Save once and the connected pages update from Mothership.</div></div></div>
@@ -108,6 +108,22 @@
 
       </section>
 
+      <section id="xiloView" class="dashboard-view hidden" role="tabpanel" aria-labelledby="xiloTab">
+        <div class="section-head"><div><div class="eyebrow">Xylo mission control</div><h2>Xylo Control Center</h2><div class="section-copy">Control how Xylo behaves on the public website and inside Business Headquarters. These settings become part of Xylo’s approved Mothership instructions.</div></div></div>
+        <form id="xiloControlForm">
+          <div class="xilo-control-grid">
+            <section class="xilo-control-card"><h3>Identity &amp; response style</h3><p>Set the basics of how Xylo introduces itself and answers.</p><div class="xilo-setting"><label for="xiloDisplayName">DISPLAY NAME</label><input id="xiloDisplayName" maxlength="40" value="Xylo"></div><div class="xilo-setting"><label for="xiloResponseLength">ANSWER LENGTH</label><select id="xiloResponseLength"><option value="short">Short and direct</option><option value="balanced">Balanced</option><option value="detailed">Detailed when helpful</option></select></div><label class="xilo-check"><input id="xiloEmoji" type="checkbox"> Allow occasional alien emojis</label></section>
+            <section class="xilo-control-card"><h3>Greetings</h3><p>Tell Xylo how to welcome people in each part of YourFavAlien.</p><div class="xilo-setting"><label for="xiloPublicGreeting">PUBLIC WEBSITE GREETING</label><textarea id="xiloPublicGreeting" maxlength="600"></textarea></div><div class="xilo-setting"><label for="xiloHqGreeting">BUSINESS HQ GREETING</label><textarea id="xiloHqGreeting" maxlength="600"></textarea></div></section>
+            <section class="xilo-control-card"><h3>Public-site behavior</h3><p>What Xylo should prioritize on yourfavalien.com.</p><div class="xilo-setting"><label for="xiloPublicRules">PUBLIC WEBSITE INSTRUCTIONS</label><textarea id="xiloPublicRules" maxlength="3000"></textarea></div></section>
+            <section class="xilo-control-card"><h3>Business-HQ behavior</h3><p>What Xylo should prioritize on yourfavoritealien.site.</p><div class="xilo-setting"><label for="xiloHqRules">BUSINESS HEADQUARTERS INSTRUCTIONS</label><textarea id="xiloHqRules" maxlength="3000"></textarea></div></section>
+            <section class="xilo-control-card wide"><h3>Suggested questions</h3><p>Add one approved conversation starter per line.</p><div class="xilo-setting"><label for="xiloSuggestions">CONVERSATION STARTERS</label><textarea id="xiloSuggestions" maxlength="2000"></textarea></div></section>
+            <section class="xilo-control-card wide"><h3>Test Xylo</h3><p>Preview an answer using the live Xylo service.</p><div class="xilo-setting"><label for="xiloTestMessage">TEST QUESTION</label><textarea id="xiloTestMessage" maxlength="1200" placeholder="Ask Xylo a question…"></textarea></div><div class="xilo-control-actions"><button class="btn secondary" id="xiloTestPublic" type="button">Test public Xylo</button><button class="btn secondary" id="xiloTestHq" type="button">Test HQ Xylo</button></div><div class="xilo-test-result" id="xiloTestResult">Xylo’s test answer will appear here.</div></section>
+          </div>
+          <div class="xilo-control-actions"><button class="btn" type="submit">Save Xylo controls</button><button class="btn secondary" id="xiloOpenTraining" type="button">Open full training</button><button class="btn secondary" id="xiloOpenInbox" type="button">Open live inbox</button></div>
+          <div id="xiloControlStatus" class="status" aria-live="polite"></div>
+        </form>
+      </section>
+
       <section id="chatsView" class="dashboard-view hidden" role="tabpanel" aria-labelledby="chatsTab">
       <div class="section-head"><div><div class="eyebrow">Xilo live inbox</div><h2>Conversations</h2><div class="section-copy">See visitor chats, take over from Xilo, and reply as yourself. Xilo pauses automatically while a conversation is in human mode.</div></div><button id="refreshChatsBtn" class="btn secondary" type="button">Refresh chats</button></div>
       <div class="chat-console">
@@ -140,8 +156,10 @@
       const userEmail = document.getElementById('userEmail');
       const logoutBtn = document.getElementById('logoutBtn');
       const controlsTab = document.getElementById('controlsTab');
+      const xiloTab = document.getElementById('xiloTab');
       const chatsTab = document.getElementById('chatsTab');
       const controlsView = document.getElementById('controlsView');
+      const xiloView = document.getElementById('xiloView');
       const chatsView = document.getElementById('chatsView');
       const colorGroupsEl = document.getElementById('colorGroups');
       const saveThemeBtn = document.getElementById('saveThemeBtn');
@@ -175,6 +193,12 @@
       const crewReply = document.getElementById('crewReply');
       const crewSendBtn = document.getElementById('crewSendBtn');
       const crewChatStatus = document.getElementById('crewChatStatus');
+      const xiloControlForm = document.getElementById('xiloControlForm');
+      const xiloControlStatus = document.getElementById('xiloControlStatus');
+      const xiloTestResult = document.getElementById('xiloTestResult');
+      const xiloFields = {
+        displayName: document.getElementById('xiloDisplayName'), responseLength: document.getElementById('xiloResponseLength'), allowEmoji: document.getElementById('xiloEmoji'), publicGreeting: document.getElementById('xiloPublicGreeting'), hqGreeting: document.getElementById('xiloHqGreeting'), publicRules: document.getElementById('xiloPublicRules'), hqRules: document.getElementById('xiloHqRules'), suggestions: document.getElementById('xiloSuggestions')
+      };
       const themeDefs = (cfg.colorGroups || []).flatMap(group => group.colors || []);
       const defaultTheme = Object.fromEntries(themeDefs.map(def => [def.id, def.default]));
       const defaultMenu = { layout: 'editorial', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
@@ -195,15 +219,20 @@
 
       function switchDashboardTab(name) {
         const showChats = name === 'chats';
-        controlsTab.setAttribute('aria-selected', String(!showChats));
+        const showXilo = name === 'xilo';
+        controlsTab.setAttribute('aria-selected', String(!showChats && !showXilo));
+        xiloTab.setAttribute('aria-selected', String(showXilo));
         chatsTab.setAttribute('aria-selected', String(showChats));
-        controlsView.classList.toggle('hidden', showChats);
+        controlsView.classList.toggle('hidden', showChats || showXilo);
+        xiloView.classList.toggle('hidden', !showXilo);
         chatsView.classList.toggle('hidden', !showChats);
         if (showChats) loadConversations({ quiet: true });
       }
 
       controlsTab.addEventListener('click', () => switchDashboardTab('controls'));
+      xiloTab.addEventListener('click', () => switchDashboardTab('xilo'));
       chatsTab.addEventListener('click', () => switchDashboardTab('chats'));
+      document.getElementById('openXiloDirectory').addEventListener('click', event => { event.preventDefault(); switchDashboardTab('xilo'); xiloView.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
       document.getElementById('openChatsDirectory').addEventListener('click', event => {
         event.preventDefault();
         switchDashboardTab('chats');
@@ -651,6 +680,70 @@
 
       refreshChatsBtn.addEventListener('click', () => loadConversations());
 
+      const xiloControlStart = '--- XYLO CONTROL CENTER SETTINGS ---';
+      const xiloControlEnd = '--- END XYLO CONTROL CENTER SETTINGS ---';
+      function readXiloControlBlock(text) {
+        const start = String(text || '').indexOf(xiloControlStart);
+        const end = String(text || '').indexOf(xiloControlEnd);
+        if (start < 0 || end < start) return {};
+        const block = String(text).slice(start + xiloControlStart.length, end).trim();
+        try { return JSON.parse(block); } catch (_) { return {}; }
+      }
+      function stripXiloControlBlock(text) {
+        const value = String(text || '');
+        const start = value.indexOf(xiloControlStart);
+        const end = value.indexOf(xiloControlEnd);
+        if (start < 0 || end < start) return value.trim();
+        return `${value.slice(0, start)}${value.slice(end + xiloControlEnd.length)}`.trim();
+      }
+      function loadXiloControls() {
+        const settings = readXiloControlBlock(trainingInputs.personality.value);
+        xiloFields.displayName.value = settings.displayName || 'Xylo';
+        xiloFields.responseLength.value = settings.responseLength || 'balanced';
+        xiloFields.allowEmoji.checked = settings.allowEmoji === true;
+        xiloFields.publicGreeting.value = settings.publicGreeting || '';
+        xiloFields.hqGreeting.value = settings.hqGreeting || '';
+        xiloFields.publicRules.value = settings.publicRules || '';
+        xiloFields.hqRules.value = settings.hqRules || '';
+        xiloFields.suggestions.value = settings.suggestions || '';
+      }
+      function collectXiloControls() {
+        return {
+          displayName: xiloFields.displayName.value.trim() || 'Xylo',
+          responseLength: xiloFields.responseLength.value,
+          allowEmoji: xiloFields.allowEmoji.checked,
+          publicGreeting: xiloFields.publicGreeting.value.trim(),
+          hqGreeting: xiloFields.hqGreeting.value.trim(),
+          publicRules: xiloFields.publicRules.value.trim(),
+          hqRules: xiloFields.hqRules.value.trim(),
+          suggestions: xiloFields.suggestions.value.trim()
+        };
+      }
+      xiloControlForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const settings = collectXiloControls();
+        const base = stripXiloControlBlock(trainingInputs.personality.value);
+        trainingInputs.personality.value = `${base}${base ? '\n\n' : ''}${xiloControlStart}\n${JSON.stringify(settings, null, 2)}\n${xiloControlEnd}`;
+        setStatus(xiloControlStatus, 'Saving Xylo Control Center…');
+        trainingForm.requestSubmit();
+        window.setTimeout(() => setStatus(xiloControlStatus, 'Xylo controls saved to Mothership training.', 'ok'), 700);
+      });
+      document.getElementById('xiloOpenTraining').addEventListener('click', () => { switchDashboardTab('controls'); document.getElementById('xiloTraining').scrollIntoView({ behavior: 'smooth' }); });
+      document.getElementById('xiloOpenInbox').addEventListener('click', () => switchDashboardTab('chats'));
+      async function testXilo(site) {
+        const question = document.getElementById('xiloTestMessage').value.trim();
+        if (!question) { xiloTestResult.textContent = 'Type a test question first.'; return; }
+        xiloTestResult.textContent = 'Xylo is preparing a test answer…';
+        try {
+          const response = await fetch('https://xilo.yourfavalien.com/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ messages:[{role:'user',content:question}], pageUrl:site === 'hq' ? 'https://yourfavoritealien.site/' : 'https://yourfavalien.com/', testMode:true }) });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || 'Xylo could not answer.');
+          xiloTestResult.textContent = data.reply || 'Xylo returned no answer.';
+        } catch (error) { xiloTestResult.textContent = error.message || 'The live test could not connect.'; }
+      }
+      document.getElementById('xiloTestPublic').addEventListener('click', () => testXilo('public'));
+      document.getElementById('xiloTestHq').addEventListener('click', () => testXilo('hq'));
+
       async function loadTraining() {
         setStatus(trainingStatus, 'Loading Xilo training…');
         reloadTrainingBtn.disabled = true;
@@ -667,6 +760,7 @@
         Object.entries(trainingInputs).forEach(([key, input]) => {
           input.value = (data && data[key]) || '';
         });
+        loadXiloControls();
         setStatus(trainingStatus, data && data.updated_at
           ? `Training loaded. Last saved ${new Date(data.updated_at).toLocaleString()}.`
           : 'Training Center is ready. Add approved information and save.', 'ok');
@@ -748,6 +842,6 @@
     })();
   </script>
   <script src="../mothership-maintenance-admin.js?v=20260830-6"></script>
-  <script src="./dashboard-redesign.js?v=20260901-2"></script>
 </body>
 </html>
+
