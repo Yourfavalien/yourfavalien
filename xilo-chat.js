@@ -5,7 +5,7 @@
   window.__XILO_CHAT_LOADED__ = true;
 
   const config = Object.assign({
-    endpoint: 'https://xilo.yourfavalien.com/api/chat',
+    endpoint: 'https://yourfavalien-business-headquarters.aydenmtz54.workers.dev/api/chat',
     maxHistory: 10,
     timeoutMs: 30000,
     minResponseMs: 1400,

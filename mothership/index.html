@@ -36,7 +36,7 @@
     <section id="loginPanel" class="panel login">
       <div class="eyebrow">Private dashboard</div>
       <h2>Welcome back.</h2>
-      <p class="login-copy">Sign in to manage the website, Xilo, images, and publishing.</p>
+      <p class="login-copy">Sign in to manage the website, images, appearance, and publishing.</p>
       <form id="loginForm">
         <div class="field"><label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required></div>
         <div class="field"><label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required></div>
@@ -48,22 +48,21 @@
     <section id="dashboard" class="panel dashboard hidden">
       <div class="topbar"><div><div class="eyebrow">Website manager</div><h2>Dashboard</h2><div id="userEmail" class="user"></div></div><div class="topbar-actions"><a class="btn secondary" href="../index.html" target="_blank" rel="noopener">View website ↗</a><button id="logoutBtn" class="btn secondary" type="button">Sign out</button></div></div>
 
-      <nav class="dashboard-tabs" role="tablist" aria-label="Mothership sections">
-        <button id="controlsTab" class="dashboard-tab" type="button" role="tab" aria-selected="true" aria-controls="controlsView">Website</button>
-        <button id="chatsTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="chatsView">Xilo inbox</button>
+      <nav class="dashboard-tabs" aria-label="Mothership sections">
+        <span class="dashboard-tab" aria-current="page">Website controls</span>
+        <a class="dashboard-tab" href="https://xilo.yourfavalien.site/">Open Xylo Control Center</a>
       </nav>
 
       <nav class="control-directory" aria-label="Mothership control directory">
         <a class="control-link" href="#siteStatus"><span>System</span>Site status</a>
         <a class="control-link" href="#websiteImages"><span>Content</span>Images</a>
         <a class="control-link" href="#themeColors"><span>Design</span>Appearance</a>
-        <a class="control-link" href="#xiloTraining"><span>Xilo</span>Training</a>
-        <a id="openChatsDirectory" class="control-link" href="#chatsView"><span>Inbox</span>Conversations</a>
+        <a class="control-link" href="https://xilo.yourfavalien.site/"><span>04 / XYLO</span>Open separate control center</a>
       </nav>
 
       <div id="siteStatus" class="control-anchor"></div>
 
-      <section id="controlsView" class="dashboard-view" role="tabpanel" aria-labelledby="controlsTab">
+      <section id="controlsView" class="dashboard-view">
 
       <div id="websiteImages" class="section-head control-anchor"><div><h2>Website images</h2><div class="section-copy">Replace your live website photos without editing GitHub.</div></div></div>
       <div id="groups" class="groups"></div>
@@ -91,37 +90,6 @@
       <div class="theme-actions"><button id="saveThemeBtn" class="btn" type="button">Save menu &amp; colors</button><button id="resetThemeBtn" class="btn secondary" type="button">Load original design</button></div>
       <div id="themeStatus" class="status" aria-live="polite"></div>
 
-      <div class="divider"></div>
-      <div id="xiloTraining" class="section-head control-anchor"><div><div class="eyebrow">Xilo training center</div><h2>Teach Xilo</h2><div class="section-copy">Write only information you approve. Xilo uses saved training within about 30 seconds, without another Worker deployment.</div></div><button id="reloadTrainingBtn" class="btn secondary" type="button">Reload training</button></div>
-      <form id="trainingForm">
-        <div class="training-grid">
-          <div class="training-field"><label for="trainingPersonality">PERSONALITY &amp; VOICE</label><div class="training-help">How Xilo should sound, greet visitors, and format answers.</div><textarea id="trainingPersonality" maxlength="12000" placeholder="Example: Sound warm, confident, playful, and concise. Use an alien emoji occasionally."></textarea></div>
-          <div class="training-field"><label for="trainingFacts">APPROVED BRAND FACTS</label><div class="training-help">Facts about Ayden, YourFavAlien, services, policies, and public information.</div><textarea id="trainingFacts" maxlength="12000" placeholder="Add one approved fact per line."></textarea></div>
-          <div class="training-field"><label for="trainingFaqs">FAQS &amp; EXACT ANSWERS</label><div class="training-help">Use a Q: and A: format when you want Xilo to give a specific answer.</div><textarea id="trainingFaqs" maxlength="12000" placeholder="Q: How can I collaborate?&#10;A: Use the official contact form and include your campaign details."></textarea></div>
-          <div class="training-field"><label for="trainingLinks">OFFICIAL LINKS &amp; BUTTONS</label><div class="training-help">Approved URLs, what each one is for, and when Xilo should show it.</div><textarea id="trainingLinks" maxlength="12000" placeholder="Contact form — https://tally.so/r/NpxlQB — use for collaborations and bookings."></textarea></div>
-          <div class="training-field"><label for="trainingEscalation">WHEN TO HAND OFF TO AYDEN</label><div class="training-help">Questions that need your personal decision or should invite a live takeover.</div><textarea id="trainingEscalation" maxlength="12000" placeholder="Hand off pricing, availability, contracts, custom requests, and complaints."></textarea></div>
-          <div class="training-field"><label for="trainingForbidden">THINGS XILO MUST NOT CLAIM</label><div class="training-help">Rumors, private information, guesses, promises, and topics Xilo cannot confirm.</div><textarea id="trainingForbidden" maxlength="12000" placeholder="Never invent prices, availability, audience statistics, or completed bookings."></textarea></div>
-        </div>
-        <div class="training-actions"><button id="saveTrainingBtn" class="btn" type="submit">Save Xilo training</button></div>
-        <div id="trainingStatus" class="status" aria-live="polite"></div>
-      </form>
-
-      </section>
-
-      <section id="chatsView" class="dashboard-view hidden" role="tabpanel" aria-labelledby="chatsTab">
-      <div class="section-head"><div><div class="eyebrow">Xilo live inbox</div><h2>Conversations</h2><div class="section-copy">See visitor chats, take over from Xilo, and reply as yourself. Xilo pauses automatically while a conversation is in human mode.</div></div><button id="refreshChatsBtn" class="btn secondary" type="button">Refresh chats</button></div>
-      <div class="chat-console">
-        <div id="chatList" class="chat-list"><div class="chat-list-empty">No conversations yet.</div></div>
-        <section class="chat-detail">
-          <div class="chat-detail-head"><div id="chatTitle" class="chat-detail-title">Choose a conversation</div><button id="takeoverBtn" class="btn secondary" type="button" disabled>Take over</button></div>
-          <div id="crewMessages" class="chat-messages"><div class="chat-list-empty">Visitor messages will appear here.</div></div>
-          <form id="crewReplyForm" class="chat-reply">
-            <textarea id="crewReply" maxlength="4000" placeholder="Reply as Ayden…" aria-label="Reply as Ayden" disabled></textarea>
-            <button id="crewSendBtn" class="btn" type="submit" disabled>Send</button>
-            <div id="crewChatStatus" class="status" aria-live="polite"></div>
-          </form>
-        </section>
-      </div>
       </section>
     </section>
   </main>
@@ -139,10 +107,6 @@
       const groupsEl = document.getElementById('groups');
       const userEmail = document.getElementById('userEmail');
       const logoutBtn = document.getElementById('logoutBtn');
-      const controlsTab = document.getElementById('controlsTab');
-      const chatsTab = document.getElementById('chatsTab');
-      const controlsView = document.getElementById('controlsView');
-      const chatsView = document.getElementById('chatsView');
       const colorGroupsEl = document.getElementById('colorGroups');
       const saveThemeBtn = document.getElementById('saveThemeBtn');
       const resetThemeBtn = document.getElementById('resetThemeBtn');
@@ -154,34 +118,11 @@
         about: document.getElementById('menuLabelAbout'),
         contact: document.getElementById('menuLabelContact')
       };
-      const trainingForm = document.getElementById('trainingForm');
-      const trainingStatus = document.getElementById('trainingStatus');
-      const saveTrainingBtn = document.getElementById('saveTrainingBtn');
-      const reloadTrainingBtn = document.getElementById('reloadTrainingBtn');
-      const trainingInputs = {
-        personality: document.getElementById('trainingPersonality'),
-        approved_facts: document.getElementById('trainingFacts'),
-        faqs: document.getElementById('trainingFaqs'),
-        official_links: document.getElementById('trainingLinks'),
-        escalation_rules: document.getElementById('trainingEscalation'),
-        forbidden_claims: document.getElementById('trainingForbidden')
-      };
-      const chatList = document.getElementById('chatList');
-      const chatTitle = document.getElementById('chatTitle');
-      const crewMessages = document.getElementById('crewMessages');
-      const takeoverBtn = document.getElementById('takeoverBtn');
-      const refreshChatsBtn = document.getElementById('refreshChatsBtn');
-      const crewReplyForm = document.getElementById('crewReplyForm');
-      const crewReply = document.getElementById('crewReply');
-      const crewSendBtn = document.getElementById('crewSendBtn');
-      const crewChatStatus = document.getElementById('crewChatStatus');
       const themeDefs = (cfg.colorGroups || []).flatMap(group => group.colors || []);
       const defaultTheme = Object.fromEntries(themeDefs.map(def => [def.id, def.default]));
       const defaultMenu = { layout: 'editorial', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
       let themeState = { ...defaultTheme };
       let menuState = { layout: defaultMenu.layout, labels: { ...defaultMenu.labels } };
-      let selectedConversation = null;
-      let chatRefreshTimer = null;
       const themePublicUrl = () => `${publicBase}${cfg.themePath}?v=${Date.now()}`;
       const isHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
 
@@ -193,22 +134,6 @@
         el.className = `status ${type}`.trim();
       }
 
-      function switchDashboardTab(name) {
-        const showChats = name === 'chats';
-        controlsTab.setAttribute('aria-selected', String(!showChats));
-        chatsTab.setAttribute('aria-selected', String(showChats));
-        controlsView.classList.toggle('hidden', showChats);
-        chatsView.classList.toggle('hidden', !showChats);
-        if (showChats) loadConversations({ quiet: true });
-      }
-
-      controlsTab.addEventListener('click', () => switchDashboardTab('controls'));
-      chatsTab.addEventListener('click', () => switchDashboardTab('chats'));
-      document.getElementById('openChatsDirectory').addEventListener('click', event => {
-        event.preventDefault();
-        switchDashboardTab('chats');
-        chatsView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
 
       function makeSlotCard(slot) {
         const card = document.createElement('article');
@@ -510,6 +435,9 @@
         });
       }
 
+      // Xylo management now lives only in the dedicated, protected control center.
+      // Keep the retired implementation unreachable during this migration.
+      if (false) {
       function formatChatTime(value) {
         if (!value) return '';
         return new Intl.DateTimeFormat(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }).format(new Date(value));
@@ -692,6 +620,7 @@
       });
 
       reloadTrainingBtn.addEventListener('click', loadTraining);
+      }
 
       async function showSession(session) {
         if (session && session.user) {
@@ -700,26 +629,12 @@
           userEmail.textContent = session.user.email || 'Authenticated user';
           renderSlots();
           await loadTheme();
-          await loadTraining();
-          await loadConversations();
-          if (!chatRefreshTimer) chatRefreshTimer = window.setInterval(async () => {
-            await loadConversations({ quiet: true });
-            await loadConversationMessages();
-          }, 4000);
         } else {
-          if (chatRefreshTimer) window.clearInterval(chatRefreshTimer);
-          chatRefreshTimer = null;
-          selectedConversation = null;
-          switchDashboardTab('controls');
           dashboard.classList.add('hidden');
           loginPanel.classList.remove('hidden');
           groupsEl.innerHTML = '';
           colorGroupsEl.innerHTML = '';
           setStatus(themeStatus, '');
-          Object.values(trainingInputs).forEach(input => { input.value = ''; });
-          setStatus(trainingStatus, '');
-          chatList.innerHTML = '<div class="chat-list-empty">No conversations yet.</div>';
-          crewMessages.innerHTML = '<div class="chat-list-empty">Visitor messages will appear here.</div>';
         }
       }
 
