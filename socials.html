@@ -238,6 +238,13 @@
     .social-quick-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
     .social-quick-link { min-height: 52px; display: flex; align-items: center; justify-content: center; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.42); border-radius: 999px; color: var(--white); font: 700 12px/1 'Courier Prime', monospace; letter-spacing: 0.04em; text-align: center; text-decoration: none; transition: background .2s ease, transform .2s ease; }
     .social-quick-link:hover { background: rgba(255,255,255,.12); transform: translateY(-2px); }
+    .custom-social-groups { display: grid; gap: 16px; margin: 18px 0; }
+    .custom-social-group { display: grid; gap: 9px; }
+    .custom-social-category { margin: 0; color: rgba(255,255,255,.64); font: 10px/1.2 'Courier Prime', monospace; letter-spacing: .14em; text-transform: uppercase; }
+    .custom-social-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .custom-social-link { min-height: 52px; display: flex; align-items: center; justify-content: center; padding: 10px 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 12px; background: rgba(255,255,255,.045); color: var(--white); font: 700 12px/1 'Courier Prime', monospace; letter-spacing: .035em; text-align: center; text-decoration: none; transition: background .2s ease, transform .2s ease, border-color .2s ease; }
+    .custom-social-link:hover { background: rgba(181,23,94,.17); border-color: rgba(255,255,255,.55); transform: translateY(-2px); }
+    @media (max-width: 480px) { .custom-social-links { grid-template-columns: 1fr; } .custom-social-link { min-height: 48px; } }
     @media (max-width: 480px) { .social-quick-links { grid-template-columns: 1fr; } .social-quick-link { min-height: 48px; } }
     .pill-icon { font-size: 20px; }
 
@@ -866,6 +873,7 @@ nav a {
 <a class="social-quick-link" data-yfa-social="quickInstagram" data-yfa-social-link="quickInstagram" href="https://www.instagram.com/yourrfavalien" rel="noopener noreferrer" target="_blank"><span data-yfa-social-label="quickInstagram">follow on Instagram</span></a>
 <a class="social-quick-link" data-yfa-social="quickSnapchat" data-yfa-social-link="quickSnapchat" href="https://www.snapchat.com/add/yourfavvalien" rel="noopener noreferrer" target="_blank"><span data-yfa-social-label="quickSnapchat">add on Snapchat</span></a>
 </section>
+<div id="yfa-custom-socials" class="custom-social-groups" aria-label="More links"></div>
 <div class="social-card" data-yfa-social="tiktokEmbed">
 <!-- TikTok video scroll row -->
 <div class="tiktok-row">
@@ -985,7 +993,7 @@ nav a {
 </div>
 
 <script src="mothership-config.js?v=20260903-1"></script>
-<script src="mothership-socials.js?v=20260903-1"></script>
+<script src="mothership-socials.js?v=20260903-2"></script>
 
 <script>
   // Keep social buttons and the page shell responsive; load video embeds only when visitors reach them.

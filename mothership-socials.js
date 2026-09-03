@@ -36,6 +36,29 @@
       const label = document.querySelector('[data-yfa-social-label="' + key + '"]');
       if (label && value.label) label.textContent = value.label;
     });
+
+    const customTarget = document.getElementById('yfa-custom-socials');
+    if (customTarget) {
+      customTarget.textContent = '';
+      const links = Array.isArray(data.customLinks) ? data.customLinks.filter(function (link) {
+        return link && link.enabled !== false && String(link.label || '').trim() && /^https:\/\//i.test(String(link.url || '').trim());
+      }) : [];
+      const groups = new Map();
+      links.forEach(function (link) {
+        const category = String(link.category || '').trim();
+        const group = groups.get(category) || [];
+        group.push(link); groups.set(category, group);
+      });
+      groups.forEach(function (groupLinks, category) {
+        const section = document.createElement('section'); section.className = 'custom-social-group';
+        if (category) { const heading = document.createElement('h2'); heading.className = 'custom-social-category'; heading.textContent = category; section.appendChild(heading); }
+        const list = document.createElement('div'); list.className = 'custom-social-links';
+        groupLinks.forEach(function (link) {
+          const anchor = document.createElement('a'); anchor.className = 'custom-social-link'; anchor.href = String(link.url).trim(); anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = String(link.label).trim(); list.appendChild(anchor);
+        });
+        section.appendChild(list); customTarget.appendChild(section);
+      });
+    }
   }
 
   const url = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.socialsPath + '?v=' + Math.floor(Date.now() / 60000);
