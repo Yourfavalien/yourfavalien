@@ -102,7 +102,7 @@
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   width: min(380px, calc(100vw - 36px));
   height: min(590px, calc(100vh - 118px));
-  min-height: 420px;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 22px;
@@ -279,24 +279,25 @@
   text-align: center;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 760px), (max-height: 650px) {
   .xilo-chat {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(12px, env(safe-area-inset-bottom));
   }
   .xilo-panel {
-    position: absolute;
-    top: auto;
-    right: 0;
-    bottom: 60px;
-    left: auto;
-    width: calc(100vw - 28px);
-    height: calc(100dvh - 117px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    max-height: calc(100vh - 117px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    position: fixed;
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(68px, calc(58px + env(safe-area-inset-bottom)));
+    left: max(10px, env(safe-area-inset-left));
+    width: auto;
+    height: auto;
+    max-height: none;
     min-height: 0;
     border-radius: 18px;
   }
   .xilo-launcher { min-width: 104px; min-height: 46px; padding: 10px 14px; }
+  .xilo-chat--home .xilo-launcher { min-width: 0; min-height: 30px; padding: 6px 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

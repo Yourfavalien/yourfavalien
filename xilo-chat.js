@@ -165,7 +165,9 @@
     return String(text || '')
       .replace(/\[([^\]]+)\]\((https:\/\/[^)]+)\)/g, '$1')
       .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+      .replace(/\*([^*\n]+)\*/g, '$1')
       .replace(/__([^_\n]+)__/g, '$1')
+      .replace(/(^|\n)\s*[-*•]\s+/g, '$1')
       .replace(/https:\/\/[^\s<)]+/g, function (url) {
         const normalized = normalizeActionUrl(url);
         return normalized ? actionLabel('', normalized) : '';
@@ -236,7 +238,11 @@
       return;
     }
     state.history.forEach(function (message) {
-      addMessage(message.role, message.content);
+      const isAssistant = message.role === 'assistant';
+      const restoredActions = isAssistant
+        ? (Array.isArray(message.actions) ? message.actions : []).concat(actionsFromReply(message.content))
+        : [];
+      addMessage(message.role, isAssistant ? cleanReplyText(message.content) : message.content, { actions: restoredActions });
     });
   }
 
@@ -267,8 +273,9 @@
         if (!message || state.seenMessageIds.has(String(message.id))) return;
         state.seenMessageIds.add(String(message.id));
         if (message.sender === 'ayden') {
-          addMessage('assistant', message.body, { actions: message.actions || [] });
-          state.history.push({ role: 'assistant', content: message.body });
+          const restoredActions = (message.actions || []).concat(actionsFromReply(message.body));
+          addMessage('assistant', cleanReplyText(message.body), { actions: restoredActions });
+          state.history.push({ role: 'assistant', content: message.body, actions: restoredActions });
           state.history = state.history.slice(-config.maxHistory);
           saveHistory();
         }
@@ -318,7 +325,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: state.history,
+          messages: state.history.map(function (message) { return { role: message.role, content: message.content }; }),
           conversationId: state.conversation && state.conversation.id,
           visitorToken: state.conversation && state.conversation.token,
           pageUrl: window.location.href
@@ -339,7 +346,11 @@
       typing.remove();
       if (data.reply) {
         await revealAssistantMessage(data.reply, data.actions || []);
-        state.history.push({ role: 'assistant', content: data.reply });
+        state.history.push({
+          role: 'assistant',
+          content: data.reply,
+          actions: (data.actions || []).concat(actionsFromReply(data.reply))
+        });
         state.history = state.history.slice(-config.maxHistory);
         saveHistory();
       } else if (data.mode === 'human') {
