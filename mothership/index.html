@@ -387,8 +387,8 @@
         saveSocialsBtn.disabled = true; resetSocialsBtn.disabled = true; setStatus(socialsStatus, 'Saving Socials page…');
         try {
           const payload = JSON.stringify({ version: 2, updatedAt: new Date().toISOString(), header: socialsState.header, items: socialsState.items, customLinks: socialsState.customLinks || [] }, null, 2);
-          await client.storage.from(cfg.bucket).remove([cfg.socialsPath]);
-          const { error } = await client.storage.from(cfg.bucket).upload(cfg.socialsPath, new Blob([payload], { type: 'application/json' }), { contentType:'application/json', cacheControl:'60', upsert:false });
+          // A single upsert also works for a first-ever save. The old delete-then-upload flow could fail before it reached upload.
+          const { error } = await client.storage.from(cfg.bucket).upload(cfg.socialsPath, new Blob([payload], { type: 'application/json' }), { contentType:'application/json', cacheControl:'60', upsert:true });
           if (error) throw error;
           setStatus(socialsStatus, 'Socials page saved. Refresh the live Socials page to see it.', 'ok');
         } catch (error) { setStatus(socialsStatus, error.message || 'Could not save Socials page.', 'error'); }
