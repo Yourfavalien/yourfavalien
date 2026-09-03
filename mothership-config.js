@@ -3,6 +3,7 @@ window.YFA_MOTHERSHIP = {
   publishableKey: 'sb_publishable_THWa8IbRa_YTSr1bOxonhQ_GCq3J-A9',
   bucket: 'mothership-images',
   themePath: 'theme/theme.json',
+  socialsPath: 'socials/socials.json',
   maintenancePath: 'system/maintenance.json',
   popupPath: 'system/orbit-popup.json',
   slots: [
