@@ -286,7 +286,7 @@
     function animateFlight() {
       if (finished) return;
       if (isMobileIntro) {
-        placeFlightShip((window.performance.now() - mobileStartedAt) / 1600);
+        placeFlightShip((window.performance.now() - mobileStartedAt) / 1500);
         animationFrame = window.requestAnimationFrame(animateFlight);
         return;
       }
@@ -315,21 +315,21 @@
         mobileStartedAt = window.performance.now();
         placeFlightShip(0);
         animationFrame = window.requestAnimationFrame(animateFlight);
-        window.setTimeout(function () { placeFlightShip(1); }, 1600);
-        window.setTimeout(completeFinish, 1950);
+        window.setTimeout(function () { placeFlightShip(1); }, 1500);
+        window.setTimeout(completeFinish, 1780);
       }, { once: true });
       video.addEventListener('error', function () {
         window.setTimeout(completeFinish, 600);
       }, { once: true });
       window.addEventListener('resize', function () {
         const elapsed = mobileStartedAt ? window.performance.now() - mobileStartedAt : 0;
-        placeFlightShip(elapsed / 1600);
+        placeFlightShip(elapsed / 1500);
       }, { passive: true });
       placeFlightShip(0);
       startupTimer = window.setTimeout(function () {
         if (!playbackStarted) completeFinish();
       }, 15000);
-      video.src = '/assets/yfa-intro-mobile-fast.webp?v=20260902-2';
+      video.src = '/assets/yfa-intro-mobile-safari.webp?v=20260902-1';
       return;
     }
 
