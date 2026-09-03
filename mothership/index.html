@@ -50,7 +50,7 @@
 
       <nav class="dashboard-tabs" aria-label="Mothership sections">
         <button id="controlsTab" class="dashboard-tab" type="button" aria-selected="true" aria-controls="controlsView">Website controls</button>
-        <a class="dashboard-tab" href="https://xilo.yourfavalien.site/">Open Xylo Control Center</a>
+        <a class="dashboard-tab" href="https://xilo.yourfavalien.site/">Open Xilo Control Center</a>
         <button id="xiloTab" type="button" hidden></button><button id="chatsTab" type="button" hidden></button>
       </nav>
 
@@ -58,7 +58,7 @@
         <a class="control-link" href="#siteStatus"><span>01 / SYSTEM</span>Site status</a>
         <a class="control-link" href="#websiteImages"><span>02 / CONTENT</span>Website images</a>
         <a class="control-link" href="#themeColors"><span>03 / DESIGN</span>Appearance</a>
-        <a class="control-link" href="https://xilo.yourfavalien.site/"><span>04 / XYLO</span>Open separate control center</a>
+        <a class="control-link" href="https://xilo.yourfavalien.site/"><span>04 / XILO</span>Open separate control center</a>
         <a id="openChatsDirectory" href="#" hidden></a><a id="openXiloDirectory" href="#" hidden></a>
       </nav>
 
@@ -109,17 +109,17 @@
       </section>
 
       <section id="xiloView" class="dashboard-view hidden" role="tabpanel" aria-labelledby="xiloTab">
-        <div class="section-head"><div><div class="eyebrow">Xylo mission control</div><h2>Xylo Control Center</h2><div class="section-copy">Control how Xylo behaves on the public website and inside Business Headquarters. These settings become part of Xylo’s approved Mothership instructions.</div></div></div>
+        <div class="section-head"><div><div class="eyebrow">Xilo mission control</div><h2>Xilo Control Center</h2><div class="section-copy">Control how Xilo behaves on the public website and inside Business Headquarters. These settings become part of Xilo’s approved Mothership instructions.</div></div></div>
         <form id="xiloControlForm">
           <div class="xilo-control-grid">
-            <section class="xilo-control-card"><h3>Identity &amp; response style</h3><p>Set the basics of how Xylo introduces itself and answers.</p><div class="xilo-setting"><label for="xiloDisplayName">DISPLAY NAME</label><input id="xiloDisplayName" maxlength="40" value="Xylo"></div><div class="xilo-setting"><label for="xiloResponseLength">ANSWER LENGTH</label><select id="xiloResponseLength"><option value="short">Short and direct</option><option value="balanced">Balanced</option><option value="detailed">Detailed when helpful</option></select></div><label class="xilo-check"><input id="xiloEmoji" type="checkbox"> Allow occasional alien emojis</label></section>
-            <section class="xilo-control-card"><h3>Greetings</h3><p>Tell Xylo how to welcome people in each part of YourFavAlien.</p><div class="xilo-setting"><label for="xiloPublicGreeting">PUBLIC WEBSITE GREETING</label><textarea id="xiloPublicGreeting" maxlength="600"></textarea></div><div class="xilo-setting"><label for="xiloHqGreeting">BUSINESS HQ GREETING</label><textarea id="xiloHqGreeting" maxlength="600"></textarea></div></section>
-            <section class="xilo-control-card"><h3>Public-site behavior</h3><p>What Xylo should prioritize on yourfavalien.com.</p><div class="xilo-setting"><label for="xiloPublicRules">PUBLIC WEBSITE INSTRUCTIONS</label><textarea id="xiloPublicRules" maxlength="3000"></textarea></div></section>
-            <section class="xilo-control-card"><h3>Business-HQ behavior</h3><p>What Xylo should prioritize on yourfavalien.site.</p><div class="xilo-setting"><label for="xiloHqRules">BUSINESS HEADQUARTERS INSTRUCTIONS</label><textarea id="xiloHqRules" maxlength="3000"></textarea></div></section>
+            <section class="xilo-control-card"><h3>Identity &amp; response style</h3><p>Set the basics of how Xilo introduces itself and answers.</p><div class="xilo-setting"><label for="xiloDisplayName">DISPLAY NAME</label><input id="xiloDisplayName" maxlength="40" value="Xilo"></div><div class="xilo-setting"><label for="xiloResponseLength">ANSWER LENGTH</label><select id="xiloResponseLength"><option value="short">Short and direct</option><option value="balanced">Balanced</option><option value="detailed">Detailed when helpful</option></select></div><label class="xilo-check"><input id="xiloEmoji" type="checkbox"> Allow occasional alien emojis</label></section>
+            <section class="xilo-control-card"><h3>Greetings</h3><p>Tell Xilo how to welcome people in each part of YourFavAlien.</p><div class="xilo-setting"><label for="xiloPublicGreeting">PUBLIC WEBSITE GREETING</label><textarea id="xiloPublicGreeting" maxlength="600"></textarea></div><div class="xilo-setting"><label for="xiloHqGreeting">BUSINESS HQ GREETING</label><textarea id="xiloHqGreeting" maxlength="600"></textarea></div></section>
+            <section class="xilo-control-card"><h3>Public-site behavior</h3><p>What Xilo should prioritize on yourfavalien.com.</p><div class="xilo-setting"><label for="xiloPublicRules">PUBLIC WEBSITE INSTRUCTIONS</label><textarea id="xiloPublicRules" maxlength="3000"></textarea></div></section>
+            <section class="xilo-control-card"><h3>Business-HQ behavior</h3><p>What Xilo should prioritize on yourfavalien.site.</p><div class="xilo-setting"><label for="xiloHqRules">BUSINESS HEADQUARTERS INSTRUCTIONS</label><textarea id="xiloHqRules" maxlength="3000"></textarea></div></section>
             <section class="xilo-control-card wide"><h3>Suggested questions</h3><p>Add one approved conversation starter per line.</p><div class="xilo-setting"><label for="xiloSuggestions">CONVERSATION STARTERS</label><textarea id="xiloSuggestions" maxlength="2000"></textarea></div></section>
-            <section class="xilo-control-card wide"><h3>Test Xylo</h3><p>Preview an answer using the live Xylo service.</p><div class="xilo-setting"><label for="xiloTestMessage">TEST QUESTION</label><textarea id="xiloTestMessage" maxlength="1200" placeholder="Ask Xylo a question…"></textarea></div><div class="xilo-control-actions"><button class="btn secondary" id="xiloTestPublic" type="button">Test public Xylo</button><button class="btn secondary" id="xiloTestHq" type="button">Test HQ Xylo</button></div><div class="xilo-test-result" id="xiloTestResult">Xylo’s test answer will appear here.</div></section>
+            <section class="xilo-control-card wide"><h3>Test Xilo</h3><p>Preview an answer using the live Xilo service.</p><div class="xilo-setting"><label for="xiloTestMessage">TEST QUESTION</label><textarea id="xiloTestMessage" maxlength="1200" placeholder="Ask Xilo a question…"></textarea></div><div class="xilo-control-actions"><button class="btn secondary" id="xiloTestPublic" type="button">Test public Xilo</button><button class="btn secondary" id="xiloTestHq" type="button">Test HQ Xilo</button></div><div class="xilo-test-result" id="xiloTestResult">Xilo’s test answer will appear here.</div></section>
           </div>
-          <div class="xilo-control-actions"><button class="btn" type="submit">Save Xylo controls</button><button class="btn secondary" id="xiloOpenTraining" type="button">Open full training</button><button class="btn secondary" id="xiloOpenInbox" type="button">Open live inbox</button></div>
+          <div class="xilo-control-actions"><button class="btn" type="submit">Save Xilo controls</button><button class="btn secondary" id="xiloOpenTraining" type="button">Open full training</button><button class="btn secondary" id="xiloOpenInbox" type="button">Open live inbox</button></div>
           <div id="xiloControlStatus" class="status" aria-live="polite"></div>
         </form>
       </section>
@@ -680,8 +680,8 @@
 
       refreshChatsBtn.addEventListener('click', () => loadConversations());
 
-      const xiloControlStart = '--- XYLO CONTROL CENTER SETTINGS ---';
-      const xiloControlEnd = '--- END XYLO CONTROL CENTER SETTINGS ---';
+      const xiloControlStart = '--- XILO CONTROL CENTER SETTINGS ---';
+      const xiloControlEnd = '--- END XILO CONTROL CENTER SETTINGS ---';
       function readXiloControlBlock(text) {
         const start = String(text || '').indexOf(xiloControlStart);
         const end = String(text || '').indexOf(xiloControlEnd);
@@ -698,7 +698,7 @@
       }
       function loadXiloControls() {
         const settings = readXiloControlBlock(trainingInputs.personality.value);
-        xiloFields.displayName.value = settings.displayName || 'Xylo';
+        xiloFields.displayName.value = settings.displayName || 'Xilo';
         xiloFields.responseLength.value = settings.responseLength || 'balanced';
         xiloFields.allowEmoji.checked = settings.allowEmoji === true;
         xiloFields.publicGreeting.value = settings.publicGreeting || '';
@@ -709,7 +709,7 @@
       }
       function collectXiloControls() {
         return {
-          displayName: xiloFields.displayName.value.trim() || 'Xylo',
+          displayName: xiloFields.displayName.value.trim() || 'Xilo',
           responseLength: xiloFields.responseLength.value,
           allowEmoji: xiloFields.allowEmoji.checked,
           publicGreeting: xiloFields.publicGreeting.value.trim(),
@@ -724,21 +724,21 @@
         const settings = collectXiloControls();
         const base = stripXiloControlBlock(trainingInputs.personality.value);
         trainingInputs.personality.value = `${base}${base ? '\n\n' : ''}${xiloControlStart}\n${JSON.stringify(settings, null, 2)}\n${xiloControlEnd}`;
-        setStatus(xiloControlStatus, 'Saving Xylo Control Center…');
+        setStatus(xiloControlStatus, 'Saving Xilo Control Center…');
         trainingForm.requestSubmit();
-        window.setTimeout(() => setStatus(xiloControlStatus, 'Xylo controls saved to Mothership training.', 'ok'), 700);
+        window.setTimeout(() => setStatus(xiloControlStatus, 'Xilo controls saved to Mothership training.', 'ok'), 700);
       });
       document.getElementById('xiloOpenTraining').addEventListener('click', () => { switchDashboardTab('controls'); document.getElementById('xiloTraining').scrollIntoView({ behavior: 'smooth' }); });
       document.getElementById('xiloOpenInbox').addEventListener('click', () => switchDashboardTab('chats'));
       async function testXilo(site) {
         const question = document.getElementById('xiloTestMessage').value.trim();
         if (!question) { xiloTestResult.textContent = 'Type a test question first.'; return; }
-        xiloTestResult.textContent = 'Xylo is preparing a test answer…';
+        xiloTestResult.textContent = 'Xilo is preparing a test answer…';
         try {
           const response = await fetch('https://xilo.yourfavalien.com/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ messages:[{role:'user',content:question}], pageUrl:site === 'hq' ? 'https://yourfavalien.site/' : 'https://yourfavalien.com/', testMode:true }) });
           const data = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(data.error || 'Xylo could not answer.');
-          xiloTestResult.textContent = data.reply || 'Xylo returned no answer.';
+          if (!response.ok) throw new Error(data.error || 'Xilo could not answer.');
+          xiloTestResult.textContent = data.reply || 'Xilo returned no answer.';
         } catch (error) { xiloTestResult.textContent = error.message || 'The live test could not connect.'; }
       }
       document.getElementById('xiloTestPublic').addEventListener('click', () => testXilo('public'));
