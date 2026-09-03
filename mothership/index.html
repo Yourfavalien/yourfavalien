@@ -28,6 +28,7 @@
     .xilo-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.xilo-control-card{padding:17px;border:1px solid var(--line);border-radius:18px;background:#0a060a}.xilo-control-card.wide{grid-column:1/-1}.xilo-control-card h3{margin:0 0 5px;font-family:'Major Mono Display',monospace;font-size:16px}.xilo-control-card p{margin:0 0 15px;color:var(--muted);font-size:10px;line-height:1.6}.xilo-setting{display:grid;gap:6px;margin-top:12px}.xilo-setting label{color:var(--muted);font-size:9px}.xilo-setting input,.xilo-setting select,.xilo-setting textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#050305;color:var(--ink);font:11px/1.5 'Space Mono',monospace;outline:none}.xilo-setting textarea{min-height:105px;resize:vertical}.xilo-setting input:focus,.xilo-setting select:focus,.xilo-setting textarea:focus{border-color:#d65f96}.xilo-check{display:flex;align-items:center;gap:9px;margin-top:12px;color:var(--ink);font-size:10px}.xilo-check input{width:auto}.xilo-control-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.xilo-test-result{min-height:90px;margin-top:12px;padding:13px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:11px;line-height:1.6;white-space:pre-wrap}
     @media(max-width:700px){body{padding:14px}.brand{align-items:flex-start}.topbar{flex-direction:column}.topbar .btn{width:100%}.dashboard-tabs{width:100%;border-radius:18px;flex-wrap:wrap}.dashboard-tab{flex:1;padding:10px 8px}.control-directory{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-presets,.menu-label-grid,.xilo-control-grid{grid-template-columns:1fr}.xilo-control-card.wide{grid-column:auto}.grid,.training-grid{grid-template-columns:1fr}.color-grid{grid-template-columns:1fr}.color-row{grid-template-columns:42px 1fr}.color-row .tiny-btn{grid-column:2}.chat-console{grid-template-columns:1fr;min-height:680px}.chat-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}.chat-detail{min-height:450px}}
   </style>
+  <style>#xiloTraining,#trainingForm,#xiloView,#chatsView{display:none!important}</style>
 </head>
 <body>
   <main class="shell">
@@ -47,19 +48,18 @@
     <section id="dashboard" class="panel dashboard hidden">
       <div class="topbar"><div><div class="eyebrow">Mission control</div><h2>Website controls</h2><div id="userEmail" class="user"></div></div><button id="logoutBtn" class="btn secondary" type="button">Log out</button></div>
 
-      <nav class="dashboard-tabs" role="tablist" aria-label="Mothership sections">
-        <button id="controlsTab" class="dashboard-tab" type="button" role="tab" aria-selected="true" aria-controls="controlsView">Website &amp; Training</button>
-        <button id="xiloTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="xiloView">Xylo Control Center</button>
-        <button id="chatsTab" class="dashboard-tab" type="button" role="tab" aria-selected="false" aria-controls="chatsView">Xylo Chats</button>
+      <nav class="dashboard-tabs" aria-label="Mothership sections">
+        <button id="controlsTab" class="dashboard-tab" type="button" aria-selected="true" aria-controls="controlsView">Website controls</button>
+        <a class="dashboard-tab" href="https://xilo.yourfavalien.site/">Open Xylo Control Center</a>
+        <button id="xiloTab" type="button" hidden></button><button id="chatsTab" type="button" hidden></button>
       </nav>
 
       <nav class="control-directory" aria-label="Mothership control directory">
         <a class="control-link" href="#siteStatus"><span>01 / SYSTEM</span>Site status</a>
         <a class="control-link" href="#websiteImages"><span>02 / CONTENT</span>Website images</a>
         <a class="control-link" href="#themeColors"><span>03 / DESIGN</span>Appearance</a>
-        <a class="control-link" href="#xiloTraining"><span>04 / XILO</span>Training</a>
-        <a id="openChatsDirectory" class="control-link" href="#chatsView"><span>05 / INBOX</span>Chats</a>
-        <a id="openXiloDirectory" class="control-link" href="#xiloView"><span>06 / XYLO</span>Control center</a>
+        <a class="control-link" href="https://xilo.yourfavalien.site/"><span>04 / XYLO</span>Open separate control center</a>
+        <a id="openChatsDirectory" href="#" hidden></a><a id="openXiloDirectory" href="#" hidden></a>
       </nav>
 
       <div id="siteStatus" class="control-anchor"></div>
@@ -794,26 +794,13 @@
           userEmail.textContent = session.user.email || 'Authenticated user';
           renderSlots();
           await loadTheme();
-          await loadTraining();
-          await loadConversations();
-          if (!chatRefreshTimer) chatRefreshTimer = window.setInterval(async () => {
-            await loadConversations({ quiet: true });
-            await loadConversationMessages();
-          }, 4000);
         } else {
-          if (chatRefreshTimer) window.clearInterval(chatRefreshTimer);
-          chatRefreshTimer = null;
-          selectedConversation = null;
           switchDashboardTab('controls');
           dashboard.classList.add('hidden');
           loginPanel.classList.remove('hidden');
           groupsEl.innerHTML = '';
           colorGroupsEl.innerHTML = '';
           setStatus(themeStatus, '');
-          Object.values(trainingInputs).forEach(input => { input.value = ''; });
-          setStatus(trainingStatus, '');
-          chatList.innerHTML = '<div class="chat-list-empty">No conversations yet.</div>';
-          crewMessages.innerHTML = '<div class="chat-list-empty">Visitor messages will appear here.</div>';
         }
       }
 
