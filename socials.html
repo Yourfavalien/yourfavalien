@@ -235,6 +235,10 @@
       filter: brightness(1.08);
       box-shadow: 0 6px 24px rgba(0,0,0,0.3);
     }
+    .social-quick-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .social-quick-link { min-height: 52px; display: flex; align-items: center; justify-content: center; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.42); border-radius: 999px; color: var(--white); font: 700 12px/1 'Courier Prime', monospace; letter-spacing: 0.04em; text-align: center; text-decoration: none; transition: background .2s ease, transform .2s ease; }
+    .social-quick-link:hover { background: rgba(255,255,255,.12); transform: translateY(-2px); }
+    @media (max-width: 480px) { .social-quick-links { grid-template-columns: 1fr; } .social-quick-link { min-height: 48px; } }
     .pill-icon { font-size: 20px; }
 
     .pill-snapchat  { background: var(--yfa-social-card); color: var(--yfa-social-snapchat); }
@@ -857,20 +861,25 @@ nav a {
 <!-- SOCIAL LINK CARDS -->
 <div class="links-section">
 <div class="links-inner">
+<section class="social-quick-links" aria-label="Follow YourFavAlien">
+<a class="social-quick-link" href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" target="_blank">follow on TikTok</a>
+<a class="social-quick-link" href="https://www.instagram.com/yourrfavalien" rel="noopener noreferrer" target="_blank">follow on Instagram</a>
+<a class="social-quick-link" href="https://www.snapchat.com/add/yourfavvalien" rel="noopener noreferrer" target="_blank">add on Snapchat</a>
+</section>
 <div class="social-card">
 <!-- TikTok video scroll row -->
 <div class="tiktok-row">
 <div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7666234879394188558" title="TikTok video"></iframe>
+<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7666234879394188558" title="TikTok video"></iframe>
 </div>
 <div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7666018822171757837" title="TikTok video"></iframe>
+<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7666018822171757837" title="TikTok video"></iframe>
 </div>
 <div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7650813104862907661" title="TikTok video"></iframe>
+<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7650813104862907661" title="TikTok video"></iframe>
 </div>
 <div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" src="https://www.tiktok.com/embed/7651508141061950734" title="TikTok video"></iframe>
+<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7651508141061950734" title="TikTok video"></iframe>
 </div>
 </div>
 <a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" style="text-decoration:none;" target="_blank">
@@ -974,6 +983,35 @@ nav a {
 <!-- Beacons link -->
 </div>
 </div>
+
+<script>
+  // Keep social buttons and the page shell responsive; load video embeds only when visitors reach them.
+  (function () {
+    const embeds = Array.from(document.querySelectorAll('iframe[data-yfa-src]'));
+    if (!embeds.length) return;
+    const loadEmbed = function (iframe) {
+      if (!iframe.dataset.yfaSrc || iframe.src) return;
+      iframe.src = iframe.dataset.yfaSrc;
+      delete iframe.dataset.yfaSrc;
+    };
+    const beginObserving = function () {
+      if (!('IntersectionObserver' in window)) {
+        embeds.forEach(loadEmbed);
+        return;
+      }
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadEmbed(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px' });
+      embeds.forEach(function (embed) { observer.observe(embed); });
+    };
+    // Let the page shell and direct profile links settle before third-party video requests begin.
+    window.setTimeout(beginObserving, 1200);
+  })();
+</script>
 
 <script id="yfa-page-transitions">
 (function () {

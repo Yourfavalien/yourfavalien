@@ -80,7 +80,7 @@
 
     section#home { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0a0507; }
     .hero-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-    .hero-logo { position: relative; z-index: 2; display: flex; gap: clamp(40px,8vw,120px); align-items: baseline; }
+    .hero-logo { position: relative; z-index: 2; display: flex; gap: clamp(40px,8vw,120px); align-items: baseline; margin: 0; }
     .hero-logo span { font-family: 'Space Mono',monospace; font-weight: 700; font-size: clamp(28px,6vw,72px); color: var(--white); letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
     .logo-your { position: relative; }
     .logo-fav-inner { display: inline-flex; align-items: baseline; gap: 0; }
@@ -881,11 +881,11 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <div class="stars" id="hero-stars"></div>
 <img alt="YourFavAlien" class="yfa-hero-fallback" decoding="async" fetchpriority="high" id="heroVideo" src="assets/home-fallback.webp">
 <div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);z-index:1;"></div>
-<div class="hero-logo">
+<h1 class="hero-logo" aria-label="YourFavAlien">
 <span class="logo-your">YOUR</span>
 <span class="logo-fav"><span class="logo-fav-inner">F<span class="tri"></span>V</span></span>
 <span>ALIEN</span>
-</div>
+</h1>
 </div>
 </section>
 <script>
