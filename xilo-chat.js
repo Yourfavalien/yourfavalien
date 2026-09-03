@@ -65,6 +65,11 @@
 
   const root = createElement('aside', 'xilo-chat');
   root.setAttribute('aria-label', 'Chat with Xilo');
+  const isHomepage = window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
+  if (isHomepage) {
+    root.classList.add('xilo-chat--home');
+    window.setTimeout(function () { root.classList.add('is-ready'); }, 1800);
+  }
 
   const launcher = createElement('button', 'xilo-launcher');
   launcher.type = 'button';
@@ -128,10 +133,27 @@
       .replace(/\[([^\]]+)\]\((https:\/\/[^)]+)\)/g, '$1')
       .replace(/\*\*([^*\n]+)\*\*/g, '$1')
       .replace(/__([^_\n]+)__/g, '$1')
-      .replace(/https:\/\/[^\s]+/g, '')
       .replace(/[ \t]+\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
       .trim();
+  }
+
+  function actionsFromReply(text) {
+    const actions = [];
+    const seen = new Set();
+    const source = String(text || '');
+    const add = function (label, url) {
+      const cleanUrl = String(url || '').replace(/[.,;!?]+$/, '');
+      if (!/^https:\/\//i.test(cleanUrl) || seen.has(cleanUrl)) return;
+      seen.add(cleanUrl);
+      actions.push({ label: String(label || 'Open link').trim(), url: cleanUrl });
+    };
+    let match;
+    const markdown = /\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g;
+    while ((match = markdown.exec(source))) add(match[1], match[2]);
+    const bare = /https:\/\/[^\s<)]+/g;
+    while ((match = bare.exec(source))) add('Open link', match[0]);
+    return actions;
   }
 
   function addMessage(role, text, options) {
@@ -152,6 +174,7 @@
 
   async function revealAssistantMessage(text, actions) {
     const cleanText = cleanReplyText(text);
+    const combinedActions = (Array.isArray(actions) ? actions : []).concat(actionsFromReply(text));
     const row = addMessage('assistant', '');
     const bubble = row.querySelector('.xilo-message');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -166,7 +189,9 @@
         await wait(duration / steps);
       }
     }
-    addActionButtons(row, actions);
+    addActionButtons(row, combinedActions.filter(function (action, index, list) {
+      return index === list.findIndex(function (candidate) { return candidate && action && candidate.url === action.url; });
+    }));
     messages.scrollTop = messages.scrollHeight;
   }
 
