@@ -5,6 +5,7 @@
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
   const shouldPlayIntro = isHomePage;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
+  else document.documentElement.classList.add('yfa-page-loading');
   window.addEventListener('pageshow', function (event) {
     if (shouldPlayIntro && event.persisted) window.location.reload();
   }, { once: true });
@@ -63,7 +64,7 @@
     nav.setAttribute('aria-label', nav.getAttribute('aria-label') || 'Primary navigation');
     nav.setAttribute('aria-hidden', 'true');
 
-    const menuDefaults = { layout: 'editorial', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
+    const menuDefaults = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
     const corePages = [
       { key: 'home', files: ['/', 'index', 'index.html'] },
       { key: 'socials', files: ['socials', 'socials.html'] },
@@ -103,7 +104,9 @@
     function applyMenuSettings(settings) {
       const menu = settings && typeof settings === 'object' ? settings : menuDefaults;
       const allowedLayouts = ['editorial', 'centered', 'split'];
+      const allowedStyles = ['obsidian', 'glass', 'starlight', 'hologram', 'rose-glass', 'aurora', 'ice'];
       nav.dataset.yfaMenuLayout = allowedLayouts.includes(menu.layout) ? menu.layout : menuDefaults.layout;
+      nav.dataset.yfaMenuStyle = allowedStyles.includes(menu.style) ? menu.style : menuDefaults.style;
       const labels = menu.labels || {};
       Array.from(nav.children).filter(function (child) { return child.tagName === 'A'; }).forEach(function (link) {
         const page = corePageFor(link);
@@ -399,6 +402,25 @@
     }, 1000);
   }
 
+  function installPageLoader() {
+    const loader = document.createElement('div');
+    loader.className = 'yfa-page-loader';
+    loader.setAttribute('role', 'status');
+    loader.setAttribute('aria-live', 'polite');
+    loader.innerHTML = '<div class="yfa-page-loader__orbit" aria-hidden="true"><span></span><span></span><span></span></div><div class="yfa-page-loader__wordmark">YOUR F<span>△</span>V ALIEN</div><p>tuning the signal…</p>';
+    document.body.append(loader);
+    let dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      document.documentElement.classList.remove('yfa-page-loading');
+      loader.classList.add('is-ending');
+      window.setTimeout(function () { loader.remove(); }, 240);
+    }
+    window.addEventListener('load', function () { window.setTimeout(dismiss, 180); }, { once: true });
+    window.setTimeout(dismiss, 3200);
+  }
+
   let initialized = false;
 
   function initialize() {
@@ -408,6 +430,7 @@
     if (shouldPlayIntro) {
       playIntro(menuButton);
     } else {
+      installPageLoader();
       document.documentElement.classList.remove('yfa-intro-pending');
       menuButton.classList.add('is-ready', 'is-arriving');
     }
