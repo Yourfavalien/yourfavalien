@@ -114,13 +114,46 @@
   // Mount outside the animated body so fixed positioning stays locked to the viewport.
   document.documentElement.appendChild(root);
 
+  function normalizeActionUrl(value) {
+    try {
+      const cleaned = String(value || '').trim().replace(/[.,;!?]+$/, '');
+      if (/^mailto:/i.test(cleaned)) return cleaned;
+      const url = new URL(cleaned);
+      if (url.protocol !== 'https:') return '';
+      url.hash = '';
+      if (url.hostname === 'www.yourfavalien.com') url.hostname = 'yourfavalien.com';
+      url.pathname = url.pathname.replace(/\/{2,}/g, '/');
+      if (url.pathname !== '/') url.pathname = url.pathname.replace(/\/+$/, '');
+      return url.toString();
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function actionLabel(label, url) {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname === 'yourfavalien.site' || parsed.hostname.endsWith('.yourfavalien.site')) return 'Business Headquarters';
+      if (parsed.hostname === 'yourfavalien.com' && /^\/contact\/?$/i.test(parsed.pathname)) return 'General Contact';
+      if (parsed.hostname === 'yourfavalien.com' && parsed.pathname === '/') return 'YourFavAlien Website';
+    } catch (_) {}
+    const proposed = String(label || '').trim();
+    if (!proposed || /^open link$/i.test(proposed) || /^https?:\/\//i.test(proposed)) return 'Visit Link';
+    return proposed;
+  }
+
   function addActionButtons(row, actions) {
     if (!Array.isArray(actions) || !actions.length) return;
     const actionBar = createElement('div', 'xilo-message-actions');
+    const seen = new Set();
     actions.forEach(function (action) {
-      if (!action || typeof action.url !== 'string' || !/^(https:\/\/|mailto:)/i.test(action.url)) return;
-      const link = createElement('a', 'xilo-action', action.label || 'Open link');
-      link.href = action.url;
+      if (!action || typeof action.url !== 'string') return;
+      const normalizedUrl = normalizeActionUrl(action.url);
+      const key = normalizedUrl.toLowerCase().replace(/\/$/, '');
+      if (!normalizedUrl || seen.has(key)) return;
+      seen.add(key);
+      const link = createElement('a', 'xilo-action', actionLabel(action.label, normalizedUrl));
+      link.href = normalizedUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       actionBar.appendChild(link);
@@ -133,6 +166,10 @@
       .replace(/\[([^\]]+)\]\((https:\/\/[^)]+)\)/g, '$1')
       .replace(/\*\*([^*\n]+)\*\*/g, '$1')
       .replace(/__([^_\n]+)__/g, '$1')
+      .replace(/https:\/\/[^\s<)]+/g, function (url) {
+        const normalized = normalizeActionUrl(url);
+        return normalized ? actionLabel('', normalized) : '';
+      })
       .replace(/[ \t]+\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
       .trim();
@@ -189,9 +226,7 @@
         await wait(duration / steps);
       }
     }
-    addActionButtons(row, combinedActions.filter(function (action, index, list) {
-      return index === list.findIndex(function (candidate) { return candidate && action && candidate.url === action.url; });
-    }));
+    addActionButtons(row, combinedActions);
     messages.scrollTop = messages.scrollHeight;
   }
 
