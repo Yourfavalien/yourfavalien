@@ -95,13 +95,14 @@
 .xilo-chat--home .xilo-launcher-mark { display: none; }
 
 .xilo-panel {
-  position: absolute;
-  right: 0;
-  bottom: 62px;
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  bottom: auto;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   width: min(380px, calc(100vw - 36px));
-  height: min(590px, calc(100vh - 118px));
+  height: min(590px, calc(100dvh - 92px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
   min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -288,11 +289,11 @@
     position: fixed;
     top: max(10px, env(safe-area-inset-top));
     right: max(10px, env(safe-area-inset-right));
-    bottom: max(68px, calc(58px + env(safe-area-inset-bottom)));
+    bottom: auto;
     left: max(10px, env(safe-area-inset-left));
     width: auto;
-    height: auto;
-    max-height: none;
+    height: calc(100dvh - 78px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 78px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     min-height: 0;
     border-radius: 18px;
   }
