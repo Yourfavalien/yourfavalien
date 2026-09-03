@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const source = 'assets/yfa-intro-mobile.webp';
 const destination = 'assets/yfa-intro-mobile-fast.webp';
-const speed = 1.45;
+const speed = 2.5;
 const data = fs.readFileSync(source);
 
 if (data.toString('ascii', 0, 4) !== 'RIFF' || data.toString('ascii', 8, 12) !== 'WEBP') {
