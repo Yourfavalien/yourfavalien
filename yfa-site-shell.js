@@ -194,32 +194,34 @@
     overlay.setAttribute('aria-label', 'YourFavAlien introduction');
 
     const isMobileIntro = window.matchMedia('(max-width: 767px)').matches;
-    const introRate = isMobileIntro ? 1.45 : 1;
-    const video = document.createElement('video');
+    const video = document.createElement(isMobileIntro ? 'img' : 'video');
     video.className = 'yfa-intro__video';
     video.setAttribute('aria-hidden', 'true');
-    video.autoplay = true;
-    video.controls = false;
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.playsInline = true;
-    video.disableRemotePlayback = true;
-    video.removeAttribute('controls');
-    video.setAttribute('autoplay', '');
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('disableRemotePlayback', '');
-    video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback noplaybackrate');
-    video.setAttribute('x-webkit-airplay', 'deny');
-    video.preload = 'auto';
-    video.disablePictureInPicture = true;
-    video.defaultPlaybackRate = introRate;
-    video.playbackRate = introRate;
-    video.src = isMobileIntro
-      ? '/assets/yfa-intro-mobile.mp4?v=20260902-1'
-      : '/assets/yfa-intro-desktop.mp4?v=20260831-3';
+    if (isMobileIntro) {
+      video.alt = '';
+      video.decoding = 'sync';
+      video.fetchPriority = 'high';
+      video.draggable = false;
+    } else {
+      video.autoplay = true;
+      video.controls = false;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.playsInline = true;
+      video.disableRemotePlayback = true;
+      video.removeAttribute('controls');
+      video.setAttribute('autoplay', '');
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('disableRemotePlayback', '');
+      video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback noplaybackrate');
+      video.setAttribute('x-webkit-airplay', 'deny');
+      video.preload = 'auto';
+      video.disablePictureInPicture = true;
+      video.src = '/assets/yfa-intro-desktop.mp4?v=20260831-3';
+    }
 
     const menuShip = menuButton.querySelector('.yfa-menu-ship');
     const flightShip = menuShip.cloneNode(true);
@@ -234,6 +236,7 @@
     let animationFrame = 0;
     let startupTimer = 0;
     let stallTimer = 0;
+    let mobileStartedAt = 0;
 
     function ease(value) {
       return 1 - Math.pow(1 - value, 3);
@@ -282,6 +285,11 @@
 
     function animateFlight() {
       if (finished) return;
+      if (isMobileIntro) {
+        placeFlightShip((window.performance.now() - mobileStartedAt) / 2200);
+        animationFrame = window.requestAnimationFrame(animateFlight);
+        return;
+      }
       const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 3.2;
       placeFlightShip(video.currentTime / duration);
       animationFrame = window.requestAnimationFrame(animateFlight);
@@ -300,6 +308,31 @@
       window.setTimeout(function () { overlay.remove(); }, 260);
     }
 
+    if (isMobileIntro) {
+      video.addEventListener('load', function () {
+        playbackStarted = true;
+        window.clearTimeout(startupTimer);
+        mobileStartedAt = window.performance.now();
+        placeFlightShip(0);
+        animationFrame = window.requestAnimationFrame(animateFlight);
+        window.setTimeout(function () { placeFlightShip(1); }, 2200);
+        window.setTimeout(completeFinish, 2550);
+      }, { once: true });
+      video.addEventListener('error', function () {
+        window.setTimeout(completeFinish, 600);
+      }, { once: true });
+      window.addEventListener('resize', function () {
+        const elapsed = mobileStartedAt ? window.performance.now() - mobileStartedAt : 0;
+        placeFlightShip(elapsed / 2200);
+      }, { passive: true });
+      placeFlightShip(0);
+      startupTimer = window.setTimeout(function () {
+        if (!playbackStarted) completeFinish();
+      }, 15000);
+      video.src = '/assets/yfa-intro-mobile-fast.webp?v=20260902-1';
+      return;
+    }
+
     video.addEventListener('ended', function () {
       placeFlightShip(1);
       window.setTimeout(completeFinish, 480);
@@ -314,8 +347,6 @@
       video.defaultMuted = true;
       video.volume = 0;
       video.playsInline = true;
-      video.defaultPlaybackRate = introRate;
-      video.playbackRate = introRate;
     }
     function startPlayback() {
       enforceMobileAutoplay();
