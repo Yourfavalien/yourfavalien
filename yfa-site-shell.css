@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Playfair+Display:ital,wght@1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Major+Mono+Display&family=Playfair+Display:ital,wght@1,400&display=swap');
 :root { --yfa-ufo-x:calc(100vw - 32px); --yfa-ufo-y:74px; --yfa-menu-bg:#0a0507; --yfa-menu-text:#f0ece8; --yfa-menu-active:#b5175e; --yfa-menu-hover:#4de8d8; }
 html.yfa-intro-pending,html.yfa-intro-pending body { background:#050205 !important; }
 html.yfa-intro-pending body > *:not(.yfa-intro) { visibility:hidden; }
@@ -10,7 +10,7 @@ html.yfa-page-loading body > *:not(.yfa-page-loader) { visibility:hidden; }
 .yfa-page-loader.is-ending { opacity:0;pointer-events:none; }
 .yfa-page-loader__orbit { position:relative;width:84px;height:44px;margin:0 auto;border:2px solid #f3efeb;border-radius:50%;transform:rotate(-9deg);box-shadow:0 0 26px rgba(77,232,216,.28);animation:yfa-loader-pulse 1.4s ease-in-out infinite; }
 .yfa-page-loader__orbit::before { content:"";position:absolute;left:27px;top:-13px;width:26px;height:22px;border:2px solid #f3efeb;border-bottom:0;border-radius:50% 50% 0 0; }.yfa-page-loader__orbit span { position:absolute;top:16px;width:5px;height:5px;border-radius:50%;background:#f3efeb;box-shadow:0 0 8px currentColor; }.yfa-page-loader__orbit span:nth-child(1){left:22px}.yfa-page-loader__orbit span:nth-child(2){left:39px;color:#4de8d8}.yfa-page-loader__orbit span:nth-child(3){left:56px;color:#b5175e}
-.yfa-page-loader__wordmark { position:relative;font:700 clamp(17px,3vw,28px)/1 "Courier Prime",monospace;letter-spacing:.18em;text-shadow:0 0 18px rgba(181,23,94,.45); }.yfa-page-loader__wordmark span { color:#4de8d8; }.yfa-page-loader p { position:relative;margin:0;color:rgba(243,239,235,.62);font:700 10px/1 "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase; }
+.yfa-page-loader__wordmark { position:relative;font:400 clamp(17px,3vw,28px)/1 "Major Mono Display",monospace;letter-spacing:.12em;text-shadow:0 0 18px rgba(181,23,94,.45); }.yfa-page-loader__wordmark span { color:#4de8d8; }.yfa-page-loader p { position:relative;margin:0;color:rgba(243,239,235,.62);font:700 10px/1 "Courier Prime",monospace;letter-spacing:.22em;text-transform:uppercase; }
 @keyframes yfa-loader-drift { to { transform:rotate(360deg); } } @keyframes yfa-loader-pulse { 50% { transform:rotate(-9deg) scale(1.08);filter:drop-shadow(0 0 16px #b5175e); } }
 body > nav:not(.yfa-menu-panel) { visibility:hidden!important;opacity:0!important;pointer-events:none!important; }
 .yfa-intro { position:fixed;inset:0;z-index:2147483000;overflow:hidden;visibility:visible!important;background:#050205;opacity:1;transition:opacity 180ms ease-out; }
