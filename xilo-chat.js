@@ -122,6 +122,9 @@
       if (url.protocol !== 'https:') return '';
       url.hash = '';
       if (url.hostname === 'www.yourfavalien.com') url.hostname = 'yourfavalien.com';
+      if (url.hostname === 'yourfavalien.site' || url.hostname.endsWith('.yourfavalien.site')) {
+        return 'https://yourfavalien.site/';
+      }
       url.pathname = url.pathname.replace(/\/{2,}/g, '/');
       if (url.pathname !== '/') url.pathname = url.pathname.replace(/\/+$/, '');
       return url.toString();
@@ -149,10 +152,13 @@
     actions.forEach(function (action) {
       if (!action || typeof action.url !== 'string') return;
       const normalizedUrl = normalizeActionUrl(action.url);
-      const key = normalizedUrl.toLowerCase().replace(/\/$/, '');
+      const label = actionLabel(action.label, normalizedUrl);
+      const key = label.toLowerCase() === 'visit link'
+        ? normalizedUrl.toLowerCase().replace(/\/$/, '')
+        : label.toLowerCase();
       if (!normalizedUrl || seen.has(key)) return;
       seen.add(key);
-      const link = createElement('a', 'xilo-action', actionLabel(action.label, normalizedUrl));
+      const link = createElement('a', 'xilo-action', label);
       link.href = normalizedUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
