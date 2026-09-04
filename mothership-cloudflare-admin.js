@@ -16,7 +16,7 @@
   async function apiFetch(url, options = {}) {
     const response = await fetch(url, {
       ...options,
-      credentials: 'include',
+      credentials: 'same-origin',
       cache: 'no-store'
     });
     const type = (response.headers.get('content-type') || '').toLowerCase();
