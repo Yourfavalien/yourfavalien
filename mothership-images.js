@@ -3,7 +3,13 @@
   if (!cfg) return;
 
   const publicBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+  const legacyBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const slotMap = new Map((cfg.slots || []).map(slot => [slot.id, slot]));
+
+  function toCloudflareUrl(value) {
+    const url = String(value || '');
+    return url.startsWith(legacyBase) ? `${publicBase}${url.slice(legacyBase.length)}` : url;
+  }
 
   function remoteUrl(slotId) {
     const slot = slotMap.get(slotId);
@@ -11,14 +17,52 @@
     return `${publicBase}${slot.path}?v=${Math.floor(Date.now() / 60000)}`;
   }
 
+  function wireRetry(el) {
+    if (!el || el.dataset.yfaRetryWired === '1') return;
+    el.dataset.yfaRetryWired = '1';
+    el.addEventListener('error', function retryOnce() {
+      if (this.dataset.yfaRetried === '1') return;
+      const current = this.currentSrc || this.src || '';
+      if (!current.includes('/assets/')) return;
+      this.dataset.yfaRetried = '1';
+      const joiner = current.includes('?') ? '&' : '?';
+      this.src = `${current}${joiner}retry=${Date.now()}`;
+    });
+  }
+
+  function rewriteMedia(root) {
+    const nodes = [];
+    if (root && root.matches && root.matches('img[src],video[src],source[src]')) nodes.push(root);
+    if (root && root.querySelectorAll) nodes.push(...root.querySelectorAll('img[src],video[src],source[src]'));
+    nodes.forEach(el => {
+      const raw = el.getAttribute('src') || '';
+      const rewritten = toCloudflareUrl(raw);
+      if (rewritten && rewritten !== raw) el.setAttribute('src', rewritten);
+      if (el.tagName === 'IMG' || el.tagName === 'VIDEO') wireRetry(el);
+    });
+  }
+
+  function watchLegacyMedia() {
+    rewriteMedia(document);
+    new MutationObserver(records => {
+      records.forEach(record => {
+        if (record.type === 'attributes') rewriteMedia(record.target);
+        record.addedNodes && record.addedNodes.forEach(node => {
+          if (node.nodeType === 1) rewriteMedia(node);
+        });
+      });
+    }).observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['src'] });
+  }
+
   function applyImage(img) {
     const slotId = img.dataset.yfaImageSlot;
     const url = remoteUrl(slotId);
     if (!url) return;
-    const fallback = img.getAttribute('src') || '';
+    const fallback = toCloudflareUrl(img.getAttribute('src') || '');
     img.dataset.yfaFallback = fallback;
+    wireRetry(img);
     img.onerror = function () {
-      if (this.src !== fallback) {
+      if (fallback && this.src !== fallback) {
         this.onerror = null;
         this.src = fallback;
       }
@@ -32,6 +76,12 @@
     if (!url) return;
     const probe = new Image();
     probe.onload = () => { el.style.backgroundImage = `url("${url}")`; };
+    probe.onerror = () => {
+      const joiner = url.includes('?') ? '&' : '?';
+      const retry = new Image();
+      retry.onload = () => { el.style.backgroundImage = `url("${url}${joiner}retry=${Date.now()}")`; };
+      retry.src = `${url}${joiner}retry=${Date.now()}`;
+    };
     probe.src = url;
   }
 
@@ -61,6 +111,7 @@
         replacement.preload = 'auto';
       } else return;
       replacement.id = 'yfaHeroReplacement';
+      wireRetry(replacement);
       Object.assign(replacement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', maxWidth:'none', maxHeight:'none', objectFit:'cover', objectPosition:'center', zIndex:'0', pointerEvents:'none' });
       const restoreOriginal = () => { original.style.opacity=''; original.style.visibility=''; replacement.remove(); };
       replacement.addEventListener('error', restoreOriginal, { once:true });
@@ -72,6 +123,7 @@
   }
 
   function boot() {
+    watchLegacyMedia();
     document.querySelectorAll('[data-yfa-image-slot]').forEach(applyImage);
     document.querySelectorAll('[data-yfa-bg-slot]').forEach(applyBackground);
     applyHomeHeroMedia();
