@@ -10,346 +10,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#030306;
-      --ink:#f6f3f7;
-      --muted:#a7a2ad;
-      --navy:#151c4a;
-      --purple:#2b1747;
-      --purple-glow:#5d39a3;
-      --blue-glow:#314b98;
-      --metal:#d6d2dc;
-      --metal-dim:#77717e;
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
-    body{
-      min-height:100vh;
-      min-height:100dvh;
-      overflow-x:hidden;
-      font-family:'Space Mono',monospace;
-      background:
-        radial-gradient(circle at 50% 36%,rgba(49,75,152,.12),transparent 29%),
-        radial-gradient(circle at 66% 58%,rgba(93,57,163,.08),transparent 25%),
-        #030306;
-    }
-
-    .page{
-      position:relative;
-      isolation:isolate;
-      width:min(1120px,100%);
-      min-height:100dvh;
-      margin:0 auto;
-      padding:clamp(32px,5vw,68px) clamp(22px,6vw,78px) 38px;
-      display:flex;
-      flex-direction:column;
-    }
-
-    .grain{
-      position:fixed;
-      inset:0;
-      z-index:-2;
-      pointer-events:none;
-      opacity:.12;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
-      mix-blend-mode:soft-light;
-    }
-
-    .stars{
-      position:fixed;
-      inset:0;
-      z-index:-3;
-      pointer-events:none;
-      opacity:.22;
-      background-image:
-        radial-gradient(circle at 12% 18%,#fff 0 1px,transparent 1.2px),
-        radial-gradient(circle at 88% 23%,#fff 0 1px,transparent 1.2px),
-        radial-gradient(circle at 23% 69%,#fff 0 1px,transparent 1.2px),
-        radial-gradient(circle at 73% 82%,#fff 0 1px,transparent 1.2px),
-        radial-gradient(circle at 43% 9%,#fff 0 1px,transparent 1.2px),
-        radial-gradient(circle at 57% 74%,#fff 0 1px,transparent 1.2px);
-      background-size:260px 260px,310px 310px,340px 340px,290px 290px,360px 360px,400px 400px;
-    }
-
-    .topline{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding-bottom:18px;
-      border-bottom:1px solid transparent;
-      border-image:linear-gradient(90deg,var(--navy),var(--purple),transparent) 1;
-    }
-
-    .brand{
-      margin:0;
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:#d7d1de;
-    }
-
-    .status{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size:9px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:#8f8a98;
-      white-space:nowrap;
-    }
-
-    .status-dot{
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:#554479;
-      box-shadow:0 0 12px rgba(93,57,163,.65);
-      animation:statusFlicker 3.9s steps(1,end) infinite;
-    }
-
-    .hero{
-      flex:1;
-      display:grid;
-      place-items:center;
-      padding:clamp(42px,8vh,90px) 0 clamp(38px,7vh,72px);
-      text-align:center;
-    }
-
-    .hero-inner{width:min(830px,100%)}
-
-    h1{
-      margin:0 auto;
-      max-width:780px;
-      font-family:'Bodoni Moda',serif;
-      font-size:clamp(42px,7.2vw,84px);
-      line-height:.94;
-      font-weight:500;
-      letter-spacing:-.035em;
-      text-transform:uppercase;
-      text-wrap:balance;
-    }
-
-    .ufo-wrap{
-      position:relative;
-      width:min(420px,82vw);
-      margin:clamp(36px,5vw,58px) auto clamp(28px,4vw,44px);
-      filter:drop-shadow(0 18px 40px rgba(0,0,0,.58));
-    }
-
-    .ufo-glow{
-      position:absolute;
-      width:58%;
-      height:20%;
-      left:50%;
-      bottom:5%;
-      transform:translateX(-50%);
-      border-radius:50%;
-      background:radial-gradient(ellipse,rgba(49,75,152,.23),rgba(93,57,163,.10) 45%,transparent 72%);
-      filter:blur(14px);
-      animation:glowFail 4.6s steps(1,end) infinite;
-    }
-
-    .ufo{
-      width:100%;
-      height:auto;
-      display:block;
-      overflow:visible;
-      transform:rotate(-2.5deg);
-      transform-origin:center;
-      animation:shipDrift 5.2s ease-in-out infinite;
-    }
-
-    .ufo .metal{fill:none;stroke:var(--metal);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-    .ufo .dim{fill:none;stroke:var(--metal-dim);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-    .ufo .glass{fill:rgba(112,105,126,.06);stroke:#bbb5c4;stroke-width:2}
-    .ufo .crack{fill:none;stroke:#8d8794;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    .ufo .light{fill:#37456f;stroke:#8994bd;stroke-width:1.2;filter:drop-shadow(0 0 5px rgba(68,93,167,.8))}
-    .ufo .light.purple{fill:#4a3565;stroke:#9a7bb5;filter:drop-shadow(0 0 5px rgba(93,57,163,.8))}
-    .ufo .light.broken{fill:#17151d;stroke:#6a6570;filter:none}
-    .ufo .spark{fill:none;stroke:#7770a4;stroke-width:2;stroke-linecap:round;opacity:0}
-    .ufo .dangling{transform-origin:285px 189px;animation:dangle 2.8s ease-in-out infinite}
-
-    .ufo .flicker-a{animation:lightFailA 3.2s steps(1,end) infinite}
-    .ufo .flicker-b{animation:lightFailB 4.1s steps(1,end) infinite}
-    .ufo .spark-a{animation:sparkA 4.1s steps(1,end) infinite}
-    .ufo .spark-b{animation:sparkB 3.2s steps(1,end) infinite}
-
-    .message{
-      max-width:680px;
-      margin:0 auto;
-      color:var(--muted);
-      font-size:clamp(12px,1.8vw,15px);
-      line-height:1.9;
-      text-wrap:balance;
-    }
-
-    .footer{
-      display:grid;
-      grid-template-columns:1.25fr .75fr;
-      gap:clamp(28px,6vw,76px);
-      padding:24px 0 8px;
-      border-top:1px solid transparent;
-      border-image:linear-gradient(90deg,var(--navy),var(--purple),var(--navy)) 1;
-    }
-
-    .footer-title{
-      margin:0 0 8px;
-      font-family:'Bodoni Moda',serif;
-      font-size:18px;
-      font-weight:500;
-      letter-spacing:.01em;
-    }
-
-    .footer-copy{
-      margin:0;
-      color:#77727d;
-      font-size:10px;
-      line-height:1.7;
-    }
-
-    .socials{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      align-items:flex-start;
-      gap:10px 18px;
-    }
-
-    .socials a{
-      color:#b9b4bf;
-      text-decoration:none;
-      font-size:10px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      border-bottom:1px solid #29233c;
-      padding-bottom:3px;
-      transition:color .2s ease,border-color .2s ease;
-    }
-
-    .socials a:hover,.socials a:focus-visible{color:#fff;border-color:#60508f}
-
-    @keyframes shipDrift{
-      0%,100%{transform:translateY(0) rotate(-2.5deg)}
-      50%{transform:translateY(-5px) rotate(-1.6deg)}
-    }
-    @keyframes dangle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(6deg)}}
-    @keyframes lightFailA{0%,13%,18%,21%,61%,64%,100%{opacity:1}14%,17%,19%,20%,62%,63%{opacity:.07}}
-    @keyframes lightFailB{0%,29%,34%,72%,77%,100%{opacity:1}30%,33%,73%,76%{opacity:.1}}
-    @keyframes glowFail{0%,31%,36%,70%,75%,100%{opacity:1}32%,35%,71%,74%{opacity:.18}}
-    @keyframes statusFlicker{0%,45%,48%,51%,100%{opacity:1}46%,47%,49%,50%{opacity:.2}}
-    @keyframes sparkA{0%,29%,33%,100%{opacity:0}30%,31%{opacity:1}32%{opacity:.25}}
-    @keyframes sparkB{0%,71%,75%,100%{opacity:0}72%,73%{opacity:1}74%{opacity:.2}}
-
-    @media(max-width:700px){
-      .page{padding-left:20px;padding-right:20px}
-      .topline{align-items:flex-start}
-      .status{font-size:8px}
-      .hero{padding-top:48px;padding-bottom:44px}
-      h1{font-size:clamp(38px,13vw,61px);line-height:.96}
-      .ufo-wrap{width:min(340px,88vw);margin-top:34px}
-      .footer{grid-template-columns:1fr;gap:18px}
-      .socials{justify-content:flex-start}
-    }
-
-    @media(prefers-reduced-motion:reduce){
-      *,*::before,*::after{animation:none!important;scroll-behavior:auto!important}
-    }
+    :root{--bg:#030306;--ink:#f6f3f7;--muted:#a7a2ad;--navy:#151c4a;--purple:#2b1747;--purple-glow:#5d39a3;--blue-glow:#314b98;--metal:#d6d2dc;--metal-dim:#77717e}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}body{min-height:100vh;min-height:100dvh;overflow-x:hidden;font-family:'Space Mono',monospace;background:radial-gradient(circle at 50% 36%,rgba(49,75,152,.12),transparent 29%),radial-gradient(circle at 66% 58%,rgba(93,57,163,.08),transparent 25%),#030306}.page{position:relative;isolation:isolate;width:min(1120px,100%);min-height:100dvh;margin:0 auto;padding:clamp(32px,5vw,68px) clamp(22px,6vw,78px) 38px;display:flex;flex-direction:column}.grain{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");mix-blend-mode:soft-light}.stars{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.22;background-image:radial-gradient(circle at 12% 18%,#fff 0 1px,transparent 1.2px),radial-gradient(circle at 88% 23%,#fff 0 1px,transparent 1.2px),radial-gradient(circle at 23% 69%,#fff 0 1px,transparent 1.2px),radial-gradient(circle at 73% 82%,#fff 0 1px,transparent 1.2px),radial-gradient(circle at 43% 9%,#fff 0 1px,transparent 1.2px),radial-gradient(circle at 57% 74%,#fff 0 1px,transparent 1.2px);background-size:260px 260px,310px 310px,340px 340px,290px 290px,360px 360px,400px 400px}.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid transparent;border-image:linear-gradient(90deg,var(--navy),var(--purple),transparent) 1}.brand{margin:0;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#d7d1de}.status{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8f8a98;white-space:nowrap}.status-dot{width:7px;height:7px;border-radius:50%;background:#554479;box-shadow:0 0 12px rgba(93,57,163,.65);animation:statusFlicker 3.9s steps(1,end) infinite}.hero{flex:1;display:grid;place-items:center;padding:clamp(42px,8vh,90px) 0 clamp(38px,7vh,72px);text-align:center}.hero-inner{width:min(830px,100%)}h1{margin:0 auto;max-width:780px;font-family:'Bodoni Moda',serif;font-size:clamp(42px,7.2vw,84px);line-height:.94;font-weight:500;letter-spacing:-.035em;text-transform:uppercase;text-wrap:balance}.ufo-wrap{position:relative;width:min(420px,82vw);margin:clamp(36px,5vw,58px) auto clamp(28px,4vw,44px);filter:drop-shadow(0 18px 40px rgba(0,0,0,.58))}.ufo-glow{position:absolute;width:58%;height:20%;left:50%;bottom:5%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(49,75,152,.23),rgba(93,57,163,.10) 45%,transparent 72%);filter:blur(14px);animation:glowFail 4.6s steps(1,end) infinite}.ufo{width:100%;height:auto;display:block;overflow:visible;transform:rotate(-2.5deg);transform-origin:center;animation:shipDrift 5.2s ease-in-out infinite}.ufo .metal{fill:none;stroke:var(--metal);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.ufo .dim{fill:none;stroke:var(--metal-dim);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.ufo .glass{fill:rgba(112,105,126,.06);stroke:#bbb5c4;stroke-width:2}.ufo .crack{fill:none;stroke:#8d8794;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.ufo .light{fill:#37456f;stroke:#8994bd;stroke-width:1.2;filter:drop-shadow(0 0 5px rgba(68,93,167,.8))}.ufo .light.purple{fill:#4a3565;stroke:#9a7bb5;filter:drop-shadow(0 0 5px rgba(93,57,163,.8))}.ufo .light.broken{fill:#17151d;stroke:#6a6570;filter:none}.ufo .spark{fill:none;stroke:#7770a4;stroke-width:2;stroke-linecap:round;opacity:0}.ufo .dangling{transform-origin:285px 189px;animation:dangle 2.8s ease-in-out infinite}.ufo .flicker-a{animation:lightFailA 3.2s steps(1,end) infinite}.ufo .flicker-b{animation:lightFailB 4.1s steps(1,end) infinite}.ufo .spark-a{animation:sparkA 4.1s steps(1,end) infinite}.ufo .spark-b{animation:sparkB 3.2s steps(1,end) infinite}.message{max-width:680px;margin:0 auto;color:var(--muted);font-size:clamp(12px,1.8vw,15px);line-height:1.9;text-wrap:balance}.footer{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(28px,6vw,76px);padding:24px 0 8px;border-top:1px solid transparent;border-image:linear-gradient(90deg,var(--navy),var(--purple),var(--navy)) 1}.footer-title{margin:0 0 8px;font-family:'Bodoni Moda',serif;font-size:18px;font-weight:500;letter-spacing:.01em}.footer-copy{margin:0;color:#77727d;font-size:10px;line-height:1.7}.footer-copy a{color:#b9b4bf;text-decoration:none;border-bottom:1px solid #29233c}.socials{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start;gap:10px 18px}.socials a{color:#b9b4bf;text-decoration:none;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #29233c;padding-bottom:3px;transition:color .2s ease,border-color .2s ease}.socials a:hover,.socials a:focus-visible,.footer-copy a:hover,.footer-copy a:focus-visible{color:#fff;border-color:#60508f}@keyframes shipDrift{0%,100%{transform:translateY(0) rotate(-2.5deg)}50%{transform:translateY(-5px) rotate(-1.6deg)}}@keyframes dangle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(6deg)}}@keyframes lightFailA{0%,13%,18%,21%,61%,64%,100%{opacity:1}14%,17%,19%,20%,62%,63%{opacity:.07}}@keyframes lightFailB{0%,29%,34%,72%,77%,100%{opacity:1}30%,33%,73%,76%{opacity:.1}}@keyframes glowFail{0%,31%,36%,70%,75%,100%{opacity:1}32%,35%,71%,74%{opacity:.18}}@keyframes statusFlicker{0%,45%,48%,51%,100%{opacity:1}46%,47%,49%,50%{opacity:.2}}@keyframes sparkA{0%,29%,33%,100%{opacity:0}30%,31%{opacity:1}32%{opacity:.25}}@keyframes sparkB{0%,71%,75%,100%{opacity:0}72%,73%{opacity:1}74%{opacity:.2}}@media(max-width:700px){.page{padding-left:20px;padding-right:20px}.topline{align-items:flex-start}.status{font-size:8px}.hero{padding-top:48px;padding-bottom:44px}h1{font-size:clamp(38px,13vw,61px);line-height:.96}.ufo-wrap{width:min(340px,88vw);margin-top:34px}.footer{grid-template-columns:1fr;gap:18px}.socials{justify-content:flex-start}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="stars" aria-hidden="true"></div>
-
+  <div class="grain" aria-hidden="true"></div><div class="stars" aria-hidden="true"></div>
   <main class="page">
-    <header class="topline">
-      <p class="brand">YourFavAlien · Flight Status</p>
-      <div class="status"><span class="status-dot"></span>Repair signal active</div>
-    </header>
-
-    <section class="hero" aria-labelledby="maintenanceTitle">
-      <div class="hero-inner">
-        <h1 id="maintenanceTitle">Our UFO is currently under repair.</h1>
-
-        <div class="ufo-wrap" aria-hidden="true">
-          <div class="ufo-glow"></div>
-          <svg class="ufo" viewBox="0 0 420 245" role="img" aria-label="Broken UFO with flickering lights">
-            <!-- antenna + cracked dome -->
-            <path class="dim" d="M210 31 L213 14"/>
-            <circle class="dim" cx="214" cy="11" r="4"/>
-            <path class="glass" d="M133 116 C146 64 171 42 211 40 C252 42 278 64 289 116 Z"/>
-            <path class="crack" d="M220 48 l-11 18 9 9 -13 18 8 15"/>
-            <path class="crack" d="M210 65 l-14 -7 -8 9"/>
-
-            <!-- saucer body -->
-            <path class="metal" d="M89 121 C112 105 148 97 210 97 C274 97 310 105 333 121 L363 145 C330 169 280 182 210 182 C139 182 90 169 57 145 Z"/>
-            <path class="dim" d="M69 144 C107 157 153 164 210 164 C269 164 316 157 352 144"/>
-            <path class="dim" d="M111 120 C135 126 168 129 210 129 C253 129 286 126 310 120"/>
-
-            <!-- dents / damage -->
-            <path class="crack" d="M92 134 l14 5 -7 8 13 5"/>
-            <path class="crack" d="M317 131 l-12 7 8 9 -10 7"/>
-            <path class="dim" d="M71 143 C66 154 61 162 53 170"/>
-            <path class="dim" d="M55 170 l-9 3 6 6"/>
-
-            <!-- landing underside -->
-            <path class="metal" d="M143 174 C151 195 174 207 210 207 C246 207 269 195 277 174"/>
-            <path class="dim" d="M165 194 C181 199 196 201 210 201 C225 201 240 199 255 194"/>
-
-            <!-- flickering underside lights -->
-            <circle class="light flicker-a" cx="118" cy="154" r="6"/>
-            <circle class="light purple flicker-b" cx="163" cy="169" r="6"/>
-            <circle class="light flicker-a" cx="210" cy="175" r="6"/>
-            <circle class="light purple flicker-b" cx="257" cy="169" r="6"/>
-            <circle class="light broken" cx="302" cy="154" r="6"/>
-            <path class="crack" d="M297 149 l10 10 M307 149 l-10 10"/>
-
-            <!-- loose panel -->
-            <g class="dangling">
-              <path class="dim" d="M286 180 l9 25"/>
-              <path class="metal" d="M294 203 l18 8 -9 12 -17 -9 z"/>
-            </g>
-
-            <!-- electrical sparks -->
-            <path class="spark spark-a" d="M319 154 l12 -8 -3 9 10 -2 -13 12 2 -8 z"/>
-            <path class="spark spark-b" d="M96 137 l-13 -8 5 9 -11 1 14 9 -3 -7 z"/>
-          </svg>
-        </div>
-
-        <p class="message" id="maintenanceMessage">Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.</p>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div>
-        <p class="footer-title">Still receiving transmissions.</p>
-        <p class="footer-copy">Follow the signal while our crew gets the ship flight-ready again.</p>
-      </div>
-      <nav class="socials" aria-label="YourFavAlien social links">
-        <a href="https://www.instagram.com/yourrfavalien" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://www.tiktok.com/@yourrfavalien" target="_blank" rel="noopener noreferrer">TikTok</a>
-        <a href="https://www.snapchat.com/add/yourfavvalien" target="_blank" rel="noopener noreferrer">Snapchat</a>
-      </nav>
-    </footer>
+    <header class="topline"><p class="brand">YourFavAlien · Flight Status</p><div class="status"><span class="status-dot"></span>Repair signal active</div></header>
+    <section class="hero" aria-labelledby="maintenanceTitle"><div class="hero-inner"><h1 id="maintenanceTitle">Our UFO is currently under repair.</h1><div class="ufo-wrap" aria-hidden="true"><div class="ufo-glow"></div><svg class="ufo" viewBox="0 0 420 245" role="img" aria-label="Broken UFO with flickering lights"><path class="dim" d="M210 31 L213 14"/><circle class="dim" cx="214" cy="11" r="4"/><path class="glass" d="M133 116 C146 64 171 42 211 40 C252 42 278 64 289 116 Z"/><path class="crack" d="M220 48 l-11 18 9 9 -13 18 8 15"/><path class="crack" d="M210 65 l-14 -7 -8 9"/><path class="metal" d="M89 121 C112 105 148 97 210 97 C274 97 310 105 333 121 L363 145 C330 169 280 182 210 182 C139 182 90 169 57 145 Z"/><path class="dim" d="M69 144 C107 157 153 164 210 164 C269 164 316 157 352 144"/><path class="dim" d="M111 120 C135 126 168 129 210 129 C253 129 286 126 310 120"/><path class="crack" d="M92 134 l14 5 -7 8 13 5"/><path class="crack" d="M317 131 l-12 7 8 9 -10 7"/><path class="dim" d="M71 143 C66 154 61 162 53 170"/><path class="dim" d="M55 170 l-9 3 6 6"/><path class="metal" d="M143 174 C151 195 174 207 210 207 C246 207 269 195 277 174"/><path class="dim" d="M165 194 C181 199 196 201 210 201 C225 201 240 199 255 194"/><circle class="light flicker-a" cx="118" cy="154" r="6"/><circle class="light purple flicker-b" cx="163" cy="169" r="6"/><circle class="light flicker-a" cx="210" cy="175" r="6"/><circle class="light purple flicker-b" cx="257" cy="169" r="6"/><circle class="light broken" cx="302" cy="154" r="6"/><path class="crack" d="M297 149 l10 10 M307 149 l-10 10"/><g class="dangling"><path class="dim" d="M286 180 l9 25"/><path class="metal" d="M294 203 l18 8 -9 12 -17 -9 z"/></g><path class="spark spark-a" d="M319 154 l12 -8 -3 9 10 -2 -13 12 2 -8 z"/><path class="spark spark-b" d="M96 137 l-13 -8 5 9 -11 1 14 9 -3 -7 z"/></svg></div><p class="message" id="maintenanceMessage">Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.</p></div></section>
+    <footer class="footer"><div><p class="footer-title">Still receiving transmissions.</p><p class="footer-copy">Follow the signal while our crew gets the ship flight-ready again.<br><a href="mailto:businessinquiry@yourfavalien.com">businessinquiry@yourfavalien.com</a></p></div><nav class="socials" aria-label="YourFavAlien social links"><a href="https://www.instagram.com/yourrfavalien" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.tiktok.com/@yourrfavalien" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.snapchat.com/add/yourfavvalien" target="_blank" rel="noopener noreferrer">Snapchat</a></nav></footer>
   </main>
-
   <script>
     (() => {
-      const statusUrl = 'https://qpwjfsigvoktsaeiypyy.supabase.co/storage/v1/object/public/mothership-images/system/maintenance.json';
+      const statusUrl = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/system/maintenance.json';
       const message = document.getElementById('maintenanceMessage');
       const fallback = 'Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.';
       const legacyFallback = 'The Mothership is recalibrating this sector. New transmission incoming — check back soon.';
+      let redirecting = false;
 
       async function refreshStatus() {
+        if (redirecting) return;
         try {
           const response = await fetch(`${statusUrl}?v=${Date.now()}`, { cache: 'no-store' });
           if (!response.ok) return;
           const data = await response.json();
-          if (data.enabled === false) {
-            window.location.replace('/');
+          if (data.enabled !== true) {
+            redirecting = true;
+            const params = new URLSearchParams(location.search);
+            const from = params.get('from');
+            const target = from && from.startsWith('/') && !from.startsWith('//') && !from.startsWith('/maintenance.html') ? from : '/';
+            window.location.replace(`${target}${target.includes('?') ? '&' : '?'}maintenance-cleared=${Date.now()}`);
             return;
           }
           const saved = String(data.message || '').trim();
@@ -358,7 +49,9 @@
       }
 
       refreshStatus();
-      window.setInterval(refreshStatus, 30000);
+      window.addEventListener('focus', refreshStatus);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshStatus(); });
+      window.setInterval(refreshStatus, 5000);
     })();
   </script>
 </body>
