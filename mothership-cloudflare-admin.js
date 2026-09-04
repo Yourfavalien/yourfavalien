@@ -6,7 +6,7 @@
 
   const cfg = window.YFA_MOTHERSHIP || {};
   const READ_BASE = 'https://yourfavalien-mothership.aydenmtz54.workers.dev';
-  const WRITE_BASE = 'https://mothership-api.yourfavalien.com';
+  const WRITE_BASE = window.location.origin;
 
   const assetUrl = path => `${READ_BASE}/assets/${String(path || '').replace(/^\/+/, '')}?v=${Date.now()}`;
   const settingUrl = key => `${READ_BASE}/api/settings/${encodeURIComponent(key)}?v=${Date.now()}`;
