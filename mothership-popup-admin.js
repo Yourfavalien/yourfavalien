@@ -44,7 +44,7 @@
 
   const scripts = [
     ['/mothership-cloudflare-admin.js?v=20260903-2', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20260903-3', 'yfaMothershipPower'],
+    ['/mothership-power.js?v=20260904-1', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260830-2', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260830-2', 'yfaMothershipBadge']
   ];
@@ -59,8 +59,29 @@
     document.head.appendChild(script);
   });
 
-  // Power Tools should always become publishable again after the user edits
-  // anything following a successful publish. No Save Draft or refresh required.
+  // Older page/photo records still contain their original Supabase public URLs.
+  // Rewrite img/video src attributes directly to the migrated R2 asset path so
+  // previews load even though those values were saved before the Cloudflare move.
+  const legacyPrefix = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const cloudflarePrefix = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+  const rewriteMediaSrc = root => {
+    const nodes = [];
+    if (root && root.matches && root.matches('img[src],video[src],source[src]')) nodes.push(root);
+    if (root && root.querySelectorAll) nodes.push(...root.querySelectorAll('img[src],video[src],source[src]'));
+    nodes.forEach(node => {
+      const src = node.getAttribute('src') || '';
+      if (src.startsWith(legacyPrefix)) node.setAttribute('src', cloudflarePrefix + src.slice(legacyPrefix.length));
+    });
+  };
+  rewriteMediaSrc(document);
+  new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === 1) rewriteMediaSrc(node);
+    }));
+  }).observe(document.documentElement, { childList:true, subtree:true });
+
+  // Power Tools should become publishable again after every completed publish,
+  // and immediately after the next edit. No draft-save or reload workaround.
   function keepPowerPublishReusable() {
     const button = document.getElementById('powerPublish');
     const status = document.getElementById('powerPublishStatus');
@@ -73,7 +94,7 @@
       if (text !== 'publishing…' && text !== 'publishing...') button.disabled = false;
     };
 
-    new MutationObserver(reenable).observe(status, { childList: true, subtree: true, characterData: true });
+    new MutationObserver(reenable).observe(status, { childList:true, subtree:true, characterData:true });
     view.addEventListener('input', reenable, true);
     view.addEventListener('change', reenable, true);
     view.addEventListener('click', event => {
