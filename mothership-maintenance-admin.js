@@ -2,14 +2,15 @@
   'use strict';
 
   const cfg = window.YFA_MOTHERSHIP;
-  if (!cfg || !cfg.maintenancePath || !window.supabase || !window.supabase.createClient) return;
+  if (!cfg || !cfg.maintenancePath) return;
 
   const dashboard = document.getElementById('dashboard');
   const topbar = dashboard && dashboard.querySelector('.topbar');
   if (!dashboard || !topbar || document.getElementById('yfaMaintenanceControl')) return;
 
-  const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
-  const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const READ_BASE = 'https://yourfavalien-mothership.aydenmtz54.workers.dev';
+  const READ_URL = `${READ_BASE}/api/settings/maintenance`;
+  const WRITE_URL = `${window.location.origin}/api/settings/maintenance`;
   const defaultMessage = 'Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.';
   const legacyDefaultMessage = 'The Mothership is recalibrating this sector. New transmission incoming — check back soon.';
   let state = { enabled: false, message: defaultMessage };
@@ -42,7 +43,7 @@
       <div>
         <div class="eyebrow">Private launch control</div>
         <h2>Maintenance mode</h2>
-        <div class="yfa-maint-copy">Hide the public site while you change photos, video, and colors. Because you are signed into Mothership, your browser can still preview the real website.</div>
+        <div class="yfa-maint-copy">Hide the public site while you change photos, video, and colors. This setting is stored in Cloudflare.</div>
       </div>
       <div id="yfaMaintenanceBadge" class="yfa-maint-badge"><span class="yfa-maint-dot"></span><span>Checking status…</span></div>
     </div>
@@ -55,7 +56,7 @@
       <button id="yfaMaintenancePreview" class="btn secondary" type="button">Preview website</button>
     </div>
     <div id="yfaMaintenanceStatus" class="status" aria-live="polite"></div>
-    <div class="yfa-maint-warning">Preview access follows your Mothership login in this browser. Use a private/incognito window to check exactly what public visitors see.</div>
+    <div class="yfa-maint-warning">Preview opens a short private preview pass in this browser. Use a private/incognito window to check what public visitors see.</div>
   `;
   const statusAnchor = document.getElementById('siteStatus');
   if (statusAnchor) statusAnchor.insertAdjacentElement('afterend', panel);
@@ -72,10 +73,6 @@
     statusEl.className = `status ${type}`.trim();
   }
 
-  function statusUrl() {
-    return `${publicBase}${cfg.maintenancePath}?v=${Date.now()}`;
-  }
-
   function render() {
     const active = state.enabled === true;
     badge.classList.toggle('active', active);
@@ -90,15 +87,13 @@
     toggleBtn.disabled = true;
     setStatus('Checking public site status…');
     try {
-      const response = await fetch(statusUrl(), { cache: 'no-store' });
+      const response = await fetch(`${READ_URL}?v=${Date.now()}`, { cache: 'no-store' });
       if (response.ok) {
         const data = await response.json();
+        const saved = String((data && data.message) || '').trim();
         state = {
           enabled: data && data.enabled === true,
-          message: (() => {
-            const saved = String((data && data.message) || '').trim();
-            return String(!saved || saved === legacyDefaultMessage ? defaultMessage : saved).slice(0, 240);
-          })()
+          message: String(!saved || saved === legacyDefaultMessage ? defaultMessage : saved).slice(0, 240)
         };
       } else {
         state = { enabled: false, message: defaultMessage };
@@ -118,28 +113,19 @@
     setStatus(enabled ? 'Activating maintenance mode…' : 'Bringing the site back online…');
 
     try {
-      const payload = new Blob([JSON.stringify({
-        enabled: Boolean(enabled),
-        message,
-        updatedAt: new Date().toISOString()
-      }, null, 2)], { type: 'application/json' });
-
-      await client.storage.from(cfg.bucket).remove([cfg.maintenancePath]);
-      const { error } = await client.storage.from(cfg.bucket).upload(cfg.maintenancePath, payload, {
-        cacheControl: '30',
-        contentType: 'application/json',
-        upsert: false
+      const response = await fetch(WRITE_URL, {
+        method: 'PUT',
+        credentials: 'same-origin',
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: Boolean(enabled), message, updatedAt: new Date().toISOString() }, null, 2)
       });
-      if (error) throw error;
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Cloudflare request failed (${response.status}).`);
 
       state = { enabled: Boolean(enabled), message };
       render();
-      setStatus(
-        enabled
-          ? 'Maintenance is ON. Public visitors are hidden; your signed-in browser can still preview.'
-          : 'Maintenance is OFF. The public website is live again.',
-        'ok'
-      );
+      setStatus(enabled ? 'Maintenance is ON. Public visitors are hidden.' : 'Maintenance is OFF. The public website is live again.', 'ok');
     } catch (error) {
       toggleBtn.disabled = false;
       setStatus(error.message || 'Could not change maintenance mode.', 'error');
@@ -150,21 +136,15 @@
 
   toggleBtn.addEventListener('click', () => {
     const next = !state.enabled;
-    const copy = next
-      ? 'Turn maintenance mode ON? Public visitors will see the maintenance screen, while this signed-in browser can still preview the real site.'
-      : 'Turn maintenance mode OFF and make the website public again?';
+    const copy = next ? 'Turn maintenance mode ON? Public visitors will see the maintenance screen.' : 'Turn maintenance mode OFF and make the website public again?';
     if (!window.confirm(copy)) return;
     publish(next);
   });
 
   previewBtn.addEventListener('click', () => {
+    try { localStorage.setItem('yfa-maintenance-preview-until', String(Date.now() + 15 * 60 * 1000)); } catch (error) {}
     window.open(`/?yfa-preview=${Date.now()}`, '_blank', 'noopener');
   });
 
-  client.auth.onAuthStateChange((_event, session) => {
-    if (session && session.user) loadStatus();
-  });
-  client.auth.getSession().then(({ data }) => {
-    if (data && data.session && data.session.user) loadStatus();
-  });
+  loadStatus();
 })();
