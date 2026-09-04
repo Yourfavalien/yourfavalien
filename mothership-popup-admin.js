@@ -59,29 +59,43 @@
     document.head.appendChild(script);
   });
 
-  // Older page/photo records still contain their original Supabase public URLs.
-  // Rewrite img/video src attributes directly to the migrated R2 asset path so
-  // previews load even though those values were saved before the Cloudflare move.
   const legacyPrefix = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
   const cloudflarePrefix = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
-  const rewriteMediaSrc = root => {
+
+  function wireRetry(node) {
+    if (!node || node.dataset.yfaMothershipRetry === '1') return;
+    node.dataset.yfaMothershipRetry = '1';
+    node.addEventListener('error', function () {
+      if (this.dataset.yfaMothershipRetried === '1') return;
+      const src = this.currentSrc || this.src || '';
+      if (!src.includes('/assets/')) return;
+      this.dataset.yfaMothershipRetried = '1';
+      const joiner = src.includes('?') ? '&' : '?';
+      this.src = `${src}${joiner}retry=${Date.now()}`;
+    });
+  }
+
+  function rewriteMediaSrc(root) {
     const nodes = [];
     if (root && root.matches && root.matches('img[src],video[src],source[src]')) nodes.push(root);
     if (root && root.querySelectorAll) nodes.push(...root.querySelectorAll('img[src],video[src],source[src]'));
     nodes.forEach(node => {
       const src = node.getAttribute('src') || '';
       if (src.startsWith(legacyPrefix)) node.setAttribute('src', cloudflarePrefix + src.slice(legacyPrefix.length));
+      if (node.tagName === 'IMG' || node.tagName === 'VIDEO') wireRetry(node);
     });
-  };
+  }
+
   rewriteMediaSrc(document);
   new MutationObserver(records => {
-    records.forEach(record => record.addedNodes.forEach(node => {
-      if (node.nodeType === 1) rewriteMediaSrc(node);
-    }));
-  }).observe(document.documentElement, { childList:true, subtree:true });
+    records.forEach(record => {
+      if (record.type === 'attributes') rewriteMediaSrc(record.target);
+      record.addedNodes && record.addedNodes.forEach(node => {
+        if (node.nodeType === 1) rewriteMediaSrc(node);
+      });
+    });
+  }).observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['src'] });
 
-  // Power Tools should become publishable again after every completed publish,
-  // and immediately after the next edit. No draft-save or reload workaround.
   function keepPowerPublishReusable() {
     const button = document.getElementById('powerPublish');
     const status = document.getElementById('powerPublishStatus');
