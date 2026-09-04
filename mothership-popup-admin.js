@@ -43,7 +43,7 @@
   else topbar.insertAdjacentElement('afterend', panel);
 
   const scripts = [
-    ['/mothership-cloudflare-admin.js?v=20260903-1', 'yfaCloudflareAdmin'],
+    ['/mothership-cloudflare-admin.js?v=20260903-2', 'yfaCloudflareAdmin'],
     ['/mothership-power.js?v=20260830-2', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260830-2', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260830-2', 'yfaMothershipBadge']
