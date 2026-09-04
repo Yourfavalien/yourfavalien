@@ -122,11 +122,21 @@
     } catch (error) {}
   }
 
+  function loadSiteEnhancements() {
+    if (window.__YFA_SITE_ENHANCEMENTS__ || document.querySelector('script[data-yfa-site-enhancements]')) return;
+    const script = document.createElement('script');
+    script.src = '/site-enhancements.js?v=20260904-1';
+    script.defer = true;
+    script.dataset.yfaSiteEnhancements = '1';
+    document.head.appendChild(script);
+  }
+
   function boot() {
     watchLegacyMedia();
     document.querySelectorAll('[data-yfa-image-slot]').forEach(applyImage);
     document.querySelectorAll('[data-yfa-bg-slot]').forEach(applyBackground);
     applyHomeHeroMedia();
+    loadSiteEnhancements();
   }
 
   cfg.refreshImages = boot;
