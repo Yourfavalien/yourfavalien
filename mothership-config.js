@@ -70,21 +70,67 @@ window.YFA_MOTHERSHIP = {
   ]
 };
 
-// On Mothership, Cloudflare Access is the authentication gate. Keep the existing
-// Supabase client available temporarily for the dashboard features that have not
-// yet been moved to D1/R2, but make its auth methods reflect the Cloudflare Access
-// session instead of asking for a second Supabase password.
+// Compatibility bridge: any old public Supabase Storage URL in the site now reads
+// the already-migrated object from Cloudflare R2 instead. This lets older modules
+// keep their current URL-building code while removing Supabase from the request path.
+(function () {
+  if (window.__YFA_CF_STORAGE_FETCH_BRIDGE__) return;
+  window.__YFA_CF_STORAGE_FETCH_BRIDGE__ = true;
+
+  const cfg = window.YFA_MOTHERSHIP;
+  const originalFetch = window.fetch.bind(window);
+  const legacyPrefix = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const cloudflarePrefix = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+
+  function rewriteUrl(value) {
+    const url = String(value || '');
+    return url.startsWith(legacyPrefix) ? `${cloudflarePrefix}${url.slice(legacyPrefix.length)}` : url;
+  }
+
+  window.fetch = function (input, init) {
+    try {
+      if (typeof input === 'string' || input instanceof URL) {
+        return originalFetch(rewriteUrl(input), init);
+      }
+      if (input instanceof Request && input.url.startsWith(legacyPrefix)) {
+        const rewritten = new Request(rewriteUrl(input.url), input);
+        return originalFetch(rewritten, init);
+      }
+    } catch (error) {}
+    return originalFetch(input, init);
+  };
+
+  window.__YFA_ORIGINAL_FETCH__ = originalFetch;
+})();
+
+// On Mothership, Cloudflare Access is the authentication gate. Legacy admin modules
+// still call Supabase-style storage methods, so transparently route those calls to
+// the same-origin Cloudflare Worker / R2 API until the old modules are retired.
 (function () {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   if (!isMothership || window.__YFA_CF_ACCESS_AUTH_SHIM__) return;
   if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
 
   window.__YFA_CF_ACCESS_AUTH_SHIM__ = true;
+  const cfg = window.YFA_MOTHERSHIP;
   const originalCreateClient = window.supabase.createClient.bind(window.supabase);
+  const directFetch = window.__YFA_ORIGINAL_FETCH__ || window.fetch.bind(window);
+  const cloudflareAssetBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+
+  const encodePath = path => String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
+
+  async function apiError(response, fallback) {
+    let message = fallback || `Cloudflare request failed (${response.status}).`;
+    try {
+      const data = await response.json();
+      if (data && data.error) message = data.error;
+    } catch (error) {}
+    return new Error(message);
+  }
 
   async function getAccessSession() {
     try {
-      const response = await fetch('/cdn-cgi/access/get-identity', {
+      const response = await directFetch('/cdn-cgi/access/get-identity', {
         credentials: 'same-origin',
         cache: 'no-store'
       });
@@ -142,6 +188,69 @@ window.YFA_MOTHERSHIP = {
       return { error: null };
     };
 
+    if (client.storage && typeof client.storage.from === 'function') {
+      const originalStorageFrom = client.storage.from.bind(client.storage);
+      client.storage.from = function (bucketName) {
+        const legacyBucket = originalStorageFrom(bucketName);
+        if (bucketName !== cfg.bucket) return legacyBucket;
+
+        return new Proxy(legacyBucket, {
+          get(target, prop, receiver) {
+            if (prop === 'upload') {
+              return async function (path, body, options = {}) {
+                try {
+                  const headers = {};
+                  const contentType = options.contentType || (body && body.type) || 'application/octet-stream';
+                  if (contentType) headers['Content-Type'] = contentType;
+                  const response = await directFetch(`/api/assets/${encodePath(path)}`, {
+                    method: 'PUT',
+                    headers,
+                    body,
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                  });
+                  if (!response.ok) return { data: null, error: await apiError(response, 'Could not upload to Cloudflare.') };
+                  return { data: { path }, error: null };
+                } catch (error) {
+                  return { data: null, error };
+                }
+              };
+            }
+
+            if (prop === 'remove') {
+              return async function (paths) {
+                try {
+                  const list = Array.isArray(paths) ? paths : [paths];
+                  for (const path of list.filter(Boolean)) {
+                    const response = await directFetch(`/api/assets/${encodePath(path)}`, {
+                      method: 'DELETE',
+                      credentials: 'same-origin',
+                      cache: 'no-store'
+                    });
+                    if (!response.ok && response.status !== 404) {
+                      return { data: null, error: await apiError(response, 'Could not remove Cloudflare asset.') };
+                    }
+                  }
+                  return { data: list.map(path => ({ name: path })), error: null };
+                } catch (error) {
+                  return { data: null, error };
+                }
+              };
+            }
+
+            if (prop === 'getPublicUrl') {
+              return function (path) {
+                return { data: { publicUrl: `${cloudflareAssetBase}${encodePath(path)}` } };
+              };
+            }
+
+            const value = Reflect.get(target, prop, receiver);
+            return typeof value === 'function' ? value.bind(target) : value;
+          }
+        });
+      };
+    }
+
     return client;
   };
 })();
@@ -154,8 +263,8 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20260830-8'
-    : '/mothership-popup-gate.js?v=20260830-8';
+    ? '/mothership-popup-admin.js?v=20260903-2'
+    : '/mothership-popup-gate.js?v=20260903-2';
   script.defer = true;
   document.head.appendChild(script);
 })();
