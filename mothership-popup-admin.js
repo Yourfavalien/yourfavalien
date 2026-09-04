@@ -44,7 +44,7 @@
 
   const scripts = [
     ['/mothership-cloudflare-admin.js?v=20260903-2', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20260830-2', 'yfaMothershipPower'],
+    ['/mothership-power.js?v=20260903-3', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260830-2', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260830-2', 'yfaMothershipBadge']
   ];
@@ -59,21 +59,28 @@
     document.head.appendChild(script);
   });
 
-  // Power Tools can finish publishing before its revision-history refresh returns.
-  // Re-enable Publish as soon as the publish status itself finishes so another
-  // publish never requires a page refresh or a Save Draft workaround.
+  // Power Tools should always become publishable again after the user edits
+  // anything following a successful publish. No Save Draft or refresh required.
   function keepPowerPublishReusable() {
     const button = document.getElementById('powerPublish');
     const status = document.getElementById('powerPublishStatus');
-    if (!button || !status || button.dataset.reenableWired === '1') return false;
+    const view = document.getElementById('powerView');
+    if (!button || !status || !view || button.dataset.reenableWired === '1') return false;
     button.dataset.reenableWired = '1';
 
-    const sync = () => {
+    const reenable = () => {
       const text = (status.textContent || '').trim().toLowerCase();
-      if (text && text !== 'publishing…' && text !== 'publishing...') button.disabled = false;
+      if (text !== 'publishing…' && text !== 'publishing...') button.disabled = false;
     };
 
-    new MutationObserver(sync).observe(status, { childList: true, subtree: true, characterData: true });
+    new MutationObserver(reenable).observe(status, { childList: true, subtree: true, characterData: true });
+    view.addEventListener('input', reenable, true);
+    view.addEventListener('change', reenable, true);
+    view.addEventListener('click', event => {
+      if (event.target.closest('#powerPublish')) return;
+      reenable();
+    }, true);
+    reenable();
     return true;
   }
 
