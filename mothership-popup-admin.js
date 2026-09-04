@@ -58,4 +58,28 @@
     script.setAttribute(attr, 'true');
     document.head.appendChild(script);
   });
+
+  // Power Tools can finish publishing before its revision-history refresh returns.
+  // Re-enable Publish as soon as the publish status itself finishes so another
+  // publish never requires a page refresh or a Save Draft workaround.
+  function keepPowerPublishReusable() {
+    const button = document.getElementById('powerPublish');
+    const status = document.getElementById('powerPublishStatus');
+    if (!button || !status || button.dataset.reenableWired === '1') return false;
+    button.dataset.reenableWired = '1';
+
+    const sync = () => {
+      const text = (status.textContent || '').trim().toLowerCase();
+      if (text && text !== 'publishing…' && text !== 'publishing...') button.disabled = false;
+    };
+
+    new MutationObserver(sync).observe(status, { childList: true, subtree: true, characterData: true });
+    return true;
+  }
+
+  let publishWireAttempts = 0;
+  const publishWireTimer = window.setInterval(() => {
+    publishWireAttempts += 1;
+    if (keepPowerPublishReusable() || publishWireAttempts >= 40) window.clearInterval(publishWireTimer);
+  }, 250);
 })();
