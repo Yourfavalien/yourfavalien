@@ -3,8 +3,6 @@
   const cfg = window.YFA_MOTHERSHIP;
   if (!cfg) return;
 
-  // Preview mode keeps drafts private: the public loaders receive this browser's
-  // local Mothership drafts instead of the published JSON configuration.
   if (new URLSearchParams(location.search).get('yfa-preview') === '1' && !window.__YFA_PREVIEW_FETCH__) {
     window.__YFA_PREVIEW_FETCH__ = true;
     const nativeFetch = window.fetch.bind(window);
@@ -16,7 +14,7 @@
       if (key) {
         try {
           const draft = localStorage.getItem(key);
-          if (draft) return Promise.resolve(new Response(draft, { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }));
+          if (draft) return Promise.resolve(new Response(draft, { status:200, headers:{ 'Content-Type':'application/json','Cache-Control':'no-store' } }));
         } catch (error) {}
       }
       return nativeFetch(input, init);
@@ -32,7 +30,7 @@
   loadScript('/site-complete.js?v=20260830-5','yfa-site-complete');
   loadScript('/site-badge.js?v=20260830-4','yfa-site-badge');
 
-  const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const publicBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';
   const cacheVersion = Math.floor(Date.now() / 60000);
   const statusUrl = `${publicBase}${popupPath}?v=${cacheVersion}`;
@@ -42,15 +40,15 @@
   function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20260830-5';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
 
   Promise.all([
-    fetch(statusUrl).then(r=>r.ok?r.json():{enabled:true}).catch(()=>({enabled:true})),
-    fetch(advancedUrl).then(r=>r.ok?r.json():null).catch(()=>null)
+    fetch(statusUrl, { cache:'no-store' }).then(r=>r.ok?r.json():{enabled:false}).catch(()=>({enabled:false})),
+    fetch(advancedUrl, { cache:'no-store' }).then(r=>r.ok?r.json():null).catch(()=>null)
   ]).then(([status,advanced])=>{
-    if(status?.enabled===false)return;
+    if(status?.enabled!==true)return;
     const popup=advanced?.popup||{};
     if(popup.enabled===false)return;
     const allowed=Array.isArray(popup.pages)&&popup.pages.length?popup.pages:['home','about','contact'];
     if(!allowed.includes(pageKey()))return;
     const delay=Math.max(0,Math.min(300,Number(popup.delaySeconds ?? 10)))*1000;
     setTimeout(enablePopup,delay);
-  }).catch(()=>setTimeout(enablePopup,10000));
+  }).catch(()=>{});
 })();
