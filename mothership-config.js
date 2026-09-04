@@ -70,6 +70,82 @@ window.YFA_MOTHERSHIP = {
   ]
 };
 
+// On Mothership, Cloudflare Access is the authentication gate. Keep the existing
+// Supabase client available temporarily for the dashboard features that have not
+// yet been moved to D1/R2, but make its auth methods reflect the Cloudflare Access
+// session instead of asking for a second Supabase password.
+(function () {
+  const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
+  if (!isMothership || window.__YFA_CF_ACCESS_AUTH_SHIM__) return;
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
+
+  window.__YFA_CF_ACCESS_AUTH_SHIM__ = true;
+  const originalCreateClient = window.supabase.createClient.bind(window.supabase);
+
+  async function getAccessSession() {
+    try {
+      const response = await fetch('/cdn-cgi/access/get-identity', {
+        credentials: 'same-origin',
+        cache: 'no-store'
+      });
+      if (!response.ok) return null;
+      const identity = await response.json();
+      const email = identity.email || identity.user || identity.name || 'Authenticated user';
+      return {
+        access_token: 'cloudflare-access',
+        token_type: 'bearer',
+        user: {
+          id: identity.user_uuid || identity.sub || email,
+          email,
+          app_metadata: { provider: 'cloudflare-access' },
+          user_metadata: {}
+        }
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  window.supabase.createClient = function (...args) {
+    const client = originalCreateClient(...args);
+    if (!client || !client.auth) return client;
+
+    client.auth.getSession = async function () {
+      const session = await getAccessSession();
+      return { data: { session }, error: null };
+    };
+
+    client.auth.onAuthStateChange = function (callback) {
+      let active = true;
+      getAccessSession().then(session => {
+        if (active && typeof callback === 'function') callback(session ? 'SIGNED_IN' : 'SIGNED_OUT', session);
+      });
+      return {
+        data: {
+          subscription: {
+            unsubscribe() { active = false; }
+          }
+        }
+      };
+    };
+
+    client.auth.signInWithPassword = async function () {
+      const session = await getAccessSession();
+      if (!session) {
+        return { data: { session: null }, error: new Error('Cloudflare Access session not found.') };
+      }
+      return { data: { session }, error: null };
+    };
+
+    client.auth.signOut = async function () {
+      window.location.assign('/cdn-cgi/access/logout');
+      return { error: null };
+    };
+
+    return client;
+  };
+})();
+
 // Load the Orbit popup switch without changing every page again.
 (function () {
   if (window.__YFA_POPUP_SWITCH_LOADER__) return;
