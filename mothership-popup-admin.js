@@ -43,10 +43,10 @@
   else topbar.insertAdjacentElement('afterend', panel);
 
   const scripts = [
-    ['/mothership-cloudflare-admin.js?v=20260903-2', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20260904-1', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20260830-2', 'yfaMothershipComplete'],
-    ['/mothership-badge-admin.js?v=20260830-2', 'yfaMothershipBadge']
+    ['/mothership-cloudflare-admin.js?v=20260905-1', 'yfaCloudflareAdmin'],
+    ['/mothership-power.js?v=20260905-1', 'yfaMothershipPower'],
+    ['/mothership-complete-admin.js?v=20260905-1', 'yfaMothershipComplete'],
+    ['/mothership-badge-admin.js?v=20260905-1', 'yfaMothershipBadge']
   ];
 
   scripts.forEach(([src,key]) => {
@@ -58,9 +58,6 @@
     script.setAttribute(attr, 'true');
     document.head.appendChild(script);
   });
-
-  const legacyPrefix = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
-  const cloudflarePrefix = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
 
   function wireRetry(node) {
     if (!node || node.dataset.yfaMothershipRetry === '1') return;
@@ -80,8 +77,6 @@
     if (root && root.matches && root.matches('img[src],video[src],source[src]')) nodes.push(root);
     if (root && root.querySelectorAll) nodes.push(...root.querySelectorAll('img[src],video[src],source[src]'));
     nodes.forEach(node => {
-      const src = node.getAttribute('src') || '';
-      if (src.startsWith(legacyPrefix)) node.setAttribute('src', cloudflarePrefix + src.slice(legacyPrefix.length));
       if (node.tagName === 'IMG' || node.tagName === 'VIDEO') wireRetry(node);
     });
   }

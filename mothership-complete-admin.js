@@ -3,11 +3,11 @@
   window.__YFA_MOTHERSHIP_COMPLETE_ADMIN__ = true;
 
   const cfg = window.YFA_MOTHERSHIP;
-  if (!cfg || !window.supabase) return;
-  const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
+  if (!cfg || !window.YFA_CLOUDFLARE_CLIENT) return;
+  const client = window.YFA_CLOUDFLARE_CLIENT;
   const PATH = 'system/site-advanced.json';
   const DRAFT_KEY = 'yfa-site-advanced-draft';
-  const base = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const base = cfg.assetBase;
   const url = p => `${base}${p}?v=${Date.now()}`;
 
   const defaults = () => ({
@@ -145,7 +145,7 @@
 
   async function publish(){
     readAll(); const s=await session(); if(!s)throw new Error('Log in first.'); const status=document.getElementById('cPublishStatus');status.textContent='Publishing…';
-    try{state.updatedAt=new Date().toISOString();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});await client.storage.from(cfg.bucket).remove([PATH]);const {error}=await client.storage.from(cfg.bucket).upload(PATH,blob,{upsert:false,contentType:'application/json',cacheControl:'30'});if(error)throw error;localStorage.setItem(DRAFT_KEY,JSON.stringify(state));dirty=false;status.textContent='Advanced controls published.';status.className='status ok';const b=document.getElementById('cSaveState');b.textContent='PUBLISHED';b.className='c-badge';await runChecks();}catch(e){status.textContent=e.message||'Publish failed.';status.className='status error';throw e;}
+    try{state.updatedAt=new Date().toISOString();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});await client.storage.from(cfg.storageNamespace).remove([PATH]);const {error}=await client.storage.from(cfg.storageNamespace).upload(PATH,blob,{upsert:false,contentType:'application/json',cacheControl:'30'});if(error)throw error;localStorage.setItem(DRAFT_KEY,JSON.stringify(state));dirty=false;status.textContent='Advanced controls published.';status.className='status ok';const b=document.getElementById('cSaveState');b.textContent='PUBLISHED';b.className='c-badge';await runChecks();}catch(e){status.textContent=e.message||'Publish failed.';status.className='status error';throw e;}
   }
 
   async function runChecks(){

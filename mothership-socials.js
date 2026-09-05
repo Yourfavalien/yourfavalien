@@ -61,6 +61,6 @@
     }
   }
 
-  const url = cfg.supabaseUrl + '/storage/v1/object/public/' + cfg.bucket + '/' + cfg.socialsPath + '?v=' + Math.floor(Date.now() / 60000);
+  const url = cfg.assetBase + cfg.socialsPath + '?v=' + Math.floor(Date.now() / 60000);
   fetch(url).then(function (response) { return response.ok ? response.json() : null; }).then(apply).catch(function () { apply(defaults); });
 })();

@@ -3,9 +3,7 @@
   window.__YFA_SITE_ENHANCEMENTS__ = true;
 
   const cfg = window.YFA_MOTHERSHIP || {};
-  const base = cfg.supabaseUrl && cfg.bucket
-    ? `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`
-    : '';
+  const base = cfg.assetBase || '';
   const contentUrl = base ? `${base}system/site-content.json` : '';
 
   const defaults = {

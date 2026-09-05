@@ -3,10 +3,10 @@
   window.__YFA_MOTHERSHIP_BADGE_ADMIN__ = true;
 
   const cfg = window.YFA_MOTHERSHIP;
-  if (!cfg || !window.supabase || !window.supabase.createClient) return;
-  const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
+  if (!cfg || !window.YFA_CLOUDFLARE_CLIENT) return;
+  const client = window.YFA_CLOUDFLARE_CLIENT;
   const PATH = 'system/brand-badge.json';
-  const base = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const base = cfg.assetBase;
   const publicUrl = () => `${base}${PATH}?v=${Date.now()}`;
   let state = { enabled: true, label: 'Official YourFavAlien site', color: '#1d9bf0' };
 
@@ -41,8 +41,8 @@
     status.textContent='Saving badge…';status.className='status';
     try{
       const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-      await client.storage.from(cfg.bucket).remove([PATH]);
-      const {error}=await client.storage.from(cfg.bucket).upload(PATH,blob,{cacheControl:'60',contentType:'application/json',upsert:false});
+      await client.storage.from(cfg.storageNamespace).remove([PATH]);
+      const {error}=await client.storage.from(cfg.storageNamespace).upload(PATH,blob,{cacheControl:'60',contentType:'application/json',upsert:false});
       if(error)throw error;
       status.textContent='Official-site badge saved.';status.className='status ok';render();
     }catch(error){status.textContent=error.message||'Could not save badge.';status.className='status error';}

@@ -164,12 +164,11 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../mothership-config.js?v=20260903-1"></script>
+  <script src="../mothership-config.js?v=20260905-1"></script>
   <script>
     (() => {
       const cfg = window.YFA_MOTHERSHIP;
-      const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
+      const client = window.YFA_CLOUDFLARE_CLIENT;
       const loginPanel = document.getElementById('loginPanel');
       const dashboard = document.getElementById('dashboard');
       const loginForm = document.getElementById('loginForm');
@@ -254,7 +253,7 @@
       const themePublicUrl = () => `${publicBase}${cfg.themePath}?v=${Date.now()}`;
       const isHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
 
-      const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+      const publicBase = cfg.assetBase;
       const publicUrl = slot => `${publicBase}${slot.path}?v=${Date.now()}`;
       const socialsPublicUrl = () => `${publicBase}${cfg.socialsPath}?v=${Date.now()}`;
 
@@ -388,7 +387,7 @@
         try {
           const payload = JSON.stringify({ version: 2, updatedAt: new Date().toISOString(), header: socialsState.header, items: socialsState.items, customLinks: socialsState.customLinks || [] }, null, 2);
           // A single upsert also works for a first-ever save. The old delete-then-upload flow could fail before it reached upload.
-          const { error } = await client.storage.from(cfg.bucket).upload(cfg.socialsPath, new Blob([payload], { type: 'application/json' }), { contentType:'application/json', cacheControl:'60', upsert:true });
+          const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.socialsPath, new Blob([payload], { type: 'application/json' }), { contentType:'application/json', cacheControl:'60', upsert:true });
           if (error) throw error;
           setStatus(socialsStatus, 'Socials page saved. Refresh the live Socials page to see it.', 'ok');
         } catch (error) { setStatus(socialsStatus, error.message || 'Could not save Socials page.', 'error'); }
@@ -487,8 +486,8 @@
           fileInput.disabled = true;
           deleteBtn.disabled = true;
           try {
-            await client.storage.from(cfg.bucket).remove([slot.path]);
-            const { error } = await client.storage.from(cfg.bucket).upload(slot.path, file, {
+            await client.storage.from(cfg.storageNamespace).remove([slot.path]);
+            const { error } = await client.storage.from(cfg.storageNamespace).upload(slot.path, file, {
               cacheControl: '60',
               contentType: file.type,
               upsert: false
@@ -510,7 +509,7 @@
           setStatus(status, 'Removing…');
           deleteBtn.disabled = true;
           try {
-            const { error } = await client.storage.from(cfg.bucket).remove([slot.path]);
+            const { error } = await client.storage.from(cfg.storageNamespace).remove([slot.path]);
             if (error) throw error;
             setStatus(status, slot.media ? 'Removed. Original Vimeo homepage video is active again.' : 'Removed. Original website image is active again.', 'ok');
             await refreshPreview();
@@ -658,8 +657,8 @@
         try {
           const payload = JSON.stringify({ version: 2, updatedAt: new Date().toISOString(), colors: themeState, menu: menuState }, null, 2);
           const blob = new Blob([payload], { type: 'application/json' });
-          await client.storage.from(cfg.bucket).remove([cfg.themePath]);
-          const { error } = await client.storage.from(cfg.bucket).upload(cfg.themePath, blob, {
+          await client.storage.from(cfg.storageNamespace).remove([cfg.themePath]);
+          const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
             contentType: 'application/json',
             cacheControl: '60',
             upsert: false

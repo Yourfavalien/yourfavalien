@@ -26,9 +26,9 @@
     if (document.querySelector(`script[data-${dataKey}]`)) return;
     const script=document.createElement('script');script.src=src;script.defer=true;script.setAttribute(`data-${dataKey}`,'true');document.head.appendChild(script);
   }
-  loadScript('/site-enhancements.js?v=20260830-2','yfa-site-enhancements');
+  loadScript('/site-enhancements.js?v=20260905-1','yfa-site-enhancements');
   loadScript('/site-complete.js?v=20260830-5','yfa-site-complete');
-  loadScript('/site-badge.js?v=20260830-4','yfa-site-badge');
+  loadScript('/site-badge.js?v=20260905-1','yfa-site-badge');
 
   const publicBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';

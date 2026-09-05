@@ -3,12 +3,12 @@
   window.__YFA_MOTHERSHIP_POWER__ = true;
 
   const cfg = window.YFA_MOTHERSHIP;
-  if (!cfg || !window.supabase) return;
+  if (!cfg || !window.YFA_CLOUDFLARE_CLIENT) return;
 
-  const client = window.supabase.createClient(cfg.supabaseUrl, cfg.publishableKey);
+  const client = window.YFA_CLOUDFLARE_CLIENT;
   const CONTENT_PATH = 'system/site-content.json';
   const DRAFT_KEY = 'yfa-site-content-draft';
-  const publicBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const publicBase = cfg.assetBase;
   const publicUrl = path => `${publicBase}${path}`;
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   const safe = value => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
@@ -102,14 +102,14 @@
     if (!s) throw new Error('Log in to the Mothership first.');
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const path = `${folder}/${Date.now()}-${uid().slice(0,8)}.${ext}`;
-    const { error } = await client.storage.from(cfg.bucket).upload(path, file, { upsert:false, contentType:file.type || undefined, cacheControl:'3600' });
+    const { error } = await client.storage.from(cfg.storageNamespace).upload(path, file, { upsert:false, contentType:file.type || undefined, cacheControl:'3600' });
     if (error) throw error;
     return { url: publicUrl(path), path, alt: '' };
   }
 
   async function removeStoredMedia(item) {
     if (!item?.path) return;
-    await client.storage.from(cfg.bucket).remove([item.path]);
+    await client.storage.from(cfg.storageNamespace).remove([item.path]);
   }
 
   function homeSectionCard(section, index) {
@@ -196,10 +196,10 @@
       const current=await loadPublished();
       if(current && current.updatedAt){
         const stamp=new Date().toISOString().replace(/[:.]/g,'-');
-        await client.storage.from(cfg.bucket).upload(`revisions/site-content-${stamp}.json`,new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),{upsert:false,contentType:'application/json'});
+        await client.storage.from(cfg.storageNamespace).upload(`revisions/site-content-${stamp}.json`,new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),{upsert:false,contentType:'application/json'});
       }
       data.updatedAt=new Date().toISOString();
-      const {error}=await client.storage.from(cfg.bucket).upload(CONTENT_PATH,new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),{upsert:true,contentType:'application/json',cacheControl:'60'});
+      const {error}=await client.storage.from(cfg.storageNamespace).upload(CONTENT_PATH,new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),{upsert:true,contentType:'application/json',cacheControl:'60'});
       if(error)throw error;
       localStorage.setItem(DRAFT_KEY,JSON.stringify(data)); dirty=false;
       status.textContent='Published. Your website controls are live.';status.className='status ok';
@@ -207,7 +207,7 @@
     } catch(error){status.textContent=error.message||'Publish failed.';status.className='status error';throw error;}
   }
 
-  async function listRevisions(){const host=document.getElementById('powerRevisions');if(!host)return;host.innerHTML='Loading revisions…';const s=await session();if(!s){host.innerHTML='Log in first.';return;}const {data:items,error}=await client.storage.from(cfg.bucket).list('revisions',{limit:12,sortBy:{column:'created_at',order:'desc'}});if(error){host.innerHTML='Could not load revisions.';return;}host.innerHTML='';if(!items?.length){host.innerHTML='<div class="power-empty">Revision history will appear after your next publish.</div>';return;}items.forEach(item=>{const row=el('div',{class:'power-card'});row.innerHTML=`<div class="power-card-head"><div><div class="power-card-title">${item.name}</div><div class="power-muted">Previous published website settings</div></div><button class="power-mini" type="button">Restore to editor</button></div>`;row.querySelector('button').onclick=async()=>{try{const {data:blob,error:e}=await client.storage.from(cfg.bucket).download(`revisions/${item.name}`);if(e)throw e;data=JSON.parse(await blob.text());localStorage.setItem(DRAFT_KEY,JSON.stringify(data));renderAll();markDirty();}catch(error){alert(error.message||'Could not restore revision.');}};host.appendChild(row);});}
+  async function listRevisions(){const host=document.getElementById('powerRevisions');if(!host)return;host.innerHTML='Loading revisions…';const s=await session();if(!s){host.innerHTML='Log in first.';return;}const {data:items,error}=await client.storage.from(cfg.storageNamespace).list('revisions',{limit:12,sortBy:{column:'created_at',order:'desc'}});if(error){host.innerHTML='Could not load revisions.';return;}host.innerHTML='';if(!items?.length){host.innerHTML='<div class="power-empty">Revision history will appear after your next publish.</div>';return;}items.forEach(item=>{const row=el('div',{class:'power-card'});row.innerHTML=`<div class="power-card-head"><div><div class="power-card-title">${item.name}</div><div class="power-muted">Previous published website settings</div></div><button class="power-mini" type="button">Restore to editor</button></div>`;row.querySelector('button').onclick=async()=>{try{const {data:blob,error:e}=await client.storage.from(cfg.storageNamespace).download(`revisions/${item.name}`);if(e)throw e;data=JSON.parse(await blob.text());localStorage.setItem(DRAFT_KEY,JSON.stringify(data));renderAll();markDirty();}catch(error){alert(error.message||'Could not restore revision.');}};host.appendChild(row);});}
 
   function renderAll(){
     document.getElementById('powerHomeShowIntro').checked=!!data.home.showIntro;

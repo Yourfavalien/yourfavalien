@@ -2,14 +2,10 @@
   const cfg = window.YFA_MOTHERSHIP;
   if (!cfg) return;
 
-  const publicBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
-  const legacyBase = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const publicBase = cfg.assetBase;
   const slotMap = new Map((cfg.slots || []).map(slot => [slot.id, slot]));
 
-  function toCloudflareUrl(value) {
-    const url = String(value || '');
-    return url.startsWith(legacyBase) ? `${publicBase}${url.slice(legacyBase.length)}` : url;
-  }
+  function toCloudflareUrl(value) { return String(value || ''); }
 
   function remoteUrl(slotId) {
     const slot = slotMap.get(slotId);
@@ -125,7 +121,7 @@
   function loadSiteEnhancements() {
     if (window.__YFA_SITE_ENHANCEMENTS__ || document.querySelector('script[data-yfa-site-enhancements]')) return;
     const script = document.createElement('script');
-    script.src = '/site-enhancements.js?v=20260904-1';
+    script.src = '/site-enhancements.js?v=20260905-1';
     script.defer = true;
     script.dataset.yfaSiteEnhancements = '1';
     document.head.appendChild(script);

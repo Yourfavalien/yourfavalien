@@ -4,7 +4,7 @@
 
   const page = document.documentElement.dataset.yfaThemePage || '';
   const defs = (cfg.colorGroups || []).flatMap(group => group.colors || []);
-  const url = `${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/${cfg.themePath}?v=${Math.floor(Date.now() / 60000)}`;
+  const url = `${cfg.assetBase}${cfg.themePath}?v=${Math.floor(Date.now() / 60000)}`;
   const validHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
 
   function apply(colors) {

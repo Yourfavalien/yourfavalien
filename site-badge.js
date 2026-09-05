@@ -2,7 +2,7 @@
   if (window.__YFA_SITE_BADGE__) return;
   window.__YFA_SITE_BADGE__ = true;
   const cfg=window.YFA_MOTHERSHIP;if(!cfg)return;
-  const base=`${cfg.supabaseUrl}/storage/v1/object/public/${cfg.bucket}/`;
+  const base=cfg.assetBase;
   const url=`${base}system/brand-badge.json?v=${Math.floor(Date.now()/60000)}`;
   const defaults={enabled:true,label:'Official YourFavAlien site',color:'#1d9bf0'};
 
