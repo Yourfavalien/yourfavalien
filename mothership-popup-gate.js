@@ -37,7 +37,7 @@
   const advancedUrl = `${publicBase}system/site-advanced.json?v=${cacheVersion}`;
 
   function pageKey(){const p=(location.pathname||'/').replace(/\/+$/,'').toLowerCase()||'/';if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k)||p.endsWith('/'+k+'.html'))return k;return'';}
-  function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20260830-5';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
+  function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20260905-kit1';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
 
   Promise.all([
     fetch(statusUrl, { cache:'no-store' }).then(r=>r.ok?r.json():{enabled:false}).catch(()=>({enabled:false})),

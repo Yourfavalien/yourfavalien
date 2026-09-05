@@ -65,7 +65,6 @@
   const consentInput = document.getElementById('yfa-orbit-consent');
   const status = document.getElementById('yfa-orbit-status');
   let lastFocus = null;
-  let jsonpTimer = null;
   let teaserTimer = null;
   let teaserDismissed = false;
   let hasSignedUp = false;
@@ -158,26 +157,19 @@
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
 
-  function subscribeWithMailchimp(firstName, email) {
-    return new Promise((resolve, reject) => {
-      const callbackName = 'yfaMailchimp_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-      const script = document.createElement('script');
-      const params = new URLSearchParams({ u: '8b126b5c8a6358c93812e9ad3', id: '6ad461b71d', FNAME: firstName, EMAIL: email, 'gdpr[55212]': 'Y', c: callbackName });
-      function cleanup() {
-        if (jsonpTimer) clearTimeout(jsonpTimer);
-        try { delete window[callbackName]; } catch (error) { window[callbackName] = undefined; }
-        script.remove();
-      }
-      window[callbackName] = result => {
-        cleanup();
-        if (result && result.result === 'success') resolve(result);
-        else reject(new Error((result && result.msg ? result.msg : 'Something went wrong.').replace(/<[^>]*>/g, '')));
-      };
-      script.onerror = () => { cleanup(); reject(new Error('Could not reach the signup service. Please try again.')); };
-      script.src = 'https://yourfavalien.us7.list-manage.com/subscribe/post-json?' + params.toString();
-      document.head.appendChild(script);
-      jsonpTimer = setTimeout(() => { cleanup(); reject(new Error('The signup took too long. Please try again.')); }, 12000);
-    });
+  let kitLoader;
+  async function subscribeWithKit(firstName, email) {
+    if (!window.YFA_KIT_SIGNUP) {
+      if (!kitLoader) kitLoader = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = '/kit-signup.js?v=20260905-kit1';
+        script.onload = resolve;
+        script.onerror = () => { kitLoader = null; script.remove(); reject(new Error('Could not load the signup service. Please try again.')); };
+        document.head.appendChild(script);
+      });
+      await kitLoader;
+    }
+    return window.YFA_KIT_SIGNUP.subscribe(firstName, email);
   }
 
   form.addEventListener('submit', async event => {
@@ -185,7 +177,7 @@
     status.textContent = '';
     const firstName = nameInput.value.trim();
     const email = emailInput.value.trim();
-    if (!firstName) { status.textContent = 'Add your first name so Mailchimp can accept the signup.'; nameInput.focus(); return; }
+    if (!firstName) { status.textContent = 'Add your first name to continue.'; nameInput.focus(); return; }
     if (!emailInput.validity.valid) { status.textContent = 'Enter a valid email address.'; emailInput.focus(); return; }
     if (!consentInput.checked) { status.textContent = 'Check the email consent box to continue.'; consentInput.focus(); return; }
     const button = form.querySelector('button[type="submit"]');
@@ -193,7 +185,7 @@
     button.disabled = true;
     button.textContent = 'Joining orbit…';
     try {
-      await subscribeWithMailchimp(firstName, email);
+      await subscribeWithKit(firstName, email);
       try {
         const response = await fetch('https://yourfavalien-welcome.aydenmtz54.workers.dev/', {
           method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
