@@ -162,7 +162,7 @@
     if (!window.YFA_KIT_SIGNUP) {
       if (!kitLoader) kitLoader = new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = '/kit-signup.js?v=20260905-kit1';
+        script.src = '/kit-signup.js?v=20260905-kit2';
         script.onload = resolve;
         script.onerror = () => { kitLoader = null; script.remove(); reject(new Error('Could not load the signup service. Please try again.')); };
         document.head.appendChild(script);
@@ -196,7 +196,7 @@
       rememberSignup();
       showStep('success');
       form.reset();
-    } catch (error) { status.textContent = error.message || 'Something went wrong. Please try again.'; }
+    } catch (error) { status.textContent = error.message || 'Something went wrong. Please try again.'; if (window.YFA_KIT_SIGNUP) window.YFA_KIT_SIGNUP.showVerification(status, error); }
     finally { button.disabled = false; button.textContent = originalText; }
   });
 
