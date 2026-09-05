@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 19199)
+Total output lines: 1001
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -239,75 +242,7 @@
         { key:'tiktokEmbed', title:'TikTok video wall', note:'Show or hide the full TikTok embed section.', enabled:true, value:{} },
         { key:'instagramEmbed', title:'Instagram post wall', note:'Show or hide the full Instagram embed section.', enabled:true, value:{} },
         { key:'snapchat', title:'Snapchat card', note:'The Snapchat card below the embeds.', label:'CARD LABEL', url:'DESTINATION URL', enabled:true, value:{label:'Snapchat',url:'https://www.snapchat.com/add/yourfavvalien'} },
-        { key:'facebook', title:'Facebook card', note:'The Facebook card below the embeds.', label:'CARD LABEL', url:'DESTINATION URL', enabled:true, value:{label:'Facebook',url:'https://www.facebook.com/share/18BmPVjQhd/?mibextid=wwXIfr'} },
-        { key:'mediaKit', title:'Media Kit card', note:'Your business and creator-stats card.', label:'CARD LABEL', url:'DESTINATION URL', enabled:true, value:{label:'Media Kit',url:'https://www.yourfavalien.site/'} },
-        { key:'subscribe', title:'Mailing list signup', note:'Show or hide the Mailchimp subscribe section.', enabled:true, value:{} }
-      ];
-      const defaultSocials = { header:{ title:'@yourrfavalien', intro:'Hey cutie take a peek. 👽', email:'businessinquiry@yourfavalien.com' }, items:Object.fromEntries(socialDefs.map(def => [def.key,{enabled:def.enabled,...def.value}])), customLinks:[] };
-      let socialsState = JSON.parse(JSON.stringify(defaultSocials));
-      const defaultMenu = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
-      let themeState = { ...defaultTheme };
-      let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
-      let selectedConversation = null;
-      let chatRefreshTimer = null;
-      const themePublicUrl = () => `${publicBase}${cfg.themePath}?v=${Date.now()}`;
-      const isHex = value => /^#[0-9a-f]{6}$/i.test(String(value || '').trim());
-
-      const publicBase = cfg.assetBase;
-      const publicUrl = slot => `${publicBase}${slot.path}?v=${Date.now()}`;
-      const socialsPublicUrl = () => `${publicBase}${cfg.socialsPath}?v=${Date.now()}`;
-
-      function setStatus(el, text, type='') {
-        el.textContent = text || '';
-        el.className = `status ${type}`.trim();
-      }
-
-      function switchDashboardTab(name) {
-        const showChats = name === 'chats';
-        const showXilo = name === 'xilo';
-        const showSocials = name === 'socials';
-        controlsTab.setAttribute('aria-selected', String(!showChats && !showXilo && !showSocials));
-        socialsTab.setAttribute('aria-selected', String(showSocials));
-        xiloTab.setAttribute('aria-selected', String(showXilo));
-        chatsTab.setAttribute('aria-selected', String(showChats));
-        controlsView.classList.toggle('hidden', showChats || showXilo || showSocials);
-        socialsView.classList.toggle('hidden', !showSocials);
-        xiloView.classList.toggle('hidden', !showXilo);
-        chatsView.classList.toggle('hidden', !showChats);
-        if (showChats) loadConversations({ quiet: true });
-      }
-
-      controlsTab.addEventListener('click', () => switchDashboardTab('controls'));
-      socialsTab.addEventListener('click', () => switchDashboardTab('socials'));
-      xiloTab.addEventListener('click', () => switchDashboardTab('xilo'));
-      chatsTab.addEventListener('click', () => switchDashboardTab('chats'));
-      document.getElementById('openXiloDirectory').addEventListener('click', event => { event.preventDefault(); switchDashboardTab('xilo'); xiloView.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-      document.getElementById('openChatsDirectory').addEventListener('click', event => {
-        event.preventDefault();
-        switchDashboardTab('chats');
-        chatsView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-
-      function renderSocialsEditor() {
-        socialsEditor.innerHTML = '';
-        const header = document.createElement('section');
-        header.className = 'social-editor-card wide';
-        header.innerHTML = '<h3>Socials header</h3><p>Edit the little introduction that appears above your links.</p><label>HANDLE / TITLE<input type="text" maxlength="80"></label><label>INTRO LINE<input type="text" maxlength="180"></label><label>BUSINESS EMAIL<input type="email" maxlength="160"></label>';
-        const [title, intro, email] = header.querySelectorAll('input');
-        title.value = socialsState.header.title || ''; intro.value = socialsState.header.intro || ''; email.value = socialsState.header.email || '';
-        title.addEventListener('input', () => { socialsState.header.title = title.value.slice(0, 80); });
-        intro.addEventListener('input', () => { socialsState.header.intro = intro.value.slice(0, 180); });
-        email.addEventListener('input', () => { socialsState.header.email = email.value.slice(0, 160); });
-        socialsEditor.appendChild(header);
-
-        socialDefs.forEach(def => {
-          const item = Object.assign({}, def.value, socialsState.items[def.key] || {});
-          const card = document.createElement('section');
-          card.className = 'social-editor-card';
-          card.innerHTML = '<h3></h3><p></p><label class="xilo-check"><input type="checkbox"> Show this section</label>';
-          card.querySelector('h3').textContent = def.title;
-          card.querySelector('p').textContent = def.note;
-          const enabled = card.querySelector('input[type=checkbox]');
+        { key:'facebook', title:'Facebook card', note:'The Facebook card below the embeds.', label:'CARD LABEL', url:'DESTINATION URL', enabled:true, value:{label:'Facebook',url:'https://www.facebook.com/share/18BmPVjQhd/?mibextid…1199 tokens truncated…]');
           enabled.checked = item.enabled !== false;
           enabled.addEventListener('change', () => { socialsState.items[def.key].enabled = enabled.checked; });
           if (def.label) {
@@ -997,4 +932,5 @@
   <script src="../mothership-maintenance-admin.js?v=20260830-6"></script>
 </body>
 </html>
+
 

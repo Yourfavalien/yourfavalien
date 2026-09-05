@@ -235,7 +235,7 @@
 
       <section class="power-section"><div class="power-head"><div><h3>SEO</h3><div class="power-copy">Edit the homepage browser/search title and description here. Your existing static SEO stays as the fallback.</div></div></div><div class="power-grid"><div class="power-field full"><label>HOMEPAGE TITLE</label><input id="powerSeoTitle" data-power-bind></div><div class="power-field full"><label>HOMEPAGE DESCRIPTION</label><textarea id="powerSeoDescription" data-power-bind></textarea></div></div></section>
 
-      <section class="power-section"><div class="power-head"><div><h3>Email center</h3><div class="power-copy">Mailchimp remains your subscriber/newsletter system, while your Resend + Worker setup keeps handling the automatic welcome email. Subscriber totals are intentionally not pulled directly into this browser dashboard because that would require exposing a private Mailchimp credential.</div></div></div><div class="power-actions"><a class="btn secondary" href="https://mailchimp.com/" target="_blank" rel="noopener">Open Mailchimp</a><a class="btn secondary" href="https://resend.com/" target="_blank" rel="noopener">Open Resend</a></div></section>
+      <section class="power-section"><div class="power-head"><div><h3>Email center</h3><div class="power-copy">Kit is your subscriber/newsletter system, while your Resend + Worker setup keeps handling the automatic welcome email. Subscriber totals are intentionally not pulled directly into this browser dashboard because that would require exposing a private Kit credential.</div></div></div><div class="power-actions"><a class="btn secondary" href="https://app.kit.com/subscribers" target="_blank" rel="noopener">Open Kit</a><a class="btn secondary" href="https://resend.com/" target="_blank" rel="noopener">Open Resend</a></div></section>
 
       <section class="power-section"><div class="power-head"><div><h3>Revision history</h3><div class="power-copy">Every publish stores the previous configuration first, so you can bring an older setup back into the editor.</div></div><button id="powerRefreshRevisions" class="power-mini" type="button">Refresh</button></div><div id="powerRevisions"></div></section>
 
@@ -270,3 +270,4 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
+
