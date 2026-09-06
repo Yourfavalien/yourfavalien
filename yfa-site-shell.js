@@ -119,7 +119,7 @@
 
     const legal = document.createElement('div');
     legal.className = 'yfa-menu-legal';
-    legal.innerHTML = '© 2026 YourFavAlien · All rights reserved · <a href="privacy.html">Privacy</a>';
+    legal.innerHTML = '© 2026 YourFavAlien · All rights reserved · <a href="privacy.html">Privacy</a> · <button type="button" data-yfa-privacy-open>Privacy Choices</button>';
     nav.appendChild(legal);
     const privacyLink = legal.querySelector('a');
     function keepPrivacyInFooter() {
@@ -443,5 +443,6 @@
     initialize();
   }
 })();
+
 
 

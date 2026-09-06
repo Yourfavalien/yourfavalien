@@ -59,7 +59,8 @@ nav.yfa-menu-panel > a.active { color:var(--yfa-menu-active)!important; }
 nav.yfa-menu-panel > a:focus-visible { outline:1px dashed currentColor!important;outline-offset:4px!important; }
 .yfa-menu-legal { position:absolute;left:20px;right:20px;bottom:max(18px,env(safe-area-inset-bottom));color:rgba(255,255,255,.3);text-align:center;padding:0;font-family:'Courier Prime',monospace;font-size:11px;line-height:1.5;letter-spacing:.1em; }
 .yfa-menu-legal a { color:inherit;text-underline-offset:3px; }
-.yfa-menu-legal a:hover,.yfa-menu-legal a:focus-visible { color:var(--yfa-menu-hover); }
+.yfa-menu-legal button { appearance:none;border:0;background:none;color:inherit;padding:0;font:inherit;letter-spacing:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer; }
+.yfa-menu-legal a:hover,.yfa-menu-legal a:focus-visible,.yfa-menu-legal button:hover,.yfa-menu-legal button:focus-visible { color:var(--yfa-menu-hover); }
 nav.yfa-menu-panel[data-yfa-menu-layout="centered"] { align-items:center!important;padding-left:clamp(24px,6vw,80px)!important;padding-right:clamp(24px,6vw,80px)!important; }
 nav.yfa-menu-panel[data-yfa-menu-layout="centered"] > a { justify-content:center!important;width:min(760px,100%)!important;text-align:center!important; }
 nav.yfa-menu-panel[data-yfa-menu-layout="centered"] > a::before { display:none!important; }
@@ -68,3 +69,4 @@ nav.yfa-menu-panel[data-yfa-menu-layout="split"] > a { align-items:center!import
 
 @media(max-width:767px) { .yfa-menu-button{width:145px;height:54px}.yfa-menu-ship{width:39px;height:27px}nav.yfa-menu-panel{justify-content:flex-start!important;padding:104px 22px 66px!important}nav.yfa-menu-panel > a{font-size:clamp(44px,15vw,68px)!important;padding:16px 0!important}nav.yfa-menu-panel > a::before{width:31px}nav.yfa-menu-panel[data-yfa-menu-layout="split"]{display:flex!important;align-content:initial!important}nav.yfa-menu-panel[data-yfa-menu-layout="split"] > a{min-height:0!important;font-size:clamp(40px,13vw,62px)!important}.yfa-menu-legal{bottom:max(14px,env(safe-area-inset-bottom));font-size:9px} }
 @media(prefers-reduced-motion:reduce) { .yfa-intro{display:none!important}.yfa-menu-ship,.yfa-menu-word{animation:none!important}.yfa-menu-word{width:66px;margin-left:8px;opacity:1} }
+
