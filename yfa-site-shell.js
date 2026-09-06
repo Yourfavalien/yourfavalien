@@ -10,7 +10,7 @@
     if (shouldPlayIntro && event.persisted) window.location.reload();
   }, { once: true });
 
-  if (/\/(index|about|socials|contact|privacy)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
+  if (/\/(index|about|socials|contact|privacy|help)\.html$/i.test(normalizedPath) && window.history && window.history.replaceState) {
     const cleanPath = /\/index\.html$/i.test(normalizedPath) ? (normalizedPath.replace(/\/index\.html$/i, '') || '/') : normalizedPath.replace(/\.html$/i, '');
     window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
   }
@@ -28,7 +28,8 @@
       ['index.html', 'home'],
       ['socials.html', 'socials'],
       ['about.html', 'about moi'],
-      ['contact.html', 'contact']
+      ['contact.html', 'contact'],
+      ['help.html', 'help']
     ].map(function (item) {
       const active = currentPage() === item[0] ? ' class="active"' : '';
       return '<a href="' + item[0] + '"' + active + '>' + item[1] + '</a>';
@@ -64,12 +65,13 @@
     nav.setAttribute('aria-label', nav.getAttribute('aria-label') || 'Primary navigation');
     nav.setAttribute('aria-hidden', 'true');
 
-    const menuDefaults = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
+    const menuDefaults = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact', help: 'help' } };
     const corePages = [
       { key: 'home', files: ['/', 'index', 'index.html'] },
       { key: 'socials', files: ['socials', 'socials.html'] },
       { key: 'about', files: ['about', 'about.html'] },
-      { key: 'contact', files: ['contact', 'contact.html'] }
+      { key: 'contact', files: ['contact', 'contact.html'] },
+      { key: 'help', files: ['help', 'help.html'] }
     ];
     function linkPage(link) {
       try {
@@ -100,6 +102,13 @@
       desired.forEach(function (link) { nav.appendChild(link); });
       if (footer) nav.appendChild(footer);
     }
+    if (!Array.from(nav.children).some(function (child) { return child.tagName === 'A' && corePageFor(child)?.key === 'help'; })) {
+      const helpLink = document.createElement('a');
+      helpLink.href = 'help.html';
+      helpLink.textContent = 'help';
+      if (currentPage() === 'help.html') helpLink.classList.add('active');
+      nav.appendChild(helpLink);
+    }
     enforceMenuOrder();
     function applyMenuSettings(settings) {
       const menu = settings && typeof settings === 'object' ? settings : menuDefaults;
@@ -119,7 +128,7 @@
 
     const legal = document.createElement('div');
     legal.className = 'yfa-menu-legal';
-    legal.innerHTML = '© 2026 YourFavAlien · All rights reserved · <a href="privacy.html">Privacy</a> · <button type="button" data-yfa-privacy-open>Privacy Choices</button>';
+    legal.innerHTML = '© 2026 YourFavAlien · <a href="privacy.html">Privacy</a> · <button type="button" data-yfa-privacy-open>Privacy Choices</button> · <a href="help.html">Help</a>';
     nav.appendChild(legal);
     const privacyLink = legal.querySelector('a');
     function keepPrivacyInFooter() {
