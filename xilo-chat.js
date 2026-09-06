@@ -22,6 +22,7 @@
   };
 
   function loadHistory() {
+    if (window.YFA_PRIVACY && !window.YFA_PRIVACY.allows('xiloStorage')) return [];
     try {
       const saved = JSON.parse(sessionStorage.getItem('xilo-chat-history') || '[]');
       return Array.isArray(saved) ? saved.slice(-10) : [];
@@ -31,12 +32,14 @@
   }
 
   function saveHistory() {
+    if (window.YFA_PRIVACY && !window.YFA_PRIVACY.allows('xiloStorage')) return;
     try {
       sessionStorage.setItem('xilo-chat-history', JSON.stringify(state.history.slice(-config.maxHistory)));
     } catch (_) {}
   }
 
   function loadConversation() {
+    if (window.YFA_PRIVACY && !window.YFA_PRIVACY.allows('xiloStorage')) return null;
     try {
       const saved = JSON.parse(sessionStorage.getItem('xilo-conversation') || 'null');
       return saved && saved.id && saved.token ? saved : null;
@@ -47,6 +50,7 @@
 
   function saveConversation(conversation) {
     state.conversation = conversation;
+    if (window.YFA_PRIVACY && !window.YFA_PRIVACY.allows('xiloStorage')) return;
     try {
       sessionStorage.setItem('xilo-conversation', JSON.stringify(conversation));
     } catch (_) {}
@@ -106,7 +110,7 @@
   const sendButton = createElement('button', 'xilo-send', '➤');
   sendButton.type = 'submit';
   sendButton.setAttribute('aria-label', 'Send message');
-  const disclaimer = createElement('p', 'xilo-disclaimer', 'Xilo is AI and may make mistakes. For official inquiries, use the contact form.');
+  const disclaimer = createElement('p', 'xilo-disclaimer', 'Messages and the current page URL are sent to Your Fav Alien to provide replies. Xilo is AI and may make mistakes.');
   form.append(input, sendButton, disclaimer);
 
   panel.append(header, messages, form);
@@ -376,6 +380,16 @@
     }
   });
 
+  window.addEventListener('yfa:privacy-change', function (event) {
+    if (event.detail && !event.detail.xiloStorage) {
+      try { sessionStorage.removeItem('xilo-chat-history'); sessionStorage.removeItem('xilo-conversation'); } catch (_) {}
+    } else if (event.detail && event.detail.xiloStorage) {
+      saveHistory();
+      if (state.conversation) saveConversation(state.conversation);
+    }
+  });
+
   renderHistory();
   if (state.conversation) startPolling();
 })();
+

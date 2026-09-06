@@ -69,8 +69,8 @@
   let teaserDismissed = false;
   let hasSignedUp = false;
 
-  try { teaserDismissed = sessionStorage.getItem(DISMISSED_KEY) === '1'; } catch (error) {}
-  try { hasSignedUp = localStorage.getItem(SIGNED_UP_KEY) === '1'; } catch (error) {}
+  try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) teaserDismissed = sessionStorage.getItem(DISMISSED_KEY) === '1'; } catch (error) {}
+  try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) hasSignedUp = localStorage.getItem(SIGNED_UP_KEY) === '1'; } catch (error) {}
 
   function isCompactTeaser() {
     return window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
@@ -98,12 +98,12 @@
   }
   function dismissTeaser() {
     teaserDismissed = true;
-    try { sessionStorage.setItem(DISMISSED_KEY, '1'); } catch (error) {}
+    try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) sessionStorage.setItem(DISMISSED_KEY, '1'); } catch (error) {}
     hideTeaser();
   }
   function rememberSignup() {
     hasSignedUp = true;
-    try { localStorage.setItem(SIGNED_UP_KEY, '1'); } catch (error) {}
+    try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) localStorage.setItem(SIGNED_UP_KEY, '1'); } catch (error) {}
     hideTeaser();
   }
 
@@ -117,7 +117,7 @@
     popup.setAttribute('aria-hidden', 'false');
     document.body.classList.add('yfa-orbit-open');
     hideTeaser();
-    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (error) {}
+    try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) sessionStorage.setItem(SESSION_KEY, '1'); } catch (error) {}
     setTimeout(() => popup.querySelector('.yfa-orbit-close').focus(), 80);
   }
   function closePopup() {
@@ -201,7 +201,7 @@
   });
 
   let alreadySeen = false;
-  try { alreadySeen = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (error) {}
+  try { if (!window.YFA_PRIVACY || window.YFA_PRIVACY.allows('preferences')) alreadySeen = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (error) {}
   if (hasSignedUp || teaserDismissed) hideTeaser();
   else if (alreadySeen) showTeaser();
   else setTimeout(openPopup, 1200);
@@ -210,3 +210,4 @@
     window.YFA_MOTHERSHIP.refreshImages();
   }
 })();
+
