@@ -50,6 +50,56 @@
     return overlay;
   }
 
+  function installHelpNavigation() {
+    const nav = document.querySelector('#yfa-site-menu') || document.querySelector('body > nav');
+    if (!nav) return false;
+
+    const legal = nav.querySelector('.yfa-menu-legal');
+    let helpLink = Array.from(nav.children).find(function (child) {
+      if (child.tagName !== 'A') return false;
+      try {
+        return /\/help(?:\.html)?$/i.test(new URL(child.getAttribute('href') || '', window.location.href).pathname.replace(/\/+$/, ''));
+      } catch (_) { return false; }
+    });
+
+    if (!helpLink) {
+      helpLink = document.createElement('a');
+      helpLink.href = 'help.html';
+      helpLink.textContent = 'help';
+    }
+    if (/\/help(?:\.html)?$/i.test(window.location.pathname.replace(/\/+$/, ''))) helpLink.classList.add('active');
+    else helpLink.classList.remove('active');
+
+    if (legal) nav.insertBefore(helpLink, legal);
+    else if (helpLink.parentElement !== nav) nav.appendChild(helpLink);
+
+    if (legal) {
+      const copyrightText = Array.from(legal.childNodes).find(function (node) {
+        return node.nodeType === Node.TEXT_NODE && node.nodeValue && node.nodeValue.indexOf('©') !== -1;
+      });
+      if (copyrightText && copyrightText.nodeValue !== '© 2026 YourFavAlien · ') copyrightText.nodeValue = '© 2026 YourFavAlien · ';
+
+      let footerHelp = Array.from(legal.querySelectorAll('a')).find(function (link) {
+        try { return /\/help(?:\.html)?$/i.test(new URL(link.getAttribute('href') || '', window.location.href).pathname.replace(/\/+$/, '')); }
+        catch (_) { return false; }
+      });
+      if (!footerHelp) {
+        footerHelp = document.createElement('a');
+        footerHelp.href = 'help.html';
+        footerHelp.textContent = 'Help';
+        legal.appendChild(document.createTextNode(' · '));
+        legal.appendChild(footerHelp);
+      }
+    }
+    return true;
+  }
+
+  function watchSiteNavigation() {
+    installHelpNavigation();
+    const observer = new MutationObserver(function () { installHelpNavigation(); });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
   let overlay;
   function close() { overlay.hidden = true; }
   function applyAndClose(next) { save(next); close(); }
@@ -85,10 +135,10 @@
     document.addEventListener('click', function (event) {
       if (event.target.closest('[data-yfa-privacy-open]')) openSettings();
     });
+    watchSiteNavigation();
     if (!choices) openSummary();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
   else initialize();
 })();
-
