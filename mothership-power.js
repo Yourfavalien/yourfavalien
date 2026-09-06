@@ -10,6 +10,17 @@
   const DRAFT_KEY = 'yfa-site-content-draft';
   const publicBase = cfg.assetBase;
   const publicUrl = path => `${publicBase}${path}`;
+  const legacyMediaBase = 'https://qpwjfsigvoktsaeiypyy.supabase.co/storage/v1/object/public/mothership-images/';
+  const normalizeMediaUrl = value => {
+    const url = String(value || '').trim();
+    return url.startsWith(legacyMediaBase) ? publicUrl(url.slice(legacyMediaBase.length)) : url;
+  };
+  const normalizeMediaItems = items => (Array.isArray(items) ? items : []).map(item => ({ ...item, url: normalizeMediaUrl(item?.url) }));
+  const normalizeContentMedia = content => {
+    content.home.sections = (content.home.sections || []).map(section => ({ ...section, images: normalizeMediaItems(section.images) }));
+    content.pages = (content.pages || []).map(page => ({ ...page, images: normalizeMediaItems(page.images) }));
+    return content;
+  };
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   const safe = value => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
 
@@ -69,7 +80,7 @@
       const response = await fetch(`${publicUrl(CONTENT_PATH)}?v=${Date.now()}`, {cache:'no-store'});
       if (!response.ok) return defaults();
       const parsed = await response.json();
-      return { ...defaults(), ...parsed, navigation:{...defaults().navigation,...(parsed.navigation||{})}, home:{...defaults().home,...(parsed.home||{})}, seo:{...defaults().seo,...(parsed.seo||{})}, pages:Array.isArray(parsed.pages)?parsed.pages:[] };
+      return normalizeContentMedia({ ...defaults(), ...parsed, navigation:{...defaults().navigation,...(parsed.navigation||{})}, home:{...defaults().home,...(parsed.home||{})}, seo:{...defaults().seo,...(parsed.seo||{})}, pages:Array.isArray(parsed.pages)?parsed.pages:[] });
     } catch { return defaults(); }
   }
 

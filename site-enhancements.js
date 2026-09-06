@@ -14,6 +14,13 @@
   };
 
   const esc = (value='') => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+  const legacyMediaBase = 'https://qpwjfsigvoktsaeiypyy.supabase.co/storage/v1/object/public/mothership-images/';
+
+  function normalizeMediaUrl(value='') {
+    const url = String(value || '').trim();
+    if (base && url.startsWith(legacyMediaBase)) return `${base}${url.slice(legacyMediaBase.length)}`;
+    return url;
+  }
 
   async function loadContent() {
     if (!contentUrl) return defaults;
@@ -144,7 +151,7 @@
   }
 
   function mediaMarkup(item) {
-    const url = esc(item.url || '');
+    const url = esc(normalizeMediaUrl(item.url));
     const alt = esc(item.alt || 'YourFavAlien photo');
     if (!url) return '';
     if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) {
@@ -215,4 +222,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
+
 

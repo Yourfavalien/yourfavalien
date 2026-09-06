@@ -121,7 +121,7 @@
   function loadSiteEnhancements() {
     if (window.__YFA_SITE_ENHANCEMENTS__ || document.querySelector('script[data-yfa-site-enhancements]')) return;
     const script = document.createElement('script');
-    script.src = '/site-enhancements.js?v=20260905-1';
+    script.src = '/site-enhancements.js?v=20260905-photos1';
     script.defer = true;
     script.dataset.yfaSiteEnhancements = '1';
     document.head.appendChild(script);
@@ -139,3 +139,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 })();
+
