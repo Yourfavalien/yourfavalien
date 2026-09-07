@@ -14,17 +14,18 @@ window.YFA_MOTHERSHIP = {
     { id: 'socials-tiktok-profile', group: 'Socials', label: 'TikTok profile photo', path: 'slots/socials-tiktok-profile' },
     { id: 'socials-instagram-profile', group: 'Socials', label: 'Instagram profile photo', path: 'slots/socials-instagram-profile' },
     { id: 'socials-snapchat-profile', group: 'Socials', label: 'Snapchat profile photo', path: 'slots/socials-snapchat-profile' },
-    { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' }
+    { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' },
+    { id: 'help-background', group: 'Help Center', label: 'Help page background image', path: 'slots/help-background' }
   ],
   colorGroups: [
     {
       group: 'Site Menu',
       note: 'Controls the full-screen UFO menu on every active website page.',
       colors: [
-        { id:'menu-bg', label:'Menu background', cssVar:'--yfa-menu-bg', default:'#0a0507', pages:['home','about','contact','privacy','socials'] },
-        { id:'menu-text', label:'Menu lettering', cssVar:'--yfa-menu-text', default:'#f0ece8', pages:['home','about','contact','privacy','socials'] },
-        { id:'menu-active', label:'Current page', cssVar:'--yfa-menu-active', default:'#b5175e', pages:['home','about','contact','privacy','socials'] },
-        { id:'menu-hover', label:'Hover / focus', cssVar:'--yfa-menu-hover', default:'#4de8d8', pages:['home','about','contact','privacy','socials'] }
+        { id:'menu-bg', label:'Menu background', cssVar:'--yfa-menu-bg', default:'#0a0507', pages:['home','about','contact','privacy','socials','help'] },
+        { id:'menu-text', label:'Menu lettering', cssVar:'--yfa-menu-text', default:'#f0ece8', pages:['home','about','contact','privacy','socials','help'] },
+        { id:'menu-active', label:'Current page', cssVar:'--yfa-menu-active', default:'#b5175e', pages:['home','about','contact','privacy','socials','help'] },
+        { id:'menu-hover', label:'Hover / focus', cssVar:'--yfa-menu-hover', default:'#4de8d8', pages:['home','about','contact','privacy','socials','help'] }
       ]
     },
     {

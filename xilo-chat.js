@@ -205,6 +205,12 @@
     return actions;
   }
 
+  function supportActionFor(message) {
+    return /\b(help|support|broken|bug|error|issue|problem|not working|won't load|cannot log|can't log)\b/i.test(String(message || ''))
+      ? [{ label: 'Open Help Center', url: 'https://yourfavalien.com/help' }]
+      : [];
+  }
+
   function addMessage(role, text, options) {
     const row = createElement('div', 'xilo-message-row' + (role === 'user' ? ' is-user' : ''));
     if (options && options.typing) row.classList.add('xilo-typing');
@@ -223,7 +229,7 @@
 
   async function revealAssistantMessage(text, actions) {
     const cleanText = cleanReplyText(text);
-    const combinedActions = (Array.isArray(actions) ? actions : []).concat(actionsFromReply(text));
+    const combinedActions = (Array.isArray(actions) ? actions : []).concat(actionsFromReply(text), supportActionFor(state.history.filter(function (item) { return item.role === 'user'; }).slice(-1)[0]?.content));
     const row = addMessage('assistant', '');
     const bubble = row.querySelector('.xilo-message');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

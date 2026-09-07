@@ -28,8 +28,7 @@
       ['index.html', 'home'],
       ['socials.html', 'socials'],
       ['about.html', 'about moi'],
-      ['contact.html', 'contact'],
-      ['help.html', 'help']
+      ['contact.html', 'contact']
     ].map(function (item) {
       const active = currentPage() === item[0] ? ' class="active"' : '';
       return '<a href="' + item[0] + '"' + active + '>' + item[1] + '</a>';
@@ -65,13 +64,12 @@
     nav.setAttribute('aria-label', nav.getAttribute('aria-label') || 'Primary navigation');
     nav.setAttribute('aria-hidden', 'true');
 
-    const menuDefaults = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact', help: 'help' } };
+    const menuDefaults = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
     const corePages = [
       { key: 'home', files: ['/', 'index', 'index.html'] },
       { key: 'socials', files: ['socials', 'socials.html'] },
       { key: 'about', files: ['about', 'about.html'] },
-      { key: 'contact', files: ['contact', 'contact.html'] },
-      { key: 'help', files: ['help', 'help.html'] }
+      { key: 'contact', files: ['contact', 'contact.html'] }
     ];
     function linkPage(link) {
       try {
@@ -102,13 +100,9 @@
       desired.forEach(function (link) { nav.appendChild(link); });
       if (footer) nav.appendChild(footer);
     }
-    if (!Array.from(nav.children).some(function (child) { return child.tagName === 'A' && corePageFor(child)?.key === 'help'; })) {
-      const helpLink = document.createElement('a');
-      helpLink.href = 'help.html';
-      helpLink.textContent = 'help';
-      if (currentPage() === 'help.html') helpLink.classList.add('active');
-      nav.appendChild(helpLink);
-    }
+    Array.from(nav.children).forEach(function (child) {
+      if (child.tagName === 'A' && /\/(?:help|help\.html)$/i.test(new URL(child.href, window.location.href).pathname)) child.remove();
+    });
     enforceMenuOrder();
     function applyMenuSettings(settings) {
       const menu = settings && typeof settings === 'object' ? settings : menuDefaults;
