@@ -7,6 +7,7 @@ window.YFA_MOTHERSHIP = {
   socialsPath: 'socials/socials.json',
   maintenancePath: 'system/maintenance.json',
   popupPath: 'system/orbit-popup.json',
+  supportPath: 'support/support-center.json',
   slots: [
     { id: 'home-hero-media', group: 'Home', label: 'Homepage hero image / video', path: 'slots/home-hero-media', media: true },
     { id: 'home-orbit-visual', group: 'Home', label: 'Orbit popup photo', path: 'slots/home-orbit-visual' },
@@ -237,4 +238,3 @@ window.YFA_MOTHERSHIP = {
   script.defer = true;
   document.head.appendChild(script);
 })();
-
