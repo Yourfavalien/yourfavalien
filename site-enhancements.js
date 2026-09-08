@@ -160,6 +160,16 @@
     return `<div class="yfa-gallery-item"><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
   }
 
+  function newestMediaFirst(items) {
+    const time = item => {
+      const explicit = Date.parse(item?.uploadedAt || item?.createdAt || '');
+      if (Number.isFinite(explicit)) return explicit;
+      const match = String(item?.path || item?.url || '').match(/\/(\d{10,})-/);
+      return match ? Number(match[1]) : 0;
+    };
+    return [...(items || [])].sort((a, b) => time(b) - time(a));
+  }
+
   function renderHome(content) {
     const isHome = location.pathname === '/' || /\/index\.html$/i.test(location.pathname);
     if (!isHome) return;
@@ -172,7 +182,7 @@
       <section class="yfa-gallery-section">
         ${(section.title || section.caption) ? `<div class="yfa-gallery-head"><div>${section.title ? `<h3>${esc(section.title)}</h3>` : ''}</div>${section.caption ? `<p>${esc(section.caption)}</p>` : ''}</div>` : ''}
         <div class="yfa-gallery-grid" data-layout="${esc(section.layout || 'editorial')}">
-          ${(section.images || []).map(mediaMarkup).join('')}
+          ${newestMediaFirst(section.images).map(mediaMarkup).join('')}
         </div>
       </section>
     `).join('');
@@ -199,7 +209,7 @@
       root.innerHTML = `<div class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><h1>Page not found.</h1><div class="yfa-dynamic-page-copy">This page is not currently published.</div></div></div>`;
       return;
     }
-    const images = Array.isArray(page.images) ? page.images : [];
+    const images = Array.isArray(page.images) ? newestMediaFirst(page.images) : [];
     root.innerHTML = `<main class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><div><h1>${esc(page.title || 'Untitled')}</h1></div>${page.body ? `<div class="yfa-dynamic-page-copy">${esc(page.body)}</div>` : ''}${images.length ? `<div class="yfa-gallery-grid" data-layout="${esc(page.layout || 'editorial')}">${images.map(mediaMarkup).join('')}</div>` : ''}</div></main>`;
     document.title = page.seoTitle || `${page.title || 'Page'} | YourFavAlien`;
     if (page.description) {
