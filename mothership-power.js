@@ -111,11 +111,30 @@
   async function uploadMedia(file, folder) {
     const s = await session();
     if (!s) throw new Error('Log in to the Mothership first.');
+    if (file.size > 49e6) throw new Error(`${file.name} is larger than the 49 MB upload limit.`);
+    if (!/^(image\/|video\/)/i.test(file.type || '')) throw new Error(`${file.name} is not a supported picture or video.`);
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const path = `${folder}/${Date.now()}-${uid().slice(0,8)}.${ext}`;
     const { error } = await client.storage.from(cfg.storageNamespace).upload(path, file, { upsert:false, contentType:file.type || undefined, cacheControl:'3600' });
     if (error) throw error;
     return { url: publicUrl(path), path, alt: '' };
+  }
+
+  async function uploadBatch(files, folder, status) {
+    const results=new Array(files.length),errors=[];
+    let next=0,complete=0;
+    const update=()=>{if(status)status.textContent=`Uploading ${complete} of ${files.length}…`;};
+    update();
+    async function worker(){
+      while(next<files.length){
+        const index=next++,file=files[index];
+        try{results[index]=await uploadMedia(file,folder);}
+        catch(error){errors.push(error.message||`${file.name} could not upload.`);}
+        finally{complete++;update();}
+      }
+    }
+    await Promise.all(Array.from({length:Math.min(3,files.length)},worker));
+    return {uploaded:results.filter(Boolean),errors};
   }
 
   async function removeStoredMedia(item) {
@@ -133,7 +152,7 @@
         <div class="power-field full"><label>CAPTION / DESCRIPTION</label><textarea data-caption>${section.caption||''}</textarea></div>
         <label class="power-check"><input type="checkbox" data-enabled ${section.enabled!==false?'checked':''}> Show this section</label>
       </div>
-      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label></div>
+      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label></div><div class="power-muted" data-upload-status></div>
       <div class="power-media-list" data-media></div>
     `;
     card.querySelector('[data-layout]').value = section.layout || 'editorial';
@@ -145,7 +164,7 @@
     card.querySelector('[data-upload]').onchange=async event=>{
       const input=event.currentTarget; const files=[...input.files]; if(!files.length)return;
       input.disabled=true;
-      try { const uploaded=[]; for(const file of files){ uploaded.push(await uploadMedia(file,'homepage-gallery')); } section.images.unshift(...uploaded); markDirty(); renderHomeSections(); }
+      try { const result=await uploadBatch(files,'homepage-gallery',card.querySelector('[data-upload-status]')); if(result.uploaded.length){section.images.unshift(...result.uploaded);markDirty();renderHomeSections();} if(result.errors.length)alert(`${result.uploaded.length} file(s) uploaded.\n\n${result.errors.join('\n')}`); }
       catch(error){ alert(error.message||'Upload failed.'); } finally { input.disabled=false; }
     };
     renderMedia(card.querySelector('[data-media]'), section.images, () => { markDirty(); renderHomeSections(); });
@@ -183,14 +202,14 @@
         <div class="power-field"><label>META DESCRIPTION</label><input data-description value="${(page.description||'').replace(/"/g,'&quot;')}"></div>
         <label class="power-check"><input type="checkbox" data-enabled ${page.enabled!==false?'checked':''}> Publish this page</label>
       </div>
-      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label><a class="power-mini" data-open target="_blank" rel="noopener">Open page</a></div>
+      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label><a class="power-mini" data-open target="_blank" rel="noopener">Open page</a></div><div class="power-muted" data-upload-status></div>
       <div class="power-media-list" data-media></div>`;
     card.querySelector('[data-layout]').value=page.layout||'editorial';
     const sync=()=>{page.title=card.querySelector('[data-title]').value;page.slug=safe(card.querySelector('[data-slug]').value);card.querySelector('[data-slug]').value=page.slug;page.body=card.querySelector('[data-body]').value;page.layout=card.querySelector('[data-layout]').value;page.description=card.querySelector('[data-description]').value;page.enabled=card.querySelector('[data-enabled]').checked;card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug)}`;markDirty();};
     card.querySelectorAll('[data-title],[data-slug],[data-body],[data-layout],[data-description],[data-enabled]').forEach(n=>{n.addEventListener('input',sync);n.addEventListener('change',sync);});
     card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug||'')}`;
     card.querySelector('[data-remove]').onclick=()=>{if(confirm('Remove this page?')){data.pages.splice(index,1);markDirty();renderPages();}};
-    card.querySelector('[data-upload]').onchange=async e=>{const files=[...e.currentTarget.files];e.currentTarget.disabled=true;try{const uploaded=[];for(const file of files){uploaded.push(await uploadMedia(file,`pages/${page.slug||'page'}`));}page.images.unshift(...uploaded);markDirty();renderPages();}catch(error){alert(error.message||'Upload failed.');}finally{e.currentTarget.disabled=false;}};
+    card.querySelector('[data-upload]').onchange=async e=>{const input=e.currentTarget,files=[...input.files];input.disabled=true;try{const result=await uploadBatch(files,`pages/${page.slug||'page'}`,card.querySelector('[data-upload-status]'));if(result.uploaded.length){page.images.unshift(...result.uploaded);markDirty();renderPages();}if(result.errors.length)alert(`${result.uploaded.length} file(s) uploaded.\n\n${result.errors.join('\n')}`);}catch(error){alert(error.message||'Upload failed.');}finally{input.disabled=false;}};
     renderMedia(card.querySelector('[data-media]'),page.images,()=>{markDirty();renderPages();});
     return card;
   }
@@ -273,7 +292,7 @@
     document.getElementById('powerAddLink').onclick=()=>{data.navigation.customLinks.push({id:uid(),label:'New link',url:'/',enabled:true});markDirty();renderLinks();};
     document.getElementById('powerSaveDraft').onclick=saveDraft;
     document.getElementById('powerPreview').onclick=()=>saveDraft();
-    document.getElementById('powerPublish').onclick=async e=>{e.currentTarget.disabled=true;try{await publish();await listRevisions();}catch{}finally{e.currentTarget.disabled=false;}};
+    document.getElementById('powerPublish').onclick=async e=>{const button=e.currentTarget;button.disabled=true;try{await publish();await listRevisions();}catch{}finally{button.disabled=false;}};
     document.getElementById('powerRefreshRevisions').onclick=listRevisions;
     await listRevisions();
     window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
