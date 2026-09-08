@@ -7,7 +7,7 @@
   const config = Object.assign({
     endpoint: 'https://yourfavalien-business-headquarters.aydenmtz54.workers.dev/api/chat',
     maxHistory: 10,
-    timeoutMs: 30000,
+    timeoutMs: 75000,
     minResponseMs: 1400,
     typeSpeedMs: 14,
     pollMs: 3000
@@ -216,7 +216,7 @@
     if (options && options.typing) row.classList.add('xilo-typing');
     const bubble = createElement('div', 'xilo-message');
     if (options && options.typing) {
-      bubble.innerHTML = '<span class="xilo-dots" aria-label="Xilo is typing">•••</span>';
+      bubble.innerHTML = '<span aria-live="polite">Xilo is typing</span> <span class="xilo-dots" aria-hidden="true">•••</span>';
     } else {
       bubble.textContent = text;
     }
@@ -375,7 +375,7 @@
     } catch (error) {
       typing.remove();
       const message = error && error.name === 'AbortError'
-        ? 'my signal timed out. please try again in a moment.'
+        ? 'My signal is taking longer than expected. Please try sending that message once more.'
         : "i'm having trouble reaching the mothership. You can still contact Ayden using the contact button on this page.";
       addMessage('assistant', message);
     } finally {
