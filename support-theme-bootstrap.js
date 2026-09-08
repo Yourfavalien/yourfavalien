@@ -1,0 +1,1 @@
+(function(){try{const saved=JSON.parse(localStorage.getItem('yfa-support-settings')||'null'),colors=saved&&saved.colors;if(!colors)return;for(const[key,value]of Object.entries(colors))if(value)document.documentElement.style.setProperty('--'+key,value)}catch(error){}})();
