@@ -44,7 +44,7 @@
 
   const scripts = [
     ['/mothership-cloudflare-admin.js?v=20260905-1', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20260908-3', 'yfaMothershipPower'],
+    ['/mothership-power.js?v=20260908-4', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260905-1', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260905-1', 'yfaMothershipBadge']
   ];
