@@ -124,7 +124,8 @@
   async function uploadBatch(files, folder, status) {
     const results=new Array(files.length),errors=[];
     let next=0,complete=0;
-    const update=()=>{if(status)status.textContent=`Uploading ${complete} of ${files.length}…`;};
+    const totalMb=(files.reduce((sum,file)=>sum+file.size,0)/1048576).toFixed(1);
+    const update=()=>{if(status)status.textContent=`Uploading ${complete} of ${files.length} files (${totalMb} MB total)…`;};
     update();
     async function worker(){
       while(next<files.length){
@@ -134,7 +135,7 @@
         finally{complete++;update();}
       }
     }
-    await Promise.all(Array.from({length:Math.min(3,files.length)},worker));
+    await Promise.all(Array.from({length:Math.min(4,files.length)},worker));
     return {uploaded:results.filter(Boolean),errors};
   }
 
