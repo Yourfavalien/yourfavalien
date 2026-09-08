@@ -145,7 +145,7 @@
     card.querySelector('[data-upload]').onchange=async event=>{
       const input=event.currentTarget; const files=[...input.files]; if(!files.length)return;
       input.disabled=true;
-      try { for(const file of files){ section.images.push(await uploadMedia(file,'homepage-gallery')); } markDirty(); renderHomeSections(); }
+      try { const uploaded=[]; for(const file of files){ uploaded.push(await uploadMedia(file,'homepage-gallery')); } section.images.unshift(...uploaded); markDirty(); renderHomeSections(); }
       catch(error){ alert(error.message||'Upload failed.'); } finally { input.disabled=false; }
     };
     renderMedia(card.querySelector('[data-media]'), section.images, () => { markDirty(); renderHomeSections(); });
@@ -190,7 +190,7 @@
     card.querySelectorAll('[data-title],[data-slug],[data-body],[data-layout],[data-description],[data-enabled]').forEach(n=>{n.addEventListener('input',sync);n.addEventListener('change',sync);});
     card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug||'')}`;
     card.querySelector('[data-remove]').onclick=()=>{if(confirm('Remove this page?')){data.pages.splice(index,1);markDirty();renderPages();}};
-    card.querySelector('[data-upload]').onchange=async e=>{const files=[...e.currentTarget.files];e.currentTarget.disabled=true;try{for(const file of files){page.images.push(await uploadMedia(file,`pages/${page.slug||'page'}`));}markDirty();renderPages();}catch(error){alert(error.message||'Upload failed.');}finally{e.currentTarget.disabled=false;}};
+    card.querySelector('[data-upload]').onchange=async e=>{const files=[...e.currentTarget.files];e.currentTarget.disabled=true;try{const uploaded=[];for(const file of files){uploaded.push(await uploadMedia(file,`pages/${page.slug||'page'}`));}page.images.unshift(...uploaded);markDirty();renderPages();}catch(error){alert(error.message||'Upload failed.');}finally{e.currentTarget.disabled=false;}};
     renderMedia(card.querySelector('[data-media]'),page.images,()=>{markDirty();renderPages();});
     return card;
   }
