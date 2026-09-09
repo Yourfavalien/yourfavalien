@@ -161,8 +161,9 @@
   }
 
   function setupLazyVideos(root=document) {
-    const videos = Array.from(root.querySelectorAll('video[data-yfa-lazy-video]'));
+    const videos = Array.from(root.querySelectorAll('video[data-yfa-lazy-video]:not([data-yfa-video-observed])'));
     if (!videos.length) return;
+    videos.forEach(video => { video.dataset.yfaVideoObserved = '1'; });
     if (!('IntersectionObserver' in window)) {
       videos.forEach(video => { video.preload = 'metadata'; });
       return;
@@ -179,6 +180,39 @@
       });
     }, { rootMargin: '240px 0px' });
     videos.forEach(video => observer.observe(video));
+  }
+
+  function setupProgressiveGallery(grid, items) {
+    const media = newestMediaFirst(items);
+    let shown = 0;
+    const batchSize = 4;
+    const appendNext = () => {
+      const next = media.slice(shown, shown + batchSize);
+      if (!next.length) return false;
+      grid.insertAdjacentHTML('beforeend', next.map(mediaMarkup).join(''));
+      shown += next.length;
+      setupLazyVideos(grid);
+      return shown < media.length;
+    };
+    const hasMore = appendNext();
+    if (!hasMore) return;
+    const sentinel = document.createElement('div');
+    sentinel.className = 'yfa-gallery-sentinel';
+    sentinel.setAttribute('aria-hidden', 'true');
+    grid.after(sentinel);
+    if (!('IntersectionObserver' in window)) {
+      while (appendNext()) {}
+      sentinel.remove();
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      if (!appendNext()) {
+        observer.disconnect();
+        sentinel.remove();
+      }
+    }, { rootMargin: '700px 0px' });
+    observer.observe(sentinel);
   }
 
   function newestMediaFirst(items) {
@@ -199,12 +233,10 @@
     if (!home.showIntro && !sections.length) return;
     if (document.getElementById('yfaHomeFeed')) return;
 
-    const sectionHtml = sections.map(section => `
+    const sectionHtml = sections.map((section, index) => `
       <section class="yfa-gallery-section">
         ${(section.title || section.caption) ? `<div class="yfa-gallery-head"><div>${section.title ? `<h3>${esc(section.title)}</h3>` : ''}</div>${section.caption ? `<p>${esc(section.caption)}</p>` : ''}</div>` : ''}
-        <div class="yfa-gallery-grid" data-layout="${esc(section.layout || 'editorial')}">
-          ${newestMediaFirst(section.images).map(mediaMarkup).join('')}
-        </div>
+        <div class="yfa-gallery-grid" data-section-index="${index}" data-layout="${esc(section.layout || 'editorial')}"></div>
       </section>
     `).join('');
 
@@ -219,7 +251,10 @@
     const footer = document.querySelector('footer');
     if (footer) footer.parentNode.insertBefore(feed, footer);
     else document.body.appendChild(feed);
-    setupLazyVideos(feed);
+    sections.forEach((section, index) => {
+      const grid = feed.querySelector(`[data-section-index="${index}"]`);
+      if (grid) setupProgressiveGallery(grid, section.images);
+    });
   }
 
   function renderDynamicPage(content) {
