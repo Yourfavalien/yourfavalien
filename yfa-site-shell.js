@@ -138,7 +138,9 @@
       if (privacyLink.style.display === 'none') privacyLink.style.removeProperty('display');
       enforceMenuOrder();
     }
-    new MutationObserver(keepPrivacyInFooter).observe(nav, { childList: true, subtree: true });
+    // Mothership adds custom links directly before the legal footer. A one-time
+    // normalization avoids reprocessing the menu while those links are added.
+    keepPrivacyInFooter();
 
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
