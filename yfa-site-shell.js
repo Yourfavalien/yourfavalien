@@ -419,12 +419,26 @@
     loader.className = 'yfa-page-loader';
     loader.setAttribute('role', 'status');
     loader.setAttribute('aria-live', 'polite');
-    loader.innerHTML = '<div class="yfa-page-loader__orbit" aria-hidden="true"><span></span><span></span><span></span></div><div class="yfa-page-loader__wordmark">YOUR F<span>△</span>V ALIEN</div><p>tuning the signal…</p>';
+    loader.innerHTML = '<div class="yfa-page-loader__content"><p class="yfa-page-loader__label">loading transmission…</p><div class="yfa-page-loader__progress" role="progressbar" aria-label="Page loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><output class="yfa-page-loader__percent">0%</output><p class="yfa-page-loader__note">something more interesting awaits</p></div>';
     document.body.append(loader);
+    const progress = loader.querySelector('.yfa-page-loader__progress');
+    const fill = progress.querySelector('span');
+    const percent = loader.querySelector('.yfa-page-loader__percent');
+    const label = loader.querySelector('.yfa-page-loader__label');
     let dismissed = false;
+    let currentProgress = 0;
+    function setProgress(value) {
+      currentProgress = Math.max(currentProgress, Math.min(100, Math.round(value)));
+      fill.style.width = currentProgress + '%';
+      percent.value = currentProgress + '%';
+      percent.textContent = currentProgress + '%';
+      progress.setAttribute('aria-valuenow', String(currentProgress));
+    }
     function dismiss() {
       if (dismissed) return;
       dismissed = true;
+      setProgress(100);
+      label.textContent = 'signal received';
       document.documentElement.classList.remove('yfa-page-loading');
       loader.classList.add('is-ending');
       window.setTimeout(function () {
@@ -432,8 +446,34 @@
         markPageReady();
       }, 240);
     }
-    window.addEventListener('load', function () { window.setTimeout(dismiss, 180); }, { once: true });
-    window.setTimeout(dismiss, 1200);
+
+    // Count only assets that are part of this page's first paint. This makes
+    // every shown percentage reflect completed page resources, not a timer.
+    const tracked = Array.from(document.images).filter(image => image.loading !== 'lazy');
+    const loaderArtwork = new Image();
+    loaderArtwork.src = '/assets/yfa-loader-transmission.png';
+    tracked.push(loaderArtwork);
+    const total = tracked.length + (document.fonts ? 1 : 0);
+    let complete = 0;
+    function assetComplete() {
+      complete += 1;
+      setProgress((complete / total) * 92);
+    }
+    tracked.forEach(asset => {
+      if (asset.complete) assetComplete();
+      else {
+        asset.addEventListener('load', assetComplete, { once: true });
+        asset.addEventListener('error', assetComplete, { once: true });
+      }
+    });
+    if (document.fonts) document.fonts.ready.then(assetComplete, assetComplete);
+    setProgress(0);
+    window.addEventListener('load', function () {
+      setProgress(100);
+      window.setTimeout(dismiss, 180);
+    }, { once: true });
+    // Keeps a broken third-party resource from trapping someone on the loader.
+    window.setTimeout(dismiss, 10000);
   }
 
   let initialized = false;
