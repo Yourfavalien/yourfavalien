@@ -79,7 +79,7 @@
   launcher.type = 'button';
   launcher.setAttribute('aria-expanded', 'false');
   launcher.setAttribute('aria-controls', 'xilo-panel');
-  launcher.innerHTML = '<span class="xilo-launcher-mark" aria-hidden="true">👽</span><span>ask xilo</span>';
+  launcher.innerHTML = '<span class="xilo-launcher-mark" aria-hidden="true">👽</span><span>headquarters assistant</span>';
 
   const panel = createElement('section', 'xilo-panel');
   panel.id = 'xilo-panel';
