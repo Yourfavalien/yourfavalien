@@ -23,5 +23,5 @@
 
   function siteEnabled(data){if(data.system?.siteEnabled!==false)return true;if(/^\/mothership/i.test(location.pathname))return true;document.body.innerHTML='<main style="min-height:100vh;display:grid;place-items:center;padding:30px;text-align:center"><div><h1>We’ll be right back.</h1><p>YourFavAlien is temporarily unavailable.</p></div></main>';document.title='YourFavAlien — Temporarily unavailable';return false;}
 
-  load().then(data=>{if(!data)return;if(!siteEnabled(data))return;style(data);nav(data);content(data);xilo(data);popupWords(data);window.YFA_ADVANCED_SETTINGS=data;});
+  load().then(data=>{if(!data)return;if(!siteEnabled(data))return;style(data);content(data);xilo(data);popupWords(data);window.YFA_ADVANCED_SETTINGS=data;});
 })();
