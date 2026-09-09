@@ -76,7 +76,7 @@
       <section class="menu-editor" aria-labelledby="homeIdentityTitle">
         <h3 id="homeIdentityTitle">Homepage top line</h3>
         <div class="color-note">This small cursive line sits centered above your menu. Change the words whenever you want; the centered dot is included in the default text.</div>
-        <div class="menu-label-grid"><div class="menu-label-field" style="grid-column:1/-1"><label for="homeIdentityText">TOP LINE TEXT</label><input id="homeIdentityText" maxlength="100" value="MODEL · MAIN CHARACTER ENERGY · FASHION"></div></div>
+        <div class="menu-label-grid"><div class="menu-label-field" style="grid-column:1/-1"><label for="homeIdentityText">TOP LINE TEXT</label><input id="homeIdentityText" maxlength="100" value="model · main character energy · fashion"></div></div>
       </section>
       <section class="menu-editor" aria-labelledby="menuEditorTitle">
         <h3 id="menuEditorTitle">Menu layout &amp; wording</h3>
@@ -169,7 +169,7 @@
     </section>
   </main>
 
-  <script src="../mothership-config.js?v=20260908-5"></script>
+  <script src="../mothership-config.js?v=20260908-6"></script>
   <script>
     (() => {
       const cfg = window.YFA_MOTHERSHIP;
@@ -253,7 +253,7 @@
       let socialsState = JSON.parse(JSON.stringify(defaultSocials));
       const defaultMenu = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
       let themeState = { ...defaultTheme };
-      const defaultHomeIdentity = { text: 'MODEL · MAIN CHARACTER ENERGY · FASHION', enabled: true };
+      const defaultHomeIdentity = { text: 'model · main character energy · fashion', enabled: true };
       let homeIdentityState = { ...defaultHomeIdentity };
       let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
       let selectedConversation = null;

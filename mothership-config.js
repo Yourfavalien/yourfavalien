@@ -39,6 +39,7 @@ window.YFA_MOTHERSHIP = {
         { id:'main-cyan', label:'Cyan accent', cssVar:'--cyan', default:'#4de8d8', pages:['home','about','contact','privacy'] },
         { id:'main-yellow', label:'Yellow accent', cssVar:'--yellow', default:'#f5c518', pages:['home','about','contact','privacy'] },
         { id:'main-text', label:'Main text', cssVar:'--white', default:'#f0ece8', pages:['home','about','contact','privacy'] },
+        { id:'home-top-line', label:'Homepage top line', cssVar:'--yfa-home-top-line', default:'#f0ece8', pages:['home'] },
         { id:'main-light', label:'Light panel', cssVar:'--gray-light', default:'#e8e4e0', pages:['home','about','contact','privacy'] }
       ]
     },
@@ -51,15 +52,6 @@ window.YFA_MOTHERSHIP = {
         { id:'orbit-bg-deep', label:'Orbit cream shade', cssVar:'--yfa-orbit-cream-deep', default:'#f1eedf', pages:['home','about','contact'] },
         { id:'orbit-button', label:'Orbit button', cssVar:'--yfa-orbit-button', default:'#1c2028', pages:['home','about','contact'] },
         { id:'orbit-button-hover', label:'Orbit button hover', cssVar:'--yfa-orbit-button-hover', default:'#0f1218', pages:['home','about','contact'] }
-      ]
-    },
-    {
-      group: 'Homepage logo',
-      note: 'Change each part of the YourFavAlien wordmark separately when you want it to sit differently over a new hero image.',
-      colors: [
-        { id:'logo-your', label:'YOUR lettering', cssVar:'--yfa-logo-your', default:'#f0ece8', pages:['home'] },
-        { id:'logo-fav', label:'FAV lettering', cssVar:'--yfa-logo-fav', default:'#f0ece8', pages:['home'] },
-        { id:'logo-alien', label:'ALIEN lettering', cssVar:'--yfa-logo-alien', default:'#f0ece8', pages:['home'] }
       ]
     },
     {
