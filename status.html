@@ -1,1 +1,126 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>System Status | Your Fav Alien Support</title><link rel="icon" href="/assets/favicon.png"><script src="/support-theme-bootstrap.js?v=20260908-1"></script><link rel="stylesheet" href="/help-center.css?v=20260908-8"><style>.status-head{display:flex;align-items:end;justify-content:space-between;gap:28px;padding:80px 0 45px}.status-head h1{font-size:clamp(42px,6vw,70px);margin:0 0 15px}.status-head p{color:var(--muted);font:16px/1.6 Georgia,serif}.refresh-status{padding:13px 18px;border:1px solid var(--blue);border-radius:4px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}.refresh-status:disabled{opacity:.65;cursor:wait}.overall{padding:22px;border:1px solid #bfe3ca;background:#f1fbf4;color:#176c32;font-weight:700;margin:15px 0 35px}.overall small{display:block;margin:8px 0 0 16px;font-weight:400}.overall.maintenance{border-color:#ead28b;background:#fff8df;color:#765200}.overall.degraded{border-color:#efcf91;background:#fff8e8;color:#815600}.overall.outage{border-color:#e6b4b4;background:#fff1f1;color:#a02424}.overall.checking{border-color:var(--line);background:var(--soft);color:var(--muted)}.systems{border-top:1px solid var(--line);margin-bottom:28px}.system{display:flex;justify-content:space-between;gap:20px;padding:25px 5px;border-bottom:1px solid var(--line)}.system b{display:block}.system small{display:block;color:var(--muted);margin-top:6px}.state{color:#17823b;font-size:12px;font-weight:700;text-align:right}.state small{font-size:9px;font-weight:400}.state.maintenance,.state.degraded{color:#8a6500}.state.outage{color:#b3261e}.state.checking{color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;background:currentColor;border-radius:50%;margin-right:8px}.checked{color:var(--muted);font-size:11px;margin-bottom:90px}@media(max-width:620px){.status-head{align-items:flex-start;flex-direction:column}.refresh-status{width:100%}.system{align-items:flex-start}.state{max-width:120px}}</style></head><body><div class="shell"><header class="header"><div class="header-in"><a class="brand" href="/help"><img class="support-logo" src="https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/support/media/header-logo.png?v=1788836091186" alt="">Your Fav Alien Support Center</a><nav class="nav"><a href="/help">HOME</a><a href="/help#topics">TOPICS</a><a href="/help-tickets.html">TRACK A TICKET</a><a class="talk" href="/help-contact.html">TALK TO US</a></nav></div></header><main><div class="container"><a class="back" href="/help">← Back to Help Center</a><header class="status-head"><div><p class="label">SYSTEM STATUS</p><h1>Your Fav Alien status</h1><p>Live availability for the public sites and support services.</p></div><button class="refresh-status" id="refreshStatus" type="button">REFRESH STATUS</button></header><div class="overall checking" id="overall"><span class="dot"></span>Checking all systems…</div><div class="systems"><div class="system"><div><b>Main Website</b><small>yourfavalien.com pages and photos</small></div><span class="state checking">Checking…</span></div><div class="system"><div><b>Help Center</b><small>Articles, search, and support navigation</small></div><span class="state checking">Checking…</span></div><div class="system"><div><b>Business HQ</b><small>Partner portal availability</small></div><span class="state checking">Checking…</span></div><div class="system"><div><b>Support Tickets</b><small>Ticket submission and tracking</small></div><span class="state checking">Checking…</span></div><div class="system"><div><b>Newsletter Signup</b><small>YourFavAlien email subscription</small></div><span class="state checking">Checking…</span></div></div><p class="checked" id="checked" aria-live="polite"></p></div></main><footer class="footer"><div class="container footer-grid"><div><a class="brand" href="/help"><img class="support-logo" src="https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/support/media/footer-logo.png?v=1788836096385" alt="">Your Fav Alien Support Center</a><p>Find answers, learn the sites, check system health, and reach support.</p></div><div><h4>TOPICS</h4><a href="/help-category.html?topic=website">Main Website</a><a href="/help-category.html?topic=business">Business HQ</a><a href="/help-category.html?topic=email">Newsletter &amp; Email</a></div><div><h4>MORE</h4><a href="/help-category.html?topic=privacy">Privacy &amp; Xilo</a><a href="/help-category.html?topic=accessibility">Accessibility</a><a href="/help-contact.html">Live Chat</a><a href="mailto:help@yourfavalien.com">Email Support</a><a href="/help-tickets.html">Track a Ticket</a><a href="/status.html">System Status</a></div><div><h4>COMPANY &amp; LEGAL</h4><a href="/">Main Site</a><a href="/contact">Contact</a><a href="/help-privacy.html">Support Privacy</a><a href="/status.html">Status</a></div></div><div class="container footer-bottom"><span>© 2026 Your Fav Alien Support Center. All rights reserved.</span><span><a href="/">Main Site</a><a href="/status.html">Status</a></span></div></footer></div><script src="/help-center.js?v=20260908-5"></script><script src="/status.js?v=20260908-1"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>System Status | Your Fav Alien Support</title>
+<link rel="icon" href="/assets/favicon.png">
+<script src="/support-theme-bootstrap.js?v=20260908-1">
+</script>
+<link rel="stylesheet" href="/help-center.css?v=20260908-8">
+<style>.status-head{display:flex;align-items:end;justify-content:space-between;gap:28px;padding:80px 0 45px}.status-head h1{font-size:clamp(42px,6vw,70px);margin:0 0 15px}.status-head p{color:var(--muted);font:16px/1.6 Georgia,serif}.refresh-status{padding:13px 18px;border:1px solid var(--blue);border-radius:4px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}.refresh-status:disabled{opacity:.65;cursor:wait}.overall{padding:22px;border:1px solid #bfe3ca;background:#f1fbf4;color:#176c32;font-weight:700;margin:15px 0 35px}.overall small{display:block;margin:8px 0 0 16px;font-weight:400}.overall.maintenance{border-color:#ead28b;background:#fff8df;color:#765200}.overall.degraded{border-color:#efcf91;background:#fff8e8;color:#815600}.overall.outage{border-color:#e6b4b4;background:#fff1f1;color:#a02424}.overall.checking{border-color:var(--line);background:var(--soft);color:var(--muted)}.systems{border-top:1px solid var(--line);margin-bottom:28px}.system{display:flex;justify-content:space-between;gap:20px;padding:25px 5px;border-bottom:1px solid var(--line)}.system b{display:block}.system small{display:block;color:var(--muted);margin-top:6px}.state{color:#17823b;font-size:12px;font-weight:700;text-align:right}.state small{font-size:9px;font-weight:400}.state.maintenance,.state.degraded{color:#8a6500}.state.outage{color:#b3261e}.state.checking{color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;background:currentColor;border-radius:50%;margin-right:8px}.checked{color:var(--muted);font-size:11px;margin-bottom:90px}@media(max-width:620px){.status-head{align-items:flex-start;flex-direction:column}.refresh-status{width:100%}.system{align-items:flex-start}.state{max-width:120px}}</style>
+</head>
+<body>
+<div class="shell">
+<header class="header">
+<div class="header-in">
+<a class="brand" href="/help">
+<img class="support-logo" src="https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/support/media/header-logo.png?v=1788836091186" alt="">Your Fav Alien Support Center</a>
+<nav class="nav">
+<a href="/help">HOME</a>
+<a href="/help#topics">TOPICS</a>
+<a href="/help-tickets.html">TRACK A TICKET</a>
+<a class="talk" href="/help-contact.html">TALK TO US</a>
+</nav>
+</div>
+</header>
+<main>
+<div class="container">
+<a class="back" href="/help">← Back to Help Center</a>
+<header class="status-head">
+<div>
+<p class="label">SYSTEM STATUS</p>
+<h1>Your Fav Alien status</h1>
+<p>Live availability for the public sites and support services.</p>
+</div>
+<button class="refresh-status" id="refreshStatus" type="button">REFRESH STATUS</button>
+</header>
+<div class="overall checking" id="overall">
+<span class="dot">
+</span>Checking all systems…</div>
+<div class="systems">
+<div class="system">
+<div>
+<b>Main Website</b>
+<small>yourfavalien.com pages and photos</small>
+</div>
+<span class="state checking">Checking…</span>
+</div>
+<div class="system">
+<div>
+<b>Help Center</b>
+<small>Articles, search, and support navigation</small>
+</div>
+<span class="state checking">Checking…</span>
+</div>
+<div class="system">
+<div>
+<b>Business HQ</b>
+<small>Partner portal availability</small>
+</div>
+<span class="state checking">Checking…</span>
+</div>
+<div class="system">
+<div>
+<b>Support Tickets</b>
+<small>Ticket submission and tracking</small>
+</div>
+<span class="state checking">Checking…</span>
+</div>
+<div class="system">
+<div>
+<b>Newsletter Signup</b>
+<small>YourFavAlien email subscription</small>
+</div>
+<span class="state checking">Checking…</span>
+</div>
+</div>
+<p class="checked" id="checked" aria-live="polite">
+</p>
+</div>
+</main>
+<footer class="footer">
+<div class="container footer-grid">
+<div>
+<a class="brand" href="/help">
+<img class="support-logo" src="https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/support/media/footer-logo.png?v=1788836096385" alt="">Your Fav Alien Support Center</a>
+<p>Find answers, learn the sites, check system health, and reach support.</p>
+</div>
+<div>
+<h4>TOPICS</h4>
+<a href="/help-category.html?topic=website">Main Website</a>
+<a href="/help-category.html?topic=business">Business HQ</a>
+<a href="/help-category.html?topic=email">Newsletter &amp; Email</a>
+</div>
+<div>
+<h4>MORE</h4>
+<a href="/help-category.html?topic=privacy">Privacy &amp; Xilo</a>
+<a href="/help-category.html?topic=accessibility">Accessibility</a>
+<a href="/help-contact.html">Live Chat</a>
+<a href="mailto:help@yourfavalien.com">Email Support</a>
+<a href="/help-tickets.html">Track a Ticket</a>
+<a href="/status.html">System Status</a>
+</div>
+<div>
+<h4>COMPANY &amp; LEGAL</h4>
+<a href="/">Main Site</a>
+<a href="/contact">Contact</a>
+<a href="/help-privacy.html">Support Privacy</a>
+<a href="/status.html">Status</a>
+</div>
+</div>
+<div class="container footer-bottom">
+<span>© 2026 Your Fav Alien Support Center. All rights reserved.</span>
+<span>
+<a href="/">Main Site</a>
+<a href="/status.html">Status</a>
+</span>
+</div>
+</footer>
+</div>
+<script src="/help-center.js?v=20260908-5">
+</script>
+<script src="/status.js?v=20260909-rendered-check-1">
+</script>
+</body>
+</html>
