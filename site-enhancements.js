@@ -15,9 +15,11 @@
 
   const esc = (value='') => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
   const legacyMediaBase = 'https://qpwjfsigvoktsaeiypyy.supabase.co/storage/v1/object/public/mothership-images/';
+  const optimizedGalleryVideo = 'homepage-gallery/1788929087538-1f96cf6d.mov';
 
   function normalizeMediaUrl(value='') {
     const url = String(value || '').trim();
+    if (url.includes(optimizedGalleryVideo)) return '/assets/yourfavalien-gallery.mp4';
     if (base && url.startsWith(legacyMediaBase)) return `${base}${url.slice(legacyMediaBase.length)}`;
     return url;
   }
