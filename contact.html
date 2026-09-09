@@ -71,7 +71,7 @@
     body { background: var(--black); }
     .contact-page { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 8%; position: relative; overflow: hidden; }
     .contact-inner { position: relative; z-index: 2; max-width: 580px; }
-    .contact-inner h2 { font-family: 'Playfair Display',serif; font-size: clamp(36px,6vw,72px); font-weight: 400; font-style: italic; line-height: 1.1; margin-bottom: 30px; }
+    .contact-inner h1 { font-family: 'Playfair Display',serif; font-size: clamp(36px,6vw,72px); font-weight: 400; font-style: italic; line-height: 1.1; margin-bottom: 30px; }
     .contact-body { font-family: 'Courier Prime',monospace; font-size: 13px; line-height: 1.9; color: rgba(255,255,255,0.75); margin-bottom: 28px; max-width: 420px; }
     .contact-btn { display: inline-block; font-family: 'Courier Prime',monospace; font-size: 13px; color: var(--white); border: 1.5px solid rgba(255,255,255,0.5); border-radius: 999px; padding: 9px 24px; text-decoration: none; cursor: pointer; background: transparent; transition: background 0.2s; letter-spacing: 0.05em; }
     .contact-btn:hover { background: rgba(255,255,255,0.1); }
@@ -131,7 +131,7 @@
     /* CONTACT page */
     @media (max-width: 768px) {
       .contact-page { padding: 90px 6% 40px; }
-      .contact-inner h2 { font-size: clamp(28px, 8vw, 52px); }
+      .contact-inner h1 { font-size: clamp(28px, 8vw, 52px); }
       .contact-art { width: 100%; right: -10px; opacity: 0.3; bottom: 0; }
     }
     @media (max-width: 480px) {
@@ -283,7 +283,7 @@ nav a {
     min-height: 100svh;
     padding: 100px 20px 38px;
   }
-  .contact-inner h2 {
+  .contact-inner h1 {
     font-size: clamp(36px, 12vw, 54px);
     margin-bottom: 20px;
   }
@@ -807,14 +807,14 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <style id="yfa-contact-cleanup">
   .contact-page{min-height:100svh;padding:clamp(118px,13vw,160px) clamp(24px,8vw,110px) 70px;justify-content:center;background:radial-gradient(circle at 82% 48%,rgba(181,23,94,.12),transparent 32rem)}
   .contact-inner{max-width:520px}
-  .contact-inner h2{margin:0 0 18px;font-size:clamp(44px,6vw,68px);line-height:.98}
+  .contact-inner h1{margin:0 0 18px;font-size:clamp(44px,6vw,68px);line-height:.98}
   .contact-body{max-width:500px;margin-bottom:24px;font-size:14px;line-height:1.75;text-transform:none}
   .contact-actions{gap:9px}
   .contact-btn{padding:10px 18px;font-size:11px;letter-spacing:.06em}
   .contact-credibility{max-width:500px;margin-top:20px;font-size:11px;line-height:1.65}
   .contact-art{right:2vw;bottom:4%;width:min(42vw,560px);max-height:72vh;opacity:.58}
   @media(max-width:820px){.contact-page{padding:112px 24px 58px;justify-content:center}.contact-inner{max-width:560px}.contact-art{display:none!important}.contact-actions{align-items:flex-start}.contact-btn{min-height:42px}}
-  @media(max-width:520px){.contact-actions{display:grid}.contact-btn{width:100%;justify-content:center}.contact-inner h2{font-size:clamp(42px,14vw,58px)}.contact-body{font-size:13px}}
+  @media(max-width:520px){.contact-actions{display:grid}.contact-btn{width:100%;justify-content:center}.contact-inner h1{font-size:clamp(42px,14vw,58px)}.contact-body{font-size:13px}}
 </style>
 </head>
 <body>
@@ -828,7 +828,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <div class="stars" id="contact-stars"></div>
 <img alt="Futuristic yellow glasses art" class="contact-art" decoding="async" fetchpriority="high" src="assets/contact-glasses-repaired.jpg?v=20260830-1"/>
 <div class="contact-inner">
-<h2>let's connect</h2>
+<h1>let's connect</h1>
 <p class="contact-body">Questions, collaborations, or business inquiries—choose where you would like to go.</p>
 <div class="contact-actions">
 <a class="contact-btn" href="https://tally.so/r/NpxlQB" rel="noopener noreferrer" target="_blank">general contact</a>
