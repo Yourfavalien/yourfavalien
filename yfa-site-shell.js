@@ -3,12 +3,9 @@
 
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
-  let introAlreadyPlayed = false;
-  try { introAlreadyPlayed = window.sessionStorage.getItem('yfaIntroPlayed') === '1'; } catch (error) {}
-  const shouldPlayIntro = isHomePage && !introAlreadyPlayed;
-  if (shouldPlayIntro) {
-    try { window.sessionStorage.setItem('yfaIntroPlayed', '1'); } catch (error) {}
-  }
+  // The first-page video is part of the homepage experience and should play
+  // again whenever the visitor refreshes the homepage.
+  const shouldPlayIntro = isHomePage;
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
   else document.documentElement.classList.add('yfa-page-loading');
   window.addEventListener('pageshow', function (event) {
@@ -419,12 +416,11 @@
     loader.className = 'yfa-page-loader';
     loader.setAttribute('role', 'status');
     loader.setAttribute('aria-live', 'polite');
-    loader.innerHTML = '<div class="yfa-page-loader__content"><p class="yfa-page-loader__label">loading transmission…</p><div class="yfa-page-loader__progress" role="progressbar" aria-label="Page loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><output class="yfa-page-loader__percent">0%</output><p class="yfa-page-loader__note">something more interesting awaits</p></div>';
+    loader.innerHTML = '<div class="yfa-page-loader__content"><div class="yfa-page-loader__progress" role="progressbar" aria-label="Page loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><output class="yfa-page-loader__percent">0%</output></div>';
     document.body.append(loader);
     const progress = loader.querySelector('.yfa-page-loader__progress');
     const fill = progress.querySelector('span');
     const percent = loader.querySelector('.yfa-page-loader__percent');
-    const label = loader.querySelector('.yfa-page-loader__label');
     let dismissed = false;
     let currentProgress = 0;
     function setProgress(value) {
@@ -438,7 +434,6 @@
       if (dismissed) return;
       dismissed = true;
       setProgress(100);
-      label.textContent = 'signal received';
       document.documentElement.classList.remove('yfa-page-loading');
       loader.classList.add('is-ending');
       window.setTimeout(function () {

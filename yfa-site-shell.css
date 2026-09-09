@@ -8,12 +8,10 @@ html.yfa-page-loading body > *:not(.yfa-page-loader) { visibility:hidden; }
 .yfa-page-loader::before { content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,5,10,.2); }
 .yfa-page-loader::after { content:none; }
 .yfa-page-loader.is-ending { opacity:0;pointer-events:none; }
-.yfa-page-loader__content { width:min(560px,68vw);margin-top:30vh;display:grid;grid-template-columns:1fr auto;gap:22px 20px;align-items:center;text-shadow:0 1px 10px rgba(0,0,0,.9); }
-.yfa-page-loader__label { grid-column:1/-1;margin:0;color:#f7f2f4;font:500 clamp(10px,1vw,13px)/1 "Courier Prime",monospace;letter-spacing:.45em;text-transform:uppercase; }
+.yfa-page-loader__content { position:absolute;top:72.8vh;left:50%;width:min(560px,68vw);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;transform:translateX(-50%);text-shadow:0 1px 10px rgba(0,0,0,.9); }
 .yfa-page-loader__progress { height:10px;border:1px solid rgba(247,242,244,.95);border-radius:999px;padding:2px;background:rgba(16,10,16,.45);box-shadow:0 0 14px rgba(245,224,255,.24);overflow:hidden; }
 .yfa-page-loader__progress span { display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#efe5f4,#fff 55%,#d7bfe5);box-shadow:0 0 10px rgba(255,255,255,.95);transition:width 180ms ease-out; }
 .yfa-page-loader__percent { min-width:42px;color:#f7f2f4;font:500 clamp(11px,1vw,14px)/1 "Courier Prime",monospace;letter-spacing:.16em;text-align:left; }
-.yfa-page-loader__note { grid-column:1/-1;margin:11px 0 0;color:rgba(247,242,244,.92);font:500 clamp(9px,.85vw,12px)/1.35 "Courier Prime",monospace;letter-spacing:.45em;text-transform:uppercase; }
 body > nav:not(.yfa-menu-panel) { visibility:hidden!important;opacity:0!important;pointer-events:none!important; }
 .yfa-intro { position:fixed;inset:0;z-index:2147483000;overflow:hidden;visibility:visible!important;background:#050205;opacity:1;transition:opacity 180ms ease-out; }
 .yfa-intro.is-ending { opacity:0;pointer-events:none; }
