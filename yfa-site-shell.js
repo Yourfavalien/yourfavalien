@@ -5,7 +5,9 @@
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
   let introAlreadyPlayed = false;
   try { introAlreadyPlayed = window.sessionStorage.getItem('yfaIntroPlayed') === '1'; } catch (error) {}
-  const shouldPlayIntro = isHomePage && !introAlreadyPlayed;
+  // Stability mode: keep the full intro available in the code, but use the
+  // lightweight branded loader while we verify reliable loading everywhere.
+  const shouldPlayIntro = false;
   if (shouldPlayIntro) {
     try { window.sessionStorage.setItem('yfaIntroPlayed', '1'); } catch (error) {}
   }
@@ -425,7 +427,7 @@
       window.setTimeout(function () { loader.remove(); }, 240);
     }
     window.addEventListener('load', function () { window.setTimeout(dismiss, 180); }, { once: true });
-    window.setTimeout(dismiss, 3200);
+    window.setTimeout(dismiss, 1200);
   }
 
   let initialized = false;

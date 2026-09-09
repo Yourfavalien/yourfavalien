@@ -7,15 +7,10 @@
   const pathname = window.location.pathname.toLowerCase();
   if (pathname.startsWith('/mothership') || pathname.endsWith('/maintenance.html')) return;
 
-  const root = document.documentElement;
-  const previousVisibility = root.style.visibility;
-  root.style.visibility = 'hidden';
-
   let finished = false;
   function reveal() {
     if (finished) return;
     finished = true;
-    root.style.visibility = previousVisibility;
   }
 
   function goToMaintenance() {
@@ -35,7 +30,7 @@
     }
   }
 
-  const safetyTimer = window.setTimeout(reveal, 4500);
+  const safetyTimer = window.setTimeout(reveal, 1500);
 
   fetch(`${STATUS_URL}?v=${Math.floor(Date.now() / 60000)}`, { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { enabled: false })
