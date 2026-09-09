@@ -69,6 +69,9 @@
 
   const root = createElement('aside', 'xilo-chat');
   root.setAttribute('aria-label', 'Chat with Xilo');
+  if (document.documentElement.getAttribute('data-yfa-theme-page') === 'privacy') {
+    root.classList.add('xilo-chat--privacy');
+  }
   const isHomepage = window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
   if (isHomepage) {
     root.classList.add('xilo-chat--home');

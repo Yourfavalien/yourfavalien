@@ -42,6 +42,19 @@
 }
 
 .xilo-launcher:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+.xilo-chat--privacy .xilo-launcher {
+  border: 1px solid #ded9e1;
+  color: #17151a;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 28px rgba(38, 29, 43, 0.12);
+}
+.xilo-chat--privacy .xilo-launcher-mark { color: #b5175e; }
+.xilo-chat--privacy .xilo-launcher:hover {
+  border-color: #c9c2cc;
+  background: #f8f5fa;
+  filter: none;
+}
 .xilo-launcher:focus-visible,
 .xilo-close:focus-visible,
 .xilo-send:focus-visible,

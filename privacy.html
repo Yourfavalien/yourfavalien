@@ -29,10 +29,11 @@
     :root{--privacy-ink:#17151a;--privacy-muted:#65606a;--privacy-blue:#3478e5;--privacy-pink:#f5d9e8;--privacy-lilac:#e8e2fb;--privacy-line:#e7e3e9}
     html{background:#fff;color:var(--privacy-ink)}
     body{overflow-x:hidden;background:#fff;color:var(--privacy-ink)}
-    body::before,body::after{content:"";position:fixed;z-index:0;border-radius:50%;pointer-events:none;filter:blur(2px)}
-    body::before{width:270px;height:270px;top:110px;left:-175px;background:var(--privacy-pink);opacity:.48}
-    body::after{width:300px;height:300px;right:-205px;top:460px;background:var(--privacy-lilac);opacity:.55}
     main{position:relative;z-index:1;width:min(920px,calc(100% - 48px));padding:clamp(126px,14vw,170px) 0 96px;text-align:center}
+    .yfa-menu-button{width:58px!important;color:var(--privacy-ink)!important}
+    .yfa-menu-button .yfa-menu-word{display:none!important}
+    .yfa-menu-button:focus-visible{outline-color:var(--privacy-ink)!important}
+    .yfa-menu-ship{filter:none!important}
     .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--privacy-blue);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase}
     .eyebrow::before{content:"✦";font-size:14px}
     h1{max-width:850px;margin:20px auto 22px;color:var(--privacy-ink);font-family:Arial,Helvetica,sans-serif;font-size:clamp(46px,7.6vw,78px);font-style:normal;font-weight:750;line-height:1.02;letter-spacing:-.055em;text-transform:none;overflow-wrap:anywhere}
@@ -48,7 +49,7 @@
     .card p,.card li{color:var(--privacy-muted);font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72}
     .card strong{color:var(--privacy-ink)}.card a{color:var(--privacy-blue);text-underline-offset:3px}.card ul{padding-left:22px}
     footer{position:relative;z-index:1}
-    @media(max-width:620px){body::before{width:190px;height:190px;left:-135px}body::after{width:210px;height:210px;right:-155px}main{width:min(100% - 34px,920px);padding-top:116px}.eyebrow{font-size:9px}h1{font-size:clamp(42px,13vw,58px);letter-spacing:-.045em}.intro{font-size:16px}.updated{margin-bottom:42px}.privacy-mark{width:62px;height:62px;border-radius:20px;font-size:27px}.card{padding:32px 10px 32px 17px}.card::before{top:39px}.card p,.card li{font-size:15px;line-height:1.67}}
+    @media(max-width:620px){main{width:min(100% - 34px,920px);padding-top:116px}.eyebrow{font-size:9px}h1{font-size:clamp(42px,13vw,58px);letter-spacing:-.045em}.intro{font-size:16px}.updated{margin-bottom:42px}.privacy-mark{width:62px;height:62px;border-radius:20px;font-size:27px}.card{padding:32px 10px 32px 17px}.card::before{top:39px}.card p,.card li{font-size:15px;line-height:1.67}}
   </style>
   <script src="/privacy-choices.js?v=20260906-helpfix1"></script>
   <script src="/yfa-site-shell.js?v=20260907-help1"></script>
@@ -59,7 +60,7 @@
   </nav>
   <main>
     <div class="eyebrow">YourFavAlien · Privacy</div>
-    <h1>Your data,<br><span>in plain English.</span></h1>
+    <h1>Privacy Policy</h1>
     <p class="intro">This policy explains what information YourFavAlien collects through this website, why it is used, and which services help operate the site.</p>
     <div class="updated">Effective September 6, 2026</div>
     <div class="privacy-mark" aria-hidden="true">🛡️</div>
@@ -74,7 +75,7 @@
       <section class="card"><h2>Updates to this policy</h2><p>This policy may be updated as the website or its services change. The effective date above will be revised when material changes are published.</p></section>
     </div>
   </main>
-  <script id="xilo-chat-loader">(function(){const root=location.origin+'/';const css=document.createElement('link');css.rel='stylesheet';css.href=root+'xilo-chat.css?v=20260824-2';document.head.appendChild(css);const script=document.createElement('script');script.src=root+'xilo-chat.js?v=20260908-headquarters1';script.defer=true;document.head.appendChild(script)})();</script>
+  <script id="xilo-chat-loader">(function(){const root=location.origin+'/';const css=document.createElement('link');css.rel='stylesheet';css.href=root+'xilo-chat.css?v=20260908-privacy1';document.head.appendChild(css);const script=document.createElement('script');script.src=root+'xilo-chat.js?v=20260908-headquarters2';script.defer=true;document.head.appendChild(script)})();</script>
 <script src="mothership-config.js?v=20260908-3"></script><script src="mothership-theme.js?v=20260905-1"></script>
 </body>
 </html>
