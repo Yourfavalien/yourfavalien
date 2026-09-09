@@ -60,7 +60,7 @@
       .yfa-gallery-head h3{margin:0;font:400 clamp(28px,5vw,58px)/1 'Playfair Display',serif}
       .yfa-gallery-head p{margin:0;max-width:520px;font:400 12px/1.7 'Space Mono',monospace;opacity:.7}
       .yfa-gallery-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(10px,1.5vw,20px)}
-      .yfa-gallery-item{grid-column:span 4;min-height:260px;overflow:hidden;border-radius:2px;background:#12080d}
+      .yfa-gallery-item{grid-column:span 4;min-height:260px;overflow:hidden;border-radius:2px;background:#12080d;content-visibility:auto;contain-intrinsic-size:420px 560px}
       .yfa-gallery-item:nth-child(5n+1){grid-column:span 7}
       .yfa-gallery-item:nth-child(5n+2){grid-column:span 5}
       .yfa-gallery-item img,.yfa-gallery-item video{display:block;width:100%;height:100%;min-height:inherit;object-fit:cover}
@@ -155,9 +155,30 @@
     const alt = esc(item.alt || 'YourFavAlien photo');
     if (!url) return '';
     if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) {
-      return `<div class="yfa-gallery-item"><video src="${url}" autoplay muted loop playsinline aria-label="${alt}"></video></div>`;
+      return `<div class="yfa-gallery-item"><video src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
     }
     return `<div class="yfa-gallery-item"><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
+  }
+
+  function setupLazyVideos(root=document) {
+    const videos = Array.from(root.querySelectorAll('video[data-yfa-lazy-video]'));
+    if (!videos.length) return;
+    if (!('IntersectionObserver' in window)) {
+      videos.forEach(video => { video.preload = 'metadata'; });
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          video.preload = 'metadata';
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { rootMargin: '240px 0px' });
+    videos.forEach(video => observer.observe(video));
   }
 
   function newestMediaFirst(items) {
@@ -198,6 +219,7 @@
     const footer = document.querySelector('footer');
     if (footer) footer.parentNode.insertBefore(feed, footer);
     else document.body.appendChild(feed);
+    setupLazyVideos(feed);
   }
 
   function renderDynamicPage(content) {
@@ -211,6 +233,7 @@
     }
     const images = Array.isArray(page.images) ? newestMediaFirst(page.images) : [];
     root.innerHTML = `<main class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><div><h1>${esc(page.title || 'Untitled')}</h1></div>${page.body ? `<div class="yfa-dynamic-page-copy">${esc(page.body)}</div>` : ''}${images.length ? `<div class="yfa-gallery-grid" data-layout="${esc(page.layout || 'editorial')}">${images.map(mediaMarkup).join('')}</div>` : ''}</div></main>`;
+    setupLazyVideos(root);
     document.title = page.seoTitle || `${page.title || 'Page'} | YourFavAlien`;
     if (page.description) {
       let meta = document.querySelector('meta[name="description"]');

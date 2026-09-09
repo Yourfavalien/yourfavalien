@@ -375,7 +375,6 @@
     video.addEventListener('canplay', startPlayback, { once: true });
     video.addEventListener('playing', function () {
       playbackStarted = true;
-      window.clearTimeout(startupTimer);
     });
     document.addEventListener('visibilitychange', function retryVisibleIntro() {
       if (!document.hidden && !finished && video.paused) startPlayback();
@@ -397,9 +396,9 @@
     startPlayback();
     window.setTimeout(startPlayback, 120);
     window.setTimeout(startPlayback, 450);
-    startupTimer = window.setTimeout(function () {
-      if (!playbackStarted) completeFinish();
-    }, 15000);
+    // Always release the homepage, even if a browser reports playback but
+    // never emits an ended/error event for the intro media.
+    startupTimer = window.setTimeout(completeFinish, 6500);
     stallTimer = window.setInterval(function () {
       if (!finished && playbackStarted && !document.hidden && video.paused && !video.ended) startPlayback();
     }, 1000);
