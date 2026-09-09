@@ -5,9 +5,7 @@
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
   let introAlreadyPlayed = false;
   try { introAlreadyPlayed = window.sessionStorage.getItem('yfaIntroPlayed') === '1'; } catch (error) {}
-  // Stability mode: keep the full intro available in the code, but use the
-  // lightweight branded loader while we verify reliable loading everywhere.
-  const shouldPlayIntro = false;
+  const shouldPlayIntro = isHomePage && !introAlreadyPlayed;
   if (shouldPlayIntro) {
     try { window.sessionStorage.setItem('yfaIntroPlayed', '1'); } catch (error) {}
   }
