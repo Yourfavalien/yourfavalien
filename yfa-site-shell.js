@@ -318,7 +318,10 @@
       menuButton.classList.add('is-ready', 'is-docked');
       document.documentElement.classList.remove('yfa-intro-pending');
       overlay.classList.add('is-ending');
-      window.setTimeout(function () { overlay.remove(); }, 260);
+      window.setTimeout(function () {
+        overlay.remove();
+        markPageReady();
+      }, 260);
     }
 
     if (isMobileIntro) {
@@ -424,13 +427,25 @@
       dismissed = true;
       document.documentElement.classList.remove('yfa-page-loading');
       loader.classList.add('is-ending');
-      window.setTimeout(function () { loader.remove(); }, 240);
+      window.setTimeout(function () {
+        loader.remove();
+        markPageReady();
+      }, 240);
     }
     window.addEventListener('load', function () { window.setTimeout(dismiss, 180); }, { once: true });
     window.setTimeout(dismiss, 1200);
   }
 
   let initialized = false;
+
+  // A small, browser-only readiness signal. The Help Center uses this to
+  // distinguish a page that merely returned from the server from one whose
+  // actual site shell finished starting.
+  function markPageReady() {
+    if (window.__YFA_PAGE_READY__) return;
+    window.__YFA_PAGE_READY__ = { path: location.pathname, at: Date.now() };
+    window.dispatchEvent(new Event('yfa-page-ready'));
+  }
 
   function initialize() {
     if (initialized || !document.body) return;
