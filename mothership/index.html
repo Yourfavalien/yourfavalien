@@ -73,6 +73,11 @@
 
       <div class="divider"></div>
       <div id="themeColors" class="section-head control-anchor"><div><div class="eyebrow">Live theme editor</div><h2>Theme colors</h2><div class="section-copy">Pick a color or type an exact six-digit HEX code. The Site Menu group controls the UFO menu. Save once and the connected pages update from Mothership.</div></div></div>
+      <section class="menu-editor" aria-labelledby="homeIdentityTitle">
+        <h3 id="homeIdentityTitle">Homepage top line</h3>
+        <div class="color-note">This small cursive line sits centered above your menu. Change the words whenever you want; the centered dot is included in the default text.</div>
+        <div class="menu-label-grid"><div class="menu-label-field" style="grid-column:1/-1"><label for="homeIdentityText">TOP LINE TEXT</label><input id="homeIdentityText" maxlength="100" value="MODEL · MAIN CHARACTER ENERGY · FASHION"></div></div>
+      </section>
       <section class="menu-editor" aria-labelledby="menuEditorTitle">
         <h3 id="menuEditorTitle">Menu layout &amp; wording</h3>
         <div class="color-note">Pick a layout and a finish separately—so you can keep the same lettering while switching between opaque, transparent, glass, and color-shifting looks. The same selection appears on every website page.</div>
@@ -188,6 +193,7 @@
       const saveThemeBtn = document.getElementById('saveThemeBtn');
       const resetThemeBtn = document.getElementById('resetThemeBtn');
       const themeStatus = document.getElementById('themeStatus');
+      const homeIdentityText = document.getElementById('homeIdentityText');
       const socialsControlForm = document.getElementById('socialsControlForm');
       const socialsEditor = document.getElementById('socialsEditor');
       const customSocialsEditor = document.getElementById('customSocialsEditor');
@@ -247,6 +253,8 @@
       let socialsState = JSON.parse(JSON.stringify(defaultSocials));
       const defaultMenu = { layout: 'editorial', style: 'obsidian', labels: { home: 'home', socials: 'socials', about: 'about moi', contact: 'contact' } };
       let themeState = { ...defaultTheme };
+      const defaultHomeIdentity = { text: 'MODEL · MAIN CHARACTER ENERGY · FASHION', enabled: true };
+      let homeIdentityState = { ...defaultHomeIdentity };
       let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
       let selectedConversation = null;
       let chatRefreshTimer = null;
@@ -514,6 +522,7 @@
       async function loadTheme() {
         themeState = { ...defaultTheme };
         menuState = { layout: defaultMenu.layout, labels: { ...defaultMenu.labels } };
+        homeIdentityState = { ...defaultHomeIdentity };
         try {
           const response = await fetch(themePublicUrl(), { cache: 'no-store' });
           if (response.ok) {
@@ -530,9 +539,15 @@
                 if (value) menuState.labels[key] = value.slice(0, 28);
               });
             }
+            if (data && data.homeIdentity) {
+              const value = String(data.homeIdentity.text || '').trim();
+              if (value) homeIdentityState.text = value.slice(0, 100);
+              homeIdentityState.enabled = data.homeIdentity.enabled !== false;
+            }
           }
         } catch (error) {}
         renderMenuEditor();
+        homeIdentityText.value = homeIdentityState.text;
         renderColors();
       }
 
@@ -556,6 +571,10 @@
         menuState.labels[key] = input.value.slice(0, 28);
         setStatus(themeStatus, 'Unsaved menu wording change.');
       }));
+      homeIdentityText.addEventListener('input', () => {
+        homeIdentityState.text = homeIdentityText.value.slice(0, 100);
+        setStatus(themeStatus, 'Unsaved homepage top-line change.');
+      });
 
       function renderColors() {
         colorGroupsEl.innerHTML = '';
@@ -642,7 +661,7 @@
         resetThemeBtn.disabled = true;
         setStatus(themeStatus, 'Saving theme…');
         try {
-          const payload = JSON.stringify({ version: 2, updatedAt: new Date().toISOString(), colors: themeState, menu: menuState }, null, 2);
+          const payload = JSON.stringify({ version: 3, updatedAt: new Date().toISOString(), colors: themeState, menu: menuState, homeIdentity: homeIdentityState }, null, 2);
           const blob = new Blob([payload], { type: 'application/json' });
           await client.storage.from(cfg.storageNamespace).remove([cfg.themePath]);
           const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
@@ -665,7 +684,9 @@
         if (!confirm('Load the original menu design and website colors into the editor? Nothing changes live until you save.')) return;
         themeState = { ...defaultTheme };
         menuState = { layout: defaultMenu.layout, labels: { ...defaultMenu.labels } };
+        homeIdentityState = { ...defaultHomeIdentity };
         renderMenuEditor();
+        homeIdentityText.value = homeIdentityState.text;
         renderColors();
         setStatus(themeStatus, 'Original menu and colors loaded. Click Save menu & colors to publish them.');
       });

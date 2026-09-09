@@ -52,7 +52,7 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'Space Mono', monospace; background: var(--black); color: var(--white); overflow-x: hidden; }
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 29px; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: center; gap: 12px; padding: 18px 20px;
     }
     nav a {
@@ -64,7 +64,7 @@
     .tri {
       display: inline-block; width: 0; height: 0;
       border-left: 0.35em solid transparent; border-right: 0.35em solid transparent;
-      border-bottom: 0.55em solid var(--white); margin: 0 1px;
+      border-bottom: 0.55em solid var(--yfa-logo-fav, var(--white)); margin: 0 1px;
       vertical-align: middle; position: relative; top: -0.15em;
     }
     .stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -84,6 +84,15 @@
     .hero-logo span { font-family: 'Space Mono',monospace; font-weight: 700; font-size: clamp(28px,6vw,72px); color: var(--white); letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
     .logo-your { position: relative; }
     .logo-fav-inner { display: inline-flex; align-items: baseline; gap: 0; }
+    .hero-logo .logo-your { color: var(--yfa-logo-your, var(--white)); }
+    .hero-logo .logo-fav, .hero-logo .logo-fav-inner { color: var(--yfa-logo-fav, var(--white)); }
+    .hero-logo .logo-alien { color: var(--yfa-logo-alien, var(--white)); }
+    .home-identity-line {
+      position: fixed; top: 8px; left: 50%; z-index: 101; transform: translateX(-50%);
+      width: max-content; max-width: calc(100vw - 28px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      color: var(--white); font-family: 'Playfair Display', Georgia, serif; font-size: clamp(10px, 1.15vw, 13px);
+      font-style: italic; font-weight: 700; letter-spacing: .13em; text-align: center; text-shadow: 0 1px 12px rgba(0,0,0,.8);
+    }
 
 
     /* ── GLOBAL RESPONSIVE ── */
@@ -868,6 +877,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <script src="/yfa-site-shell.js?v=20260907-help1"></script>
 </head>
 <body>
+<p id="homeIdentityLine" class="home-identity-line">MODEL <span aria-hidden="true">·</span> MAIN CHARACTER ENERGY <span aria-hidden="true">·</span> FASHION</p>
 <nav>
 <a class="active" href="index.html">home</a>
 <a href="socials.html">socials</a>
@@ -882,7 +892,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <h1 class="hero-logo" aria-label="YourFavAlien">
 <span class="logo-your">YOUR</span>
 <span class="logo-fav"><span class="logo-fav-inner">F<span class="tri"></span>V</span></span>
-<span>ALIEN</span>
+<span class="logo-alien">ALIEN</span>
 </h1>
 </div>
 </section>

@@ -76,7 +76,7 @@
     @keyframes aboutTwinkle { 0% { opacity: 0.38; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.28); } }
     .about-header, .about-art, .about-text { position: relative; z-index: 1; }
     .about-header { padding-top: 120px; text-align: center; }
-    .about-header h2 { font-family: 'Space Mono',monospace; font-size: clamp(22px,4vw,42px); letter-spacing: 0.3em; font-weight: 700; }
+    .about-header h1 { font-family: 'Space Mono',monospace; font-size: clamp(22px,4vw,42px); letter-spacing: 0.3em; font-weight: 700; }
     .about-art { width: 100%; display: flex; align-items: center; justify-content: center; padding: 20px 0; background: transparent; }
 
     .about-text { width: 100%; background: rgba(14,3,16,0.94); padding: 50px 10%; font-family: 'Courier Prime',monospace; font-size: clamp(14px,1.8vw,18px); letter-spacing: 0.04em; line-height: 2; color: #fff; border: 1px solid rgba(255,255,255,0.18); border-bottom: 0; max-width: 900px; margin: 0 auto; backdrop-filter: blur(2px); }
@@ -122,7 +122,7 @@
       .about-text { padding: 30px 6%; font-size: 13px; }
     }
     @media (max-width: 480px) {
-      .about-header h2 { font-size: 24px; letter-spacing: 0.2em; }
+      .about-header h1 { font-size: 24px; letter-spacing: 0.2em; }
       .about-text { font-size: 12px; line-height: 1.8; }
     }
 
@@ -260,7 +260,7 @@ nav a {
 }
 @media (max-width: 700px) {
   .about-header { padding-top: 98px; }
-  .about-header h2 {
+  .about-header h1 {
     font-size: clamp(22px, 7vw, 30px);
     letter-spacing: clamp(0.12em, 3vw, 0.22em);
   }
@@ -779,7 +779,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 </nav>
 <main class="about-page">
 <div class="stars about-stars" id="about-stars" aria-hidden="true"></div>
-<div class="about-header"><h2>ABOUT MOI</h2></div>
+<div class="about-header"><h1>ABOUT MOI</h1></div>
 <div class="about-art">
 <img alt="About Moi art" decoding="async" fetchpriority="high" src="assets/about-1.webp" style="width:100%;max-width:1000px;height:auto;object-fit:contain;mix-blend-mode:lighten;"/>
 </div>

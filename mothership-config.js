@@ -54,6 +54,15 @@ window.YFA_MOTHERSHIP = {
       ]
     },
     {
+      group: 'Homepage logo',
+      note: 'Change each part of the YourFavAlien wordmark separately when you want it to sit differently over a new hero image.',
+      colors: [
+        { id:'logo-your', label:'YOUR lettering', cssVar:'--yfa-logo-your', default:'#f0ece8', pages:['home'] },
+        { id:'logo-fav', label:'FAV lettering', cssVar:'--yfa-logo-fav', default:'#f0ece8', pages:['home'] },
+        { id:'logo-alien', label:'ALIEN lettering', cssVar:'--yfa-logo-alien', default:'#f0ece8', pages:['home'] }
+      ]
+    },
+    {
       group: 'Socials',
       note: 'Controls the Socials page background, cards, accents, and platform colors.',
       colors: [

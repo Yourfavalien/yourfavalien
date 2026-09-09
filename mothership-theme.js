@@ -15,12 +15,22 @@
     });
   }
 
+  function applyHomeIdentity(data) {
+    if (page !== 'home') return;
+    const line = document.getElementById('homeIdentityLine');
+    if (!line) return;
+    const saved = data && data.homeIdentity;
+    const text = String(saved && saved.text || '').trim();
+    line.textContent = text || 'MODEL · MAIN CHARACTER ENERGY · FASHION';
+    line.hidden = saved && saved.enabled === false;
+  }
+
   // Defaults are already in each page's CSS; this only applies saved overrides.
   fetch(url)
     .then(response => {
       if (!response.ok) throw new Error('No saved Mothership theme yet.');
       return response.json();
     })
-    .then(data => apply((data && data.colors) || {}))
+    .then(data => { apply((data && data.colors) || {}); applyHomeIdentity(data); })
     .catch(() => {});
 })();
