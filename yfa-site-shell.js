@@ -3,7 +3,12 @@
 
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
-  const shouldPlayIntro = isHomePage;
+  let introAlreadyPlayed = false;
+  try { introAlreadyPlayed = window.sessionStorage.getItem('yfaIntroPlayed') === '1'; } catch (error) {}
+  const shouldPlayIntro = isHomePage && !introAlreadyPlayed;
+  if (shouldPlayIntro) {
+    try { window.sessionStorage.setItem('yfaIntroPlayed', '1'); } catch (error) {}
+  }
   if (shouldPlayIntro) document.documentElement.classList.add('yfa-intro-pending');
   else document.documentElement.classList.add('yfa-page-loading');
   window.addEventListener('pageshow', function (event) {

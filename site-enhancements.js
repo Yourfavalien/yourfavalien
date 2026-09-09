@@ -155,7 +155,7 @@
     const alt = esc(item.alt || 'YourFavAlien photo');
     if (!url) return '';
     if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) {
-      return `<div class="yfa-gallery-item"><video src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
+      return `<div class="yfa-gallery-item"><video data-src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
     }
     return `<div class="yfa-gallery-item"><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
   }
@@ -172,6 +172,10 @@
       entries.forEach(entry => {
         const video = entry.target;
         if (entry.isIntersecting) {
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.load();
+          }
           video.preload = 'metadata';
           video.play().catch(() => {});
         } else {
@@ -185,7 +189,7 @@
   function setupProgressiveGallery(grid, items) {
     const media = newestMediaFirst(items);
     let shown = 0;
-    const batchSize = 4;
+    const batchSize = 3;
     const appendNext = () => {
       const next = media.slice(shown, shown + batchSize);
       if (!next.length) return false;
@@ -196,23 +200,23 @@
     };
     const hasMore = appendNext();
     if (!hasMore) return;
-    const sentinel = document.createElement('div');
-    sentinel.className = 'yfa-gallery-sentinel';
-    sentinel.setAttribute('aria-hidden', 'true');
-    grid.after(sentinel);
-    if (!('IntersectionObserver' in window)) {
-      while (appendNext()) {}
-      sentinel.remove();
-      return;
-    }
-    const observer = new IntersectionObserver(entries => {
-      if (!entries.some(entry => entry.isIntersecting)) return;
-      if (!appendNext()) {
-        observer.disconnect();
-        sentinel.remove();
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    function onScroll() {
+      if (ticking || window.scrollY <= lastScrollY) {
+        lastScrollY = window.scrollY;
+        return;
       }
-    }, { rootMargin: '700px 0px' });
-    observer.observe(sentinel);
+      lastScrollY = window.scrollY;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        ticking = false;
+        const rect = grid.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight + 650) return;
+        if (!appendNext()) window.removeEventListener('scroll', onScroll);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
   function newestMediaFirst(items) {
