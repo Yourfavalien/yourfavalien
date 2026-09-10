@@ -452,7 +452,7 @@
       // progress reading into a timer.
       const tracked = Array.from(document.images).filter(image => image.loading !== 'lazy');
       const loaderArtwork = new Image();
-      loaderArtwork.src = '/assets/yfa-loader-transmission.png';
+      loaderArtwork.src = '/assets/yfa-loader-transmission.webp?v=20260910-mobile-1';
       tracked.push(loaderArtwork);
       const total = tracked.length + (document.fonts ? 1 : 0);
       let complete = 0;
@@ -481,10 +481,6 @@
       trackPageLoad();
     }
   }
-
-  // On internal destinations this file runs in the head, so paint the loader
-  // before the rest of a slower mobile page has finished parsing.
-  if (!shouldPlayIntro) installPageLoader();
 
   let initialized = false;
 

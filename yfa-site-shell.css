@@ -4,7 +4,8 @@ html.yfa-intro-pending,html.yfa-intro-pending body { background:#050205 !importa
 html.yfa-intro-pending body > *:not(.yfa-intro) { visibility:hidden; }
 html.yfa-page-loading,html.yfa-page-loading body { background:#08050a!important; }
 html.yfa-page-loading body > *:not(.yfa-page-loader) { visibility:hidden; }
-.yfa-page-loader { position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:#090609 url('/assets/yfa-loader-transmission.png?v=20260909-clean-1') center/cover no-repeat;color:#f7f2f4;text-align:center;isolation:isolate;opacity:1;transition:opacity 220ms ease; }
+html.yfa-page-loading::before { content:"";position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147482999;background:#090609 url('/assets/yfa-loader-transmission.webp?v=20260910-mobile-1') center/cover no-repeat;pointer-events:none; }
+.yfa-page-loader { position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:#090609 url('/assets/yfa-loader-transmission.webp?v=20260910-mobile-1') center/cover no-repeat;color:#f7f2f4;text-align:center;isolation:isolate;opacity:1;transition:opacity 220ms ease; }
 .yfa-page-loader::before { content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,5,10,.2); }
 .yfa-page-loader::after { content:none; }
 .yfa-page-loader.is-ending { opacity:0;pointer-events:none; }
