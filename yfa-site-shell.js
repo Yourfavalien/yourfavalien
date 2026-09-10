@@ -411,13 +411,16 @@
     }, 1000);
   }
 
+  let pageLoaderInstalled = false;
   function installPageLoader() {
+    if (pageLoaderInstalled) return;
+    pageLoaderInstalled = true;
     const loader = document.createElement('div');
     loader.className = 'yfa-page-loader';
     loader.setAttribute('role', 'status');
     loader.setAttribute('aria-live', 'polite');
     loader.innerHTML = '<div class="yfa-page-loader__content"><div class="yfa-page-loader__progress" role="progressbar" aria-label="Page loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><output class="yfa-page-loader__percent">0%</output></div>';
-    document.body.append(loader);
+    (document.body || document.documentElement).append(loader);
     const progress = loader.querySelector('.yfa-page-loader__progress');
     const fill = progress.querySelector('span');
     const percent = loader.querySelector('.yfa-page-loader__percent');
@@ -442,34 +445,46 @@
       }, 240);
     }
 
-    // Count only assets that are part of this page's first paint. This makes
-    // every shown percentage reflect completed page resources, not a timer.
-    const tracked = Array.from(document.images).filter(image => image.loading !== 'lazy');
-    const loaderArtwork = new Image();
-    loaderArtwork.src = '/assets/yfa-loader-transmission.png';
-    tracked.push(loaderArtwork);
-    const total = tracked.length + (document.fonts ? 1 : 0);
-    let complete = 0;
-    function assetComplete() {
-      complete += 1;
-      setProgress((complete / total) * 92);
-    }
-    tracked.forEach(asset => {
-      if (asset.complete) assetComplete();
-      else {
-        asset.addEventListener('load', assetComplete, { once: true });
-        asset.addEventListener('error', assetComplete, { once: true });
-      }
-    });
-    if (document.fonts) document.fonts.ready.then(assetComplete, assetComplete);
     setProgress(0);
-    window.addEventListener('load', function () {
-      setProgress(100);
-      window.setTimeout(dismiss, 180);
-    }, { once: true });
-    // Keeps a broken third-party resource from trapping someone on the loader.
-    window.setTimeout(dismiss, 10000);
+    function trackPageLoad() {
+      // Wait until the page markup exists before counting first-paint assets.
+      // This keeps the early mobile loader visible without turning its real
+      // progress reading into a timer.
+      const tracked = Array.from(document.images).filter(image => image.loading !== 'lazy');
+      const loaderArtwork = new Image();
+      loaderArtwork.src = '/assets/yfa-loader-transmission.png';
+      tracked.push(loaderArtwork);
+      const total = tracked.length + (document.fonts ? 1 : 0);
+      let complete = 0;
+      function assetComplete() {
+        complete += 1;
+        setProgress((complete / total) * 92);
+      }
+      tracked.forEach(asset => {
+        if (asset.complete) assetComplete();
+        else {
+          asset.addEventListener('load', assetComplete, { once: true });
+          asset.addEventListener('error', assetComplete, { once: true });
+        }
+      });
+      if (document.fonts) document.fonts.ready.then(assetComplete, assetComplete);
+      window.addEventListener('load', function () {
+        setProgress(100);
+        window.setTimeout(dismiss, 180);
+      }, { once: true });
+      // Keeps a broken third-party resource from trapping someone on the loader.
+      window.setTimeout(dismiss, 10000);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', trackPageLoad, { once: true });
+    } else {
+      trackPageLoad();
+    }
   }
+
+  // On internal destinations this file runs in the head, so paint the loader
+  // before the rest of a slower mobile page has finished parsing.
+  if (!shouldPlayIntro) installPageLoader();
 
   let initialized = false;
 

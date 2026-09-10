@@ -4,7 +4,7 @@ html.yfa-intro-pending,html.yfa-intro-pending body { background:#050205 !importa
 html.yfa-intro-pending body > *:not(.yfa-intro) { visibility:hidden; }
 html.yfa-page-loading,html.yfa-page-loading body { background:#08050a!important; }
 html.yfa-page-loading body > *:not(.yfa-page-loader) { visibility:hidden; }
-.yfa-page-loader { position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:#090609 url('/assets/yfa-loader-transmission.png?v=20260909-clean-1') center/cover no-repeat;color:#f7f2f4;text-align:center;isolation:isolate;opacity:1;transition:opacity 220ms ease; }
+.yfa-page-loader { position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:#090609 url('/assets/yfa-loader-transmission.png?v=20260909-clean-1') center/cover no-repeat;color:#f7f2f4;text-align:center;isolation:isolate;opacity:1;transition:opacity 220ms ease; }
 .yfa-page-loader::before { content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,5,10,.2); }
 .yfa-page-loader::after { content:none; }
 .yfa-page-loader.is-ending { opacity:0;pointer-events:none; }
@@ -73,10 +73,14 @@ nav.yfa-menu-panel[data-yfa-menu-layout="split"] > a { align-items:center!import
 .yfa-page-loader { --art-width:max(100vw,177.684vh);--art-height:max(56.28vw,100vh);background-size:var(--art-width) var(--art-height); }
 .yfa-page-loader__content { top:calc(50% + var(--art-height)*.2365);left:calc(50% + var(--art-width)*.001);width:calc(var(--art-width)*.332);gap:calc(var(--art-width)*.014);transform:translate(-50%,-50%); }
 .yfa-page-loader__percent { min-width:0;font-size:clamp(10px,1vw,14px); }
+@supports(height:100dvh) {
+  .yfa-page-loader { --art-width:max(100vw,177.684dvh);--art-height:max(56.28vw,100dvh); }
+}
 @media(max-aspect-ratio:4/3) {
-  .yfa-page-loader { --art-width:100vw;--art-height:56.28vw;background-size:var(--art-width) var(--art-height); }
+  .yfa-page-loader { background-position:center center; }
+  .yfa-page-loader__content { left:50%;width:min(82vw,440px);gap:10px; }
   .yfa-page-loader__progress { height:7px;padding:1px; }
-  .yfa-page-loader__percent { font-size:clamp(8px,1.4vw,12px);letter-spacing:0; }
+  .yfa-page-loader__percent { font-size:clamp(9px,2.8vw,12px);letter-spacing:.04em; }
 }
 @media(max-width:1024px),(max-height:650px) {
   html[data-yfa-theme-page="socials"] { overflow-x:clip; }
