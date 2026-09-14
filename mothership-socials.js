@@ -30,7 +30,15 @@
     Object.keys(defaults.items).forEach(function (key) {
       const value = Object.assign({}, defaults.items[key], items[key] || {});
       const element = document.querySelector('[data-yfa-social="' + key + '"]');
-      if (element) element.hidden = value.enabled === false;
+      if (element) {
+        const isHidden = value.enabled === false;
+        element.hidden = isHidden;
+        if (isHidden) {
+          element.style.setProperty('display', 'none', 'important');
+        } else {
+          element.style.removeProperty('display');
+        }
+      }
       const link = document.querySelector('[data-yfa-social-link="' + key + '"]');
       if (link && value.url) link.href = value.url;
       const label = document.querySelector('[data-yfa-social-label="' + key + '"]');
