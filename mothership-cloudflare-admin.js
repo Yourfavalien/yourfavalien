@@ -12,7 +12,7 @@
   const settingUrl = key => `${READ_BASE}/api/settings/${encodeURIComponent(key)}?v=${Date.now()}`;
   const writeAssetUrl = path => `${WRITE_BASE}/api/assets/${String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/')}`;
   const writeSettingUrl = key => `${WRITE_BASE}/api/settings/${encodeURIComponent(key)}`;
-  const POSITION_KEY = 'image-positions';
+  const POSITION_PATH = 'system/image-positions.json';
   let positionState = { version: 1, updatedAt: null, slots: {} };
 
   async function apiFetch(url, options = {}) {
@@ -45,7 +45,7 @@
 
   async function loadPositions() {
     try {
-      const response = await fetch(settingUrl(POSITION_KEY), { cache:'no-store' });
+      const response = await fetch(assetUrl(POSITION_PATH), { cache:'no-store' });
       if (response.ok) {
         const saved = await response.json();
         positionState = { version:1, updatedAt:saved?.updatedAt || null, slots:saved?.slots || {} };
@@ -54,9 +54,16 @@
   }
 
   async function savePosition(slotId, responsive) {
-    positionState.slots[slotId] = window.YFA_IMAGE_EDITOR.normalize(responsive);
-    positionState.updatedAt = new Date().toISOString();
-    await apiFetch(writeSettingUrl(POSITION_KEY), { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(positionState,null,2) });
+    const nextState = {
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      slots: {
+        ...positionState.slots,
+        [slotId]: window.YFA_IMAGE_EDITOR.normalize(responsive)
+      }
+    };
+    await apiFetch(writeAssetUrl(POSITION_PATH), { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(nextState,null,2) });
+    positionState = nextState;
   }
 
   function applyAdminCrop(media, responsive) {

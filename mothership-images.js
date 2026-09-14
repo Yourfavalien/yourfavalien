@@ -25,8 +25,7 @@
 
   async function loadPositions() {
     try {
-      const base = cfg.settingsBase || `${publicBase.replace(/assets\/$/,'')}api/settings/`;
-      const response = await fetch(`${base}image-positions?v=${Math.floor(Date.now()/60000)}`, {cache:'no-store'});
+      const response = await fetch(`${publicBase}system/image-positions.json?v=${Math.floor(Date.now()/60000)}`, {cache:'no-store'});
       if (response.ok) positions = await response.json();
     } catch (error) {}
   }
