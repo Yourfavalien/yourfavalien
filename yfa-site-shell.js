@@ -139,15 +139,6 @@
     // normalization avoids reprocessing the menu while those links are added.
     keepPrivacyInFooter();
 
-    const cfg = window.YFA_MOTHERSHIP;
-    if (cfg && cfg.themePath) {
-      const settingsUrl = cfg.assetBase + cfg.themePath + '?v=' + Math.floor(Date.now() / 60000);
-      fetch(settingsUrl)
-        .then(function (response) { return response.ok ? response.json() : null; })
-        .then(function (data) { if (data && data.menu) applyMenuSettings(data.menu); })
-        .catch(function () {});
-    }
-
     const backdrop = document.createElement('button');
     backdrop.type = 'button';
     backdrop.className = 'yfa-menu-backdrop';
@@ -166,6 +157,7 @@
     positionUfo();
 
     let open = false;
+    let homeCta = null;
     function setOpen(nextOpen, returnFocus) {
       open = nextOpen;
       button.setAttribute('aria-expanded', String(open));
@@ -179,8 +171,38 @@
         const firstLink = nav.querySelector('a');
         if (firstLink) window.setTimeout(function () { firstLink.focus(); }, 180);
       } else if (returnFocus) {
-        button.focus();
+        (homeCta || button).focus();
       }
+    }
+
+    function applyHomepageControls(settings) {
+      if (!isHomePage) return;
+      const saved = settings && typeof settings === 'object' ? settings : {};
+      const cta = saved.cta && typeof saved.cta === 'object' ? saved.cta : {};
+      button.classList.toggle('yfa-home-menu-disabled', saved.menuEnabled === false);
+      if (homeCta) { homeCta.remove(); homeCta = null; }
+      if (cta.enabled !== true) return;
+
+      const action = ['menu','socials','about','contact','custom'].includes(cta.action) ? cta.action : 'menu';
+      const destinations = { socials: '/socials', about: '/about', contact: '/contact' };
+      const customUrl = String(cta.url || '').trim();
+      const isSafeCustomUrl = /^(https:\/\/|\/)/i.test(customUrl);
+      const destination = action === 'custom' && isSafeCustomUrl ? customUrl : destinations[action];
+      homeCta = document.createElement(action === 'menu' ? 'button' : 'a');
+      homeCta.className = 'yfa-home-cta';
+      homeCta.dataset.yfaCtaStyle = ['outline','filled','glass','split'].includes(cta.style) ? cta.style : 'outline';
+      homeCta.textContent = (String(cta.text || '').trim() || 'Enter my orbit').slice(0, 40);
+      if (action === 'menu') {
+        homeCta.type = 'button';
+        homeCta.setAttribute('aria-controls', nav.id);
+        homeCta.addEventListener('click', function () { setOpen(true, false); });
+      } else if (destination) {
+        homeCta.href = destination;
+      } else {
+        homeCta.href = '/';
+      }
+      const home = document.getElementById('home');
+      if (home) home.appendChild(homeCta);
     }
 
     button.addEventListener('click', function () { setOpen(!open, false); });
@@ -193,6 +215,19 @@
     });
     window.addEventListener('resize', positionUfo, { passive: true });
     window.addEventListener('orientationchange', positionUfo, { passive: true });
+
+    const cfg = window.YFA_MOTHERSHIP;
+    if (cfg && cfg.themePath) {
+      const settingsUrl = cfg.assetBase + cfg.themePath + '?v=' + Math.floor(Date.now() / 60000);
+      fetch(settingsUrl)
+        .then(function (response) { return response.ok ? response.json() : null; })
+        .then(function (data) {
+          if (!data) return;
+          if (data.menu) applyMenuSettings(data.menu);
+          applyHomepageControls(data.homeHero);
+        })
+        .catch(function () {});
+    }
 
     return button;
   }

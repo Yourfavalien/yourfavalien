@@ -22,6 +22,7 @@ body > nav:not(.yfa-menu-panel) { visibility:hidden!important;opacity:0!importan
 
 .yfa-menu-button { position:fixed;top:var(--yfa-ufo-y);right:max(8px,calc(100vw - var(--yfa-ufo-x) - 23px));z-index:2147482001;display:flex;width:158px;height:58px;align-items:center;justify-content:flex-end;padding:0;border:0;color:#f3efeb;background:transparent;transform:translateY(-50%);cursor:pointer;opacity:0;visibility:hidden;transition:opacity 140ms ease-out,visibility 0s linear 140ms;-webkit-tap-highlight-color:transparent; }
 .yfa-menu-button.is-ready { opacity:1;visibility:visible;transition-delay:0s; }
+html:not(.yfa-intro-pending) .yfa-menu-button.yfa-home-menu-disabled { display:none; }
 .yfa-menu-button:focus-visible { outline:1px dashed #f3efeb;outline-offset:3px; }
 .yfa-menu-mark { display:flex;align-items:center;justify-content:flex-end;min-width:42px;transform-origin:right center; }
 .yfa-menu-ship { flex:0 0 auto;width:44px;height:30px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(2px 2px 0 rgba(20,10,17,.65)); }
@@ -39,6 +40,15 @@ body > nav:not(.yfa-menu-panel) { visibility:hidden!important;opacity:0!importan
 @keyframes yfa-word-unravel { 0%{width:0;opacity:0;margin-left:0;letter-spacing:.48em}100%{width:66px;opacity:1;margin-left:8px;letter-spacing:.2em} }
 @keyframes yfa-ship-idle { 0%,100%{transform:translateY(-1px) rotate(-1deg)}43%{transform:translateY(2px) rotate(1deg)}48%{transform:translateY(0) rotate(-3deg)}53%{transform:translateY(-1px) rotate(2deg)}62%{transform:translateY(1px) rotate(0)} }
 @keyframes yfa-ship-click { 0%{transform:none}45%{transform:translateY(-5px) rotate(-9deg)}100%{transform:none} }
+
+.yfa-home-cta { position:absolute;left:50%;top:calc(50% + clamp(62px,9vw,116px));z-index:5;display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:12px 24px;border:1.5px solid #f3efeb;border-radius:999px;color:#f3efeb;font:700 clamp(11px,1.15vw,14px)/1.2 "Courier Prime",monospace;letter-spacing:.16em;text-align:center;text-decoration:none;text-transform:uppercase;white-space:nowrap;transform:translateX(-50%);cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.28);transition:transform 180ms ease,background 180ms ease,color 180ms ease,box-shadow 180ms ease;-webkit-tap-highlight-color:transparent; }
+.yfa-home-cta:hover,.yfa-home-cta:focus-visible { transform:translateX(-50%) translateY(-3px);box-shadow:0 12px 34px rgba(0,0,0,.4),0 0 18px rgba(255,255,255,.16); }
+.yfa-home-cta:focus-visible { outline:2px solid #4de8d8;outline-offset:4px; }
+.yfa-home-cta[data-yfa-cta-style="outline"] { background:transparent;color:#fff; }
+.yfa-home-cta[data-yfa-cta-style="filled"] { border-color:#fff;background:#fff;color:#090509; }
+.yfa-home-cta[data-yfa-cta-style="glass"] { border-color:rgba(255,255,255,.72);background:rgba(8,5,10,.3);backdrop-filter:blur(14px) saturate(130%);-webkit-backdrop-filter:blur(14px) saturate(130%); }
+.yfa-home-cta[data-yfa-cta-style="split"] { border-color:#fff;background:linear-gradient(90deg,#b5175e 0 50%,rgba(8,5,10,.78) 50% 100%);color:#fff; }
+@media(max-width:767px) { .yfa-home-cta{top:calc(50% + 74px);max-width:calc(100vw - 40px);min-height:44px;padding:11px 19px;font-size:11px;white-space:normal} }
 
 .yfa-menu-backdrop { position:fixed;inset:0;z-index:2147481998;border:0;padding:0;background:rgba(3,1,3,.35);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 220ms ease,visibility 0s linear 220ms; }
 .yfa-menu-backdrop.is-open { opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s; }

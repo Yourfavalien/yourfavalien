@@ -238,9 +238,27 @@
         about: document.getElementById('menuLabelAbout')?.value.trim() || 'about moi',
         contact: document.getElementById('menuLabelContact')?.value.trim() || 'contact'
       };
-      const payload = JSON.stringify({ version: 2, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels } }, null, 2);
+      const homeIdentity = {
+        text: document.getElementById('homeIdentityText')?.value.trim() || 'model · main character energy · fashion',
+        enabled: true
+      };
+      const ctaAction = document.getElementById('homeCtaAction')?.value || 'menu';
+      const ctaUrl = document.getElementById('homeCtaUrl')?.value.trim() || '';
+      const ctaEnabled = document.getElementById('homeCtaEnabled')?.checked === true;
+      const homeHero = {
+        menuEnabled: document.getElementById('homeMenuEnabled')?.checked !== false,
+        cta: {
+          enabled: ctaEnabled,
+          text: document.getElementById('homeCtaText')?.value.trim() || 'Enter my orbit',
+          action: ['menu','socials','about','contact','custom'].includes(ctaAction) ? ctaAction : 'menu',
+          url: ctaUrl,
+          style: document.querySelector('[data-home-cta-style][aria-pressed="true"]')?.dataset.homeCtaStyle || 'outline'
+        }
+      };
+      if (ctaEnabled && homeHero.cta.action === 'custom' && !/^(https:\/\/|\/)/i.test(ctaUrl)) throw new Error('Use a full https:// link or a site path beginning with /.');
+      const payload = JSON.stringify({ version: 4, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
       await apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload });
-      setStatus(status, 'Menu and colors saved to Cloudflare.', 'ok');
+      setStatus(status, 'Homepage menu, button, and appearance saved.', 'ok');
     } catch (error) {
       setStatus(status, error.message || 'Could not save the theme.', 'error');
     } finally {
