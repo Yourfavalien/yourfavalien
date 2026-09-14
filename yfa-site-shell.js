@@ -191,6 +191,11 @@
       homeCta = document.createElement(action === 'menu' ? 'button' : 'a');
       homeCta.className = 'yfa-home-cta';
       homeCta.dataset.yfaCtaStyle = ['outline','filled','glass','split'].includes(cta.style) ? cta.style : 'outline';
+      homeCta.dataset.yfaCtaFont = ['courier','space','editorial','major','clean'].includes(cta.font) ? cta.font : 'courier';
+      const fontSize = Math.min(24, Math.max(10, Number(cta.fontSize) || 14));
+      const radius = Number.isFinite(Number(cta.radius)) ? Math.min(30, Math.max(0, Number(cta.radius))) : 24;
+      homeCta.style.setProperty('--yfa-cta-font-size', fontSize + 'px');
+      homeCta.style.setProperty('--yfa-cta-radius', radius + 'px');
       homeCta.textContent = (String(cta.text || '').trim() || 'Enter my orbit').slice(0, 40);
       if (action === 'menu') {
         homeCta.type = 'button';

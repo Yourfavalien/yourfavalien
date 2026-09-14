@@ -252,11 +252,14 @@
           text: document.getElementById('homeCtaText')?.value.trim() || 'Enter my orbit',
           action: ['menu','socials','about','contact','custom'].includes(ctaAction) ? ctaAction : 'menu',
           url: ctaUrl,
-          style: document.querySelector('[data-home-cta-style][aria-pressed="true"]')?.dataset.homeCtaStyle || 'outline'
+          style: document.querySelector('[data-home-cta-style][aria-pressed="true"]')?.dataset.homeCtaStyle || 'outline',
+          font: document.getElementById('homeCtaFont')?.value || 'courier',
+          fontSize: Math.min(24, Math.max(10, Number(document.getElementById('homeCtaFontSize')?.value) || 14)),
+          radius: Math.min(30, Math.max(0, Number(document.getElementById('homeCtaRadius')?.value) || 0))
         }
       };
       if (ctaEnabled && homeHero.cta.action === 'custom' && !/^(https:\/\/|\/)/i.test(ctaUrl)) throw new Error('Use a full https:// link or a site path beginning with /.');
-      const payload = JSON.stringify({ version: 4, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
+      const payload = JSON.stringify({ version: 5, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
       await apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload });
       setStatus(status, 'Homepage menu, button, and appearance saved.', 'ok');
     } catch (error) {
