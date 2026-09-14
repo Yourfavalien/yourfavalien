@@ -4,6 +4,32 @@
 
   const publicBase = cfg.assetBase;
   const slotMap = new Map((cfg.slots || []).map(slot => [slot.id, slot]));
+  let positions = { slots:{} };
+
+  function currentPoint(slotId) {
+    const responsive = positions.slots?.[slotId];
+    if (!responsive) return null;
+    const key = innerWidth < 600 ? 'phone' : innerWidth < 1100 ? 'tablet' : 'desktop';
+    return responsive[key] || responsive.desktop || null;
+  }
+
+  function applyPosition(el, slotId, background = false) {
+    const p = currentPoint(slotId);
+    if (!el || !p) return;
+    if (background) { el.style.backgroundPosition = `${p.x}% ${p.y}%`; return; }
+    el.style.objectPosition = `${p.x}% ${p.y}%`;
+    el.style.transformOrigin = `${p.x}% ${p.y}%`;
+    el.style.transform = `scale(${p.zoom || 1})`;
+    el.dataset.yfaPositionSlot = slotId;
+  }
+
+  async function loadPositions() {
+    try {
+      const base = cfg.settingsBase || `${publicBase.replace(/assets\/$/,'')}api/settings/`;
+      const response = await fetch(`${base}image-positions?v=${Math.floor(Date.now()/60000)}`, {cache:'no-store'});
+      if (response.ok) positions = await response.json();
+    } catch (error) {}
+  }
 
   function toCloudflareUrl(value) { return String(value || ''); }
 
@@ -64,6 +90,7 @@
       }
     };
     img.src = url;
+    applyPosition(img, slotId);
   }
 
   function applyBackground(el) {
@@ -71,7 +98,7 @@
     const url = remoteUrl(slotId);
     if (!url) return;
     const probe = new Image();
-    probe.onload = () => { el.style.backgroundImage = `url("${url}")`; };
+    probe.onload = () => { el.style.backgroundImage = `url("${url}")`; applyPosition(el, slotId, true); };
     probe.onerror = () => {
       const joiner = url.includes('?') ? '&' : '?';
       const retry = new Image();
@@ -109,6 +136,7 @@
       replacement.id = 'yfaHeroReplacement';
       wireRetry(replacement);
       Object.assign(replacement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', maxWidth:'none', maxHeight:'none', objectFit:'cover', objectPosition:'center', zIndex:'0', pointerEvents:'none' });
+      applyPosition(replacement, 'home-hero-media');
       const restoreOriginal = () => { original.style.opacity=''; original.style.visibility=''; replacement.remove(); };
       replacement.addEventListener('error', restoreOriginal, { once:true });
       original.style.opacity = '0';
@@ -121,13 +149,14 @@
   function loadSiteEnhancements() {
     if (window.__YFA_SITE_ENHANCEMENTS__ || document.querySelector('script[data-yfa-site-enhancements]')) return;
     const script = document.createElement('script');
-    script.src = '/site-enhancements.js?v=20260905-photos1';
+    script.src = '/site-enhancements.js?v=20260914-1';
     script.defer = true;
     script.dataset.yfaSiteEnhancements = '1';
     document.head.appendChild(script);
   }
 
-  function boot() {
+  async function boot() {
+    await loadPositions();
     watchLegacyMedia();
     document.querySelectorAll('[data-yfa-image-slot]').forEach(applyImage);
     document.querySelectorAll('[data-yfa-bg-slot]').forEach(applyBackground);
@@ -136,6 +165,14 @@
   }
 
   cfg.refreshImages = boot;
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      document.querySelectorAll('[data-yfa-position-slot]').forEach(el => applyPosition(el, el.dataset.yfaPositionSlot));
+      document.querySelectorAll('[data-yfa-bg-slot]').forEach(el => applyPosition(el, el.dataset.yfaBgSlot, true));
+    }, 120);
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 })();

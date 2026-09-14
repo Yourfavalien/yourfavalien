@@ -66,6 +66,8 @@
       .yfa-gallery-item:nth-child(5n+1){grid-column:span 7}
       .yfa-gallery-item:nth-child(5n+2){grid-column:span 5}
       .yfa-gallery-item img,.yfa-gallery-item video{display:block;width:100%;height:100%;min-height:inherit;object-fit:cover}
+      .yfa-gallery-item[data-responsive]{--yfa-x:var(--yfa-x-d);--yfa-y:var(--yfa-y-d);--yfa-z:var(--yfa-z-d)}
+      .yfa-gallery-item[data-responsive] img{object-position:var(--yfa-x) var(--yfa-y);transform:scale(var(--yfa-z));transform-origin:var(--yfa-x) var(--yfa-y)}
       .yfa-gallery-grid[data-layout="full"] .yfa-gallery-item{grid-column:1/-1;min-height:min(78vh,850px)}
       .yfa-gallery-grid[data-layout="two"] .yfa-gallery-item{grid-column:span 6;min-height:420px}
       .yfa-dynamic-page{min-height:100vh;background:var(--black,#0a0507);color:var(--white,#f0ece8);padding:clamp(110px,14vw,180px) clamp(18px,6vw,90px) 90px}
@@ -73,7 +75,9 @@
       .yfa-dynamic-page h1{margin:0;font:400 clamp(48px,9vw,110px)/.92 'Playfair Display',serif;letter-spacing:-.05em}
       .yfa-dynamic-page-copy{max-width:780px;white-space:pre-wrap;font:400 clamp(13px,1.6vw,18px)/1.85 'Space Mono',monospace;opacity:.84}
       .yfa-page-back{color:inherit;text-decoration:none;font:700 11px 'Space Mono',monospace;text-transform:uppercase;letter-spacing:.15em;opacity:.7}
+      @media(min-width:600px) and (max-width:1099px){.yfa-gallery-item[data-responsive]{--yfa-x:var(--yfa-x-t);--yfa-y:var(--yfa-y-t);--yfa-z:var(--yfa-z-t)}}
       @media(max-width:760px){.yfa-gallery-item,.yfa-gallery-item:nth-child(n){grid-column:1/-1;min-height:58vh}.yfa-gallery-grid[data-layout="two"] .yfa-gallery-item{grid-column:1/-1;min-height:58vh}}
+      @media(max-width:599px){.yfa-gallery-item[data-responsive]{--yfa-x:var(--yfa-x-p);--yfa-y:var(--yfa-y-p);--yfa-z:var(--yfa-z-p)}}
       @media(prefers-reduced-motion:reduce){.yfa-smart-menu{transition:none!important}}
     `;
     document.head.appendChild(style);
@@ -156,10 +160,13 @@
     const url = esc(normalizeMediaUrl(item.url));
     const alt = esc(item.alt || 'YourFavAlien photo');
     if (!url) return '';
+    const r=item.responsive;
+    const p=key=>r?.[key]||r?.desktop||{x:50,y:50,zoom:1};
+    const responsiveStyle=r?` data-responsive style="--yfa-x-d:${p('desktop').x}%;--yfa-y-d:${p('desktop').y}%;--yfa-z-d:${p('desktop').zoom};--yfa-x-t:${p('tablet').x}%;--yfa-y-t:${p('tablet').y}%;--yfa-z-t:${p('tablet').zoom};--yfa-x-p:${p('phone').x}%;--yfa-y-p:${p('phone').y}%;--yfa-z-p:${p('phone').zoom}"`:'';
     if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) {
       return `<div class="yfa-gallery-item"><video data-src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
     }
-    return `<div class="yfa-gallery-item"><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
+    return `<div class="yfa-gallery-item"${responsiveStyle}><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
   }
 
   function setupLazyVideos(root=document) {

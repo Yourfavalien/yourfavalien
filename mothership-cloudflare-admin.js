@@ -12,6 +12,8 @@
   const settingUrl = key => `${READ_BASE}/api/settings/${encodeURIComponent(key)}?v=${Date.now()}`;
   const writeAssetUrl = path => `${WRITE_BASE}/api/assets/${String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/')}`;
   const writeSettingUrl = key => `${WRITE_BASE}/api/settings/${encodeURIComponent(key)}`;
+  const POSITION_KEY = 'image-positions';
+  let positionState = { version: 1, updatedAt: null, slots: {} };
 
   async function apiFetch(url, options = {}) {
     const response = await fetch(url, {
@@ -41,6 +43,30 @@
     return (card && card.querySelector('.slot-path') && card.querySelector('.slot-path').textContent || '').trim();
   }
 
+  async function loadPositions() {
+    try {
+      const response = await fetch(settingUrl(POSITION_KEY), { cache:'no-store' });
+      if (response.ok) {
+        const saved = await response.json();
+        positionState = { version:1, updatedAt:saved?.updatedAt || null, slots:saved?.slots || {} };
+      }
+    } catch (error) {}
+  }
+
+  async function savePosition(slotId, responsive) {
+    positionState.slots[slotId] = window.YFA_IMAGE_EDITOR.normalize(responsive);
+    positionState.updatedAt = new Date().toISOString();
+    await apiFetch(writeSettingUrl(POSITION_KEY), { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(positionState,null,2) });
+  }
+
+  function applyAdminCrop(media, responsive) {
+    if (!media || !responsive || media.tagName === 'VIDEO') return;
+    const p = responsive.desktop || {x:50,y:50,zoom:1};
+    media.style.objectPosition = `${p.x}% ${p.y}%`;
+    media.style.transformOrigin = `${p.x}% ${p.y}%`;
+    media.style.transform = `scale(${p.zoom || 1})`;
+  }
+
   function renderAssetPreview(card, path) {
     const preview = card && card.querySelector('.preview');
     if (!preview || !path || card.dataset.cfPreviewLoading === '1') return;
@@ -67,6 +93,7 @@
         img.src = url;
         img.alt = card.querySelector('.slot-name')?.textContent || 'Mothership image';
         preview.appendChild(img);
+        applyAdminCrop(img, positionState.slots[card.dataset.slotId]);
       } else {
         preview.innerHTML = '<span>No Cloudflare asset found.</span>';
       }
@@ -81,6 +108,16 @@
 
   function refreshAllAssetPreviews(force = false) {
     document.querySelectorAll('.slot').forEach(card => {
+      const slot = (cfg.slots || []).find(item => item.path === slotPathFromCard(card));
+      if (slot) card.dataset.slotId = slot.id;
+      const actions = card.querySelector('.actions');
+      if (actions && !actions.querySelector('.adjust-btn')) {
+        const button = document.createElement('button');
+        button.className = 'btn secondary adjust-btn';
+        button.type = 'button';
+        button.textContent = 'Adjust';
+        actions.insertBefore(button, actions.querySelector('.delete-btn'));
+      }
       if (!force && card.dataset.cfPreviewReady === '1') return;
       const path = slotPathFromCard(card);
       if (path) renderAssetPreview(card, path);
@@ -95,13 +132,22 @@
     const file = input.files && input.files[0];
     if (!file) return;
     const path = slotPathFromCard(card);
+    const slotId = card.dataset.slotId;
     const status = card.querySelector('.status');
     const deleteBtn = card.querySelector('.delete-btn');
+    let responsive = null;
+    if (file.type.startsWith('image/') && window.YFA_IMAGE_EDITOR) {
+      const objectUrl = URL.createObjectURL(file);
+      responsive = await window.YFA_IMAGE_EDITOR.edit({ src:objectUrl, initial:positionState.slots[slotId], title:`Adjust ${card.querySelector('.slot-name')?.textContent || 'image'}`, square:/profile/i.test(slotId || '') });
+      URL.revokeObjectURL(objectUrl);
+      if (!responsive) { input.value = ''; return; }
+    }
     setStatus(status, 'Uploading to Cloudflare…');
     input.disabled = true;
     if (deleteBtn) deleteBtn.disabled = true;
     try {
       await apiFetch(writeAssetUrl(path), { method: 'PUT', headers: { 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+      if (responsive && slotId) await savePosition(slotId, responsive);
       setStatus(status, 'Updated in Cloudflare.', 'ok');
       delete card.dataset.cfPreviewReady;
       renderAssetPreview(card, path);
@@ -112,6 +158,31 @@
       if (deleteBtn) deleteBtn.disabled = false;
       input.value = '';
     }
+  }, true);
+
+  document.addEventListener('click', async event => {
+    const button = event.target.closest && event.target.closest('.adjust-btn');
+    if (!button || !button.closest('.slot')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const card = button.closest('.slot');
+    const slotId = card.dataset.slotId;
+    const media = card.querySelector('.preview img');
+    const status = card.querySelector('.status');
+    if (!slotId || !media || !window.YFA_IMAGE_EDITOR) {
+      setStatus(status, 'Upload an image before adjusting it.', 'error');
+      return;
+    }
+    button.disabled = true;
+    try {
+      const responsive = await window.YFA_IMAGE_EDITOR.edit({ src:media.src, initial:positionState.slots[slotId], title:`Adjust ${card.querySelector('.slot-name')?.textContent || 'image'}`, square:/profile/i.test(slotId) });
+      if (!responsive) return;
+      await savePosition(slotId, responsive);
+      applyAdminCrop(media, responsive);
+      setStatus(status, 'Position saved for computer, tablet, and phone.', 'ok');
+    } catch (error) {
+      setStatus(status, error.message || 'Could not save image position.', 'error');
+    } finally { button.disabled = false; }
   }, true);
 
   document.addEventListener('click', async event => {
@@ -254,7 +325,8 @@
     return true;
   }
 
-  function bootCloudflareAdminBridge() {
+  async function bootCloudflareAdminBridge() {
+    await loadPositions();
     refreshAllAssetPreviews(true);
     if (!wirePopupControl()) {
       let attempts = 0;

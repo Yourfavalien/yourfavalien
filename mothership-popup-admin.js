@@ -43,8 +43,9 @@
   else topbar.insertAdjacentElement('afterend', panel);
 
   const scripts = [
-    ['/mothership-cloudflare-admin.js?v=20260905-1', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20260908-5', 'yfaMothershipPower'],
+    ['/mothership-image-editor.js?v=20260914-1', 'yfaImageEditor'],
+    ['/mothership-cloudflare-admin.js?v=20260914-1', 'yfaCloudflareAdmin'],
+    ['/mothership-power.js?v=20260914-1', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260905-1', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260905-1', 'yfaMothershipBadge']
   ];
@@ -54,7 +55,7 @@
     if (document.querySelector(`script[${attr}]`)) return;
     const script = document.createElement('script');
     script.src = src;
-    script.defer = true;
+    script.async = false;
     script.setAttribute(attr, 'true');
     document.head.appendChild(script);
   });

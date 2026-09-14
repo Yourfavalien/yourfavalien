@@ -109,7 +109,7 @@
     data.seo.homeDescription = get('powerSeoDescription')?.value || '';
   }
 
-  async function uploadMedia(file, folder) {
+  async function uploadMedia(file, folder, responsive = null) {
     const s = await session();
     if (!s) throw new Error('Log in to the Mothership first.');
     if (file.size > 49e6) throw new Error(`${file.name} is larger than the 49 MB upload limit.`);
@@ -118,10 +118,21 @@
     const path = `${folder}/${Date.now()}-${uid().slice(0,8)}.${ext}`;
     const { error } = await client.storage.from(cfg.storageNamespace).upload(path, file, { upsert:false, contentType:file.type || undefined, cacheControl:'3600' });
     if (error) throw error;
-    return { url: publicUrl(path), path, alt: '' };
+    return { url: publicUrl(path), path, alt: '', responsive };
   }
 
   async function uploadBatch(files, folder, status) {
+    const adjustments = new Map();
+    if (window.YFA_IMAGE_EDITOR) {
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        const objectUrl = URL.createObjectURL(file);
+        const responsive = await window.YFA_IMAGE_EDITOR.edit({ src:objectUrl, title:`Adjust ${file.name}` });
+        URL.revokeObjectURL(objectUrl);
+        if (!responsive) return { uploaded:[], errors:[], cancelled:true };
+        adjustments.set(file, responsive);
+      }
+    }
     const results=new Array(files.length),errors=[];
     let next=0,complete=0;
     const totalMb=(files.reduce((sum,file)=>sum+file.size,0)/1048576).toFixed(1);
@@ -130,7 +141,7 @@
     async function worker(){
       while(next<files.length){
         const index=next++,file=files[index];
-        try{results[index]=await uploadMedia(file,folder);}
+        try{results[index]=await uploadMedia(file,folder,adjustments.get(file)||null);}
         catch(error){errors.push(error.message||`${file.name} could not upload.`);}
         finally{complete++;update();}
       }
@@ -178,8 +189,11 @@
     (images||[]).forEach((item,index)=>{
       const box=el('div',{class:'power-media'});
       const media=/\.(mp4|webm)(\?|$)/i.test(item.url||'')?`<video src="${item.url}" muted playsinline></video>`:`<img src="${item.url}" alt="">`;
-      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><div class="power-actions"><button class="power-mini danger" type="button" data-delete>Delete</button></div></div>`;
+      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><div class="power-actions"><button class="power-mini" type="button" data-adjust>Adjust</button><button class="power-mini danger" type="button" data-delete>Delete</button></div></div>`;
+      const preview=box.querySelector('img');
+      if(preview&&item.responsive){const p=item.responsive.desktop||{};preview.style.objectPosition=`${p.x??50}% ${p.y??50}%`;preview.style.transformOrigin=`${p.x??50}% ${p.y??50}%`;preview.style.transform=`scale(${p.zoom||1})`;}
       box.querySelector('[data-alt]').oninput=e=>{item.alt=e.target.value;markDirty();};
+      box.querySelector('[data-adjust]').onclick=async()=>{if(!preview||!window.YFA_IMAGE_EDITOR){alert('Only pictures can be adjusted.');return;}const responsive=await window.YFA_IMAGE_EDITOR.edit({src:item.url,initial:item.responsive,title:'Adjust gallery image'});if(!responsive)return;item.responsive=responsive;markDirty();rerender();try{await publish();}catch(error){alert(error.message||'The image position could not be saved.');}};
       box.querySelector('[data-delete]').onclick=async()=>{ if(!confirm('Delete this image from the section?'))return; images.splice(index,1);markDirty();rerender(); try{await publish();await removeStoredMedia(item);}catch(error){alert(error.message||'The photo could not be deleted.');} };
       container.appendChild(box);
     });
