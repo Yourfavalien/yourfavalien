@@ -196,6 +196,7 @@
       const radius = Number.isFinite(Number(cta.radius)) ? Math.min(30, Math.max(0, Number(cta.radius))) : 24;
       homeCta.style.setProperty('--yfa-cta-font-size', fontSize + 'px');
       homeCta.style.setProperty('--yfa-cta-radius', radius + 'px');
+      homeCta.style.setProperty('border-radius', radius + 'px', 'important');
       homeCta.textContent = (String(cta.text || '').trim() || 'Enter my orbit').slice(0, 40);
       if (action === 'menu') {
         homeCta.type = 'button';
