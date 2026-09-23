@@ -686,6 +686,30 @@ nav a {
 <style id="instagram-real-posts-responsive">
 .instagram-card { overflow: hidden; }
 
+.tiktok-live-feed {
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+  padding: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+.tiktok-live-feed .tiktok-embed {
+  width: 100% !important;
+  max-width: 780px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.social-feed-status {
+  margin: 0;
+  padding: 34px 18px;
+  color: rgba(255,255,255,.66);
+  font: 11px/1.7 'Courier Prime', monospace;
+  text-align: center;
+}
+
 .instagram-post-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -879,20 +903,11 @@ nav a {
 </section>
 <div id="yfa-custom-socials" class="custom-social-groups" aria-label="More links"></div>
 <div class="social-card" data-yfa-social="tiktokEmbed">
-<!-- TikTok video scroll row -->
-<div class="tiktok-row">
-<div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7666234879394188558" title="TikTok video"></iframe>
-</div>
-<div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7666018822171757837" title="TikTok video"></iframe>
-</div>
-<div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7650813104862907661" title="TikTok video"></iframe>
-</div>
-<div class="tiktok-video">
-<iframe allowfullscreen="" loading="lazy" scrolling="no" data-yfa-src="https://www.tiktok.com/embed/7651508141061950734" title="TikTok video"></iframe>
-</div>
+<!-- TikTok's official creator embed always reads the current public profile. -->
+<div class="tiktok-live-feed" aria-label="Latest TikTok posts">
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@yourrfavalien" data-unique-id="yourrfavalien" data-embed-type="creator">
+<section><a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" target="_blank">View @yourrfavalien on TikTok</a></section>
+</blockquote>
 </div>
 <a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" style="text-decoration:none;" target="_blank">
 <div class="card-info">
@@ -906,7 +921,7 @@ nav a {
 </a>
 </div>
 <div class="social-card instagram-card" data-yfa-social="instagramEmbed">
-<div class="instagram-post-grid" aria-label="Instagram posts">
+<div class="instagram-post-grid" id="instagram-live-feed" aria-label="Instagram posts" data-feed-endpoint="https://yourfavalien-mothership.aydenmtz54.workers.dev/api/social-feed/instagram">
   <div class="instagram-post">
     <iframe loading="lazy" scrolling="no" data-yfa-src="https://www.instagram.com/p/DbM63WZjOJo/embed/" title="Instagram post 1"></iframe>
   </div>
@@ -998,6 +1013,8 @@ nav a {
 
 <script src="mothership-config.js?v=20260914-5"></script>
 <script src="mothership-socials.js?v=20260914-visibility-1"></script>
+<script async src="https://www.tiktok.com/embed.js"></script>
+<script defer src="social-feeds.js?v=20260923-1"></script>
 
 <script>
   // Keep social buttons and the page shell responsive; load video embeds only when visitors reach them.
