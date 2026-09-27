@@ -82,6 +82,12 @@
       }
     }
     function corePageFor(link) {
+      try {
+        const url = new URL(link.getAttribute('href') || '', window.location.href);
+        if (url.origin !== window.location.origin) return undefined;
+      } catch (error) {
+        return undefined;
+      }
       const page = linkPage(link);
       return corePages.find(function (item) { return item.files.includes(page); });
     }
