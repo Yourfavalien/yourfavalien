@@ -11,6 +11,7 @@
       tiktokEmbed: { enabled: true }, instagramEmbed: { enabled: true },
       snapchat: { enabled: true, label: 'Snapchat', url: 'https://www.snapchat.com/add/yourfavvalien' },
       facebook: { enabled: true, label: 'Facebook', url: 'https://www.facebook.com/share/18BmPVjQhd/?mibextid=wwXIfr' },
+      youtube: { enabled: true, label: 'YouTube', url: 'https://www.youtube.com/@Yourrfavalien' },
       mediaKit: { enabled: true, label: 'Media Kit', url: 'https://www.yourfavalien.site/' },
       subscribe: { enabled: true }
     }
