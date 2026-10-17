@@ -4,6 +4,7 @@
 
   const publicBase = cfg.assetBase;
   const slotMap = new Map((cfg.slots || []).map(slot => [slot.id, slot]));
+  const pageAssetVersion = '20261016-profile-icons2';
   let positions = { slots:{} };
 
   function currentPoint(slotId) {
@@ -35,7 +36,10 @@
   function remoteUrl(slotId) {
     const slot = slotMap.get(slotId);
     if (!slot) return null;
-    return `${publicBase}${slot.path}?v=${Math.floor(Date.now() / 60000)}`;
+    // Keep one stable URL so the browser can reuse large Mothership photos.
+    // A new release version refreshes them after a site update without forcing
+    // multi-megabyte profile images to download again every minute.
+    return `${publicBase}${slot.path}?v=${pageAssetVersion}`;
   }
 
   function wireRetry(el) {
@@ -81,6 +85,10 @@
     if (!url) return;
     const fallback = toCloudflareUrl(img.getAttribute('src') || '');
     img.dataset.yfaFallback = fallback;
+    if (/^socials-(?:tiktok|instagram|snapchat|facebook|youtube)-profile$/.test(slotId)) {
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+    }
     wireRetry(img);
     img.onerror = function () {
       if (fallback && this.src !== fallback) {

@@ -66,6 +66,7 @@ window.YFA_MOTHERSHIP = {
         { id:'socials-card', label:'Card background', cssVar:'--yfa-social-card', default:'#1a1a1a', pages:['socials'] },
         { id:'socials-card-inner', label:'Card inner background', cssVar:'--yfa-social-card-inner', default:'#2a2a2a', pages:['socials'] },
         { id:'socials-facebook', label:'Facebook button', cssVar:'--yfa-social-facebook', default:'#1877f2', pages:['socials'] },
+        { id:'socials-youtube', label:'YouTube button', cssVar:'--yfa-social-youtube', default:'#ff0033', pages:['socials'] },
         { id:'socials-snapchat', label:'Snapchat accent', cssVar:'--yfa-social-snapchat', default:'#fffc00', pages:['socials'] },
         { id:'socials-pinterest', label:'Pinterest button', cssVar:'--yfa-social-pinterest', default:'#e60023', pages:['socials'] },
         { id:'socials-media-warm', label:'Warm tone', cssVar:'--yfa-social-media-warm', default:'#8e4e36', pages:['socials'] }
