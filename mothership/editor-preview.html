@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Mothership editor preview — isolated</title>
+  <link rel="stylesheet" href="editor-preview.css">
+</head>
+<body>
+  <div class="preview-notice">ISOLATED PREVIEW · no live settings, media, or public pages can be changed here</div>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Mothership navigation">
+      <a class="brand" href="#dashboard" data-nav="dashboard" aria-label="Mothership dashboard">
+        <span class="brand-star">✦</span><span><strong>MOTHERSHIP</strong><small>YourFavAlien control center</small></span>
+      </a>
+      <nav class="main-nav">
+        <button class="nav-item active" data-nav="dashboard"><span>⌂</span>Dashboard</button>
+        <button class="nav-item" data-nav="editor"><span>✎</span>Website Editor</button>
+        <button class="nav-item" data-nav="pages"><span>▤</span>Pages &amp; Navigation</button>
+        <button class="nav-item" data-nav="design"><span>◉</span>Design &amp; Branding</button>
+        <button class="nav-item" data-nav="media"><span>▧</span>Media Library</button>
+        <button class="nav-item" data-nav="socials"><span>⌘</span>Socials &amp; Links</button>
+        <button class="nav-item" data-nav="popups"><span>◌</span>Popups &amp; Email Capture</button>
+        <button class="nav-item" data-nav="seo"><span>⌁</span>SEO &amp; Analytics</button>
+        <button class="nav-item" data-nav="maintenance"><span>⌁</span>Maintenance</button>
+        <button class="nav-item" data-nav="settings"><span>⚙</span>Settings</button>
+      </nav>
+      <div class="sidebar-footer">
+        <a class="view-site" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View live site <small>yourfavalien.com</small></a>
+        <p>Preview branch<br><code>mothership-dashboard-editor-preview</code></p>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button class="mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="site-identity"><span class="identity-dot"></span><span><strong>YourFavAlien</strong><small>yourfavalien.com</small></span><span class="chevron">⌄</span></div>
+        <label class="search"><span>⌕</span><input type="search" placeholder="Search controls (preview only)" disabled></label>
+        <span class="top-spacer"></span>
+        <a class="quiet-action" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View site</a>
+        <button class="primary-action" disabled title="Publishing is intentionally unavailable in this isolated preview">Publish unavailable</button>
+      </header>
+
+      <section class="screen active" id="screen-dashboard" data-screen="dashboard">
+        <div class="page-intro dashboard-intro">
+          <div><p class="eyebrow">YOURFAVALIEN · WEBSITE CONTROL</p><h1>Welcome back to Mothership.</h1><p>One organized control center for the website you already have.</p></div>
+          <div class="safe-state"><span></span><strong>Safe preview</strong><small>Nothing here can publish.</small></div>
+        </div>
+        <div class="dashboard-grid">
+          <section class="card status-card">
+            <div class="card-heading"><div><p class="eyebrow">WEBSITE STATUS</p><h2>Production stays untouched</h2></div><a href="https://yourfavalien.com" target="_blank" rel="noopener">Open site ↗</a></div>
+            <div class="status-line"><span class="status-orb"></span><div><strong>Live website preview</strong><small>Rendered from the current public site. This preview never writes back.</small></div></div>
+          </section>
+          <section class="card quick-card"><div class="card-heading"><div><p class="eyebrow">WORKSPACE</p><h2>Start with a real area</h2></div></div><div class="quick-actions"><button data-jump="editor">Edit site structure <small>Real page preview</small></button><button data-jump="media">Review media map <small>Existing asset slots</small></button><button data-jump="maintenance">Maintenance <small>Kept separate</small></button></div></section>
+          <section class="card site-card"><div class="card-heading"><div><p class="eyebrow">WEBSITE OVERVIEW</p><h2>Actual home page</h2></div><button class="text-button" data-jump="editor">Open editor →</button></div><div class="site-frame compact"><iframe title="Current YourFavAlien homepage" src="https://yourfavalien.com/"></iframe></div><p class="card-foot">This is the real public homepage, shown only as a live reference.</p></section>
+          <section class="card brand-card"><div class="card-heading"><div><p class="eyebrow">DESIGN &amp; BRANDING</p><h2>Existing theme controls</h2></div><button class="text-button" data-jump="design">View map →</button></div><div class="swatches"><span style="--swatch:#b5175e"><b>Accent</b><small>Existing theme</small></span><span style="--swatch:#0a0507"><b>Menu</b><small>Existing theme</small></span><span style="--swatch:#f0ece8"><b>Light text</b><small>Existing theme</small></span></div><p class="card-foot">Colors and menu settings remain connected to their current data source when integration begins.</p></section>
+          <section class="card integration-card"><div class="card-heading"><div><p class="eyebrow">CONNECTED AREAS</p><h2>Preserved, not replaced</h2></div></div><ul class="check-list"><li><span>✓</span> Homepage media and responsive image positions</li><li><span>✓</span> Social links and profile image slots</li><li><span>✓</span> Orbit Popup and email capture settings</li><li><span>✓</span> Maintenance workspace and support tools</li></ul></section>
+          <section class="card honest-card"><div class="card-heading"><div><p class="eyebrow">ANALYTICS</p><h2>No invented numbers</h2></div></div><div class="empty-state">No analytics source is connected to this preview. Visitor counts and activity will remain unavailable until an existing verified provider is identified.</div></section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-editor" data-screen="editor">
+        <div class="editor-header"><div><p class="eyebrow">WEBSITE EDITOR · PREVIEW WORKSPACE</p><h1>Work from the real site.</h1></div><div class="editor-actions"><button class="viewport active" data-viewport="desktop" aria-label="Desktop preview">▣</button><button class="viewport" data-viewport="tablet" aria-label="Tablet preview">▯</button><button class="viewport" data-viewport="mobile" aria-label="Mobile preview">▯</button><button class="quiet-action" id="open-page">Open page ↗</button></div></div>
+        <div class="editor-shell">
+          <aside class="page-rail">
+            <p class="rail-label">PAGES</p>
+            <div class="page-list" id="page-list"></div>
+            <p class="rail-label section-label">SECTIONS</p>
+            <div class="section-list" id="section-list"></div>
+          </aside>
+          <section class="canvas-area">
+            <div class="canvas-toolbar"><span id="page-name">Home</span><span class="canvas-caption">Published reference · click a mapped section to inspect it</span></div>
+            <div class="canvas-wrap viewport-desktop" id="canvas-wrap"><iframe id="site-preview" title="YourFavAlien page preview" src="https://yourfavalien.com/"></iframe></div>
+            <p class="canvas-note">The page is loaded from your actual public site. This prototype does not inject, save, or publish edits into it.</p>
+          </section>
+          <aside class="inspector">
+            <div class="inspector-title"><span class="inspector-mark">✦</span><div><p class="eyebrow">SELECTED ITEM</p><h2 id="inspector-heading">Homepage hero</h2></div></div>
+            <div class="inspector-tabs"><button class="active">Content</button><button disabled>Design</button><button disabled>Advanced</button></div>
+            <div id="inspector-content"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen resource-screen" id="screen-pages" data-screen="pages"><div class="page-intro"><div><p class="eyebrow">PAGES &amp; NAVIGATION</p><h1>Existing pages, not invented pages.</h1><p>The new shell will surface your published pages and menu settings without changing URLs or SEO.</p></div></div><div class="resource-grid" id="pages-grid"></div></section>
+      <section class="screen resource-screen" id="screen-media" data-screen="media"><div class="page-intro"><div><p class="eyebrow">MEDIA LIBRARY</p><h1>Media already connected to your site.</h1><p>Every item below comes from the current Mothership slot map. No uploads occur in this preview.</p></div></div><div class="resource-grid" id="media-grid"></div></section>
+      <section class="screen resource-screen" id="screen-design" data-screen="design"><div class="page-intro"><div><p class="eyebrow">DESIGN &amp; BRANDING</p><h1>One home for visual controls.</h1><p>Current theme groups and their existing defaults are organized here for the integration phase.</p></div></div><div class="resource-grid" id="design-grid"></div></section>
+      <section class="screen resource-screen" id="screen-socials" data-screen="socials"><div class="page-intro"><div><p class="eyebrow">SOCIALS &amp; LINKS</p><h1>Keep the existing social system together.</h1><p>Profile photos, labels, visibility, links, and synchronization stay in their current system.</p></div></div><div class="resource-grid" id="socials-grid"></div></section>
+      <section class="screen resource-screen" id="screen-popups" data-screen="popups"><div class="page-intro"><div><p class="eyebrow">POPUPS &amp; EMAIL CAPTURE</p><h1>Orbit Popup belongs in one place.</h1><p>The current popup controls will be reorganized here without changing the signup provider or popup behavior.</p></div></div><div class="guardrail-card">The Orbit Popup remains untouched in this prototype. Its current live-write controls will only be connected after draft and publish protections are real.</div></section>
+      <section class="screen resource-screen" id="screen-seo" data-screen="seo"><div class="page-intro"><div><p class="eyebrow">SEO &amp; ANALYTICS</p><h1>Titles are preserved.</h1><p>Existing page titles are displayed below. No metadata, URLs, index settings, or analytics configuration is being changed.</p></div></div><div class="resource-grid" id="seo-grid"></div></section>
+      <section class="screen resource-screen" id="screen-maintenance" data-screen="maintenance"><div class="page-intro"><div><p class="eyebrow">MAINTENANCE</p><h1>Separate from everyday editing.</h1><p>Maintenance activation remains an explicit, confirmed action. Opening this tab will never turn it on.</p></div><a class="quiet-action" href="./admin.html#maintenanceSettings">Open current maintenance controls ↗</a></div><div class="guardrail-card">The existing detailed UFO maintenance editor, media controls, and forced-maintenance safeguards are preserved. This redesign only gives it a clear, dedicated destination.</div></section>
+      <section class="screen resource-screen" id="screen-settings" data-screen="settings"><div class="page-intro"><div><p class="eyebrow">SETTINGS</p><h1>Administrative tools stay administrative.</h1><p>Authentication, Cloudflare connections, support tickets, and system-level controls do not belong in routine page editing.</p></div></div><div class="guardrail-card">No authentication or Cloudflare security configuration is changed by this redesign preview.</div></section>
+    </main>
+  </div>
+  <script src="editor-preview.js"></script>
+</body>
+</html>
