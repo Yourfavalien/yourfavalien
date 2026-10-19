@@ -42,6 +42,7 @@
 
   let currentPage = pages[0];
   let currentSection = currentPage.sections[0];
+  let inspectorTab = 'content';
   const $ = (selector) => document.querySelector(selector);
   const esc = (value) => String(value || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -58,7 +59,12 @@
     const mediaItem = media.find((item) => item.id === currentSection.id);
     const path = currentSection.path ? `<div class="data-row"><span>EXISTING SLOT PATH</span><b>${esc(currentSection.path)}</b></div>` : '';
     const mediaLibraryAction = mediaItem ? `<button class="library-action" data-jump="media">Manage this asset in Media Library →</button>` : '';
-    $('#inspector-content').innerHTML = `<div class="inspector-block"><h3>${esc(currentSection.type)}</h3><p>${esc(currentSection.note)}</p>${path}<div class="data-row"><span>PAGE REFERENCE</span><b>${esc(currentPage.label)}</b></div>${mediaLibraryAction}<div class="locked-action"><strong>Media stays centralized.</strong><br>Replace, crop, position, remove, and restore actions belong in Media Library—not scattered through page settings. Those actions will remain protected by a staged draft and explicit publish review.</div></div>`;
+    const tabs = {
+      content: `<h3>${esc(currentSection.type)}</h3><p>${esc(currentSection.note)}</p>${path}<div class="data-row"><span>PAGE REFERENCE</span><b>${esc(currentPage.label)}</b></div>${mediaLibraryAction}<div class="locked-action"><strong>Media stays centralized.</strong><br>Replace, crop, position, remove, and restore actions belong in Media Library—not scattered through page settings.</div>`,
+      design: `<h3>Design reference</h3><p>Current visual behavior is shown in the live page preview. The redesign will expose only settings already supported by the real page.</p><div class="data-row"><span>SUPPORTED APPROACH</span><b>Preview current design → stage a draft → explicitly publish</b></div><div class="locked-action">This tab works as a design reference today. It stays non-destructive until design settings have a real draft version.</div>`,
+      advanced: `<h3>Advanced details</h3><p>Technical mappings stay visible without exposing secret credentials or making unsafe direct changes.</p>${path}<div class="data-row"><span>LIVE-WRITE PROTECTION</span><b>Enabled in this preview</b></div><div class="locked-action">No direct API requests, uploads, deletions, or published-setting changes are available here.</div>`
+    };
+    $('#inspector-content').innerHTML = `<div class="inspector-block">${tabs[inspectorTab]}</div>`;
     document.querySelector('#inspector-content [data-jump="media"]')?.addEventListener('click', () => showScreen('media'));
   }
   function selectPage(id) {
@@ -89,13 +95,37 @@
     $('#media-grid').innerHTML = media.map((item) => card(item.label, item.unavailable || `${item.group} · actual asset loaded from its current Cloudflare slot.`, item.path, false, mediaPreview(item))).join('');
     $('#design-grid').innerHTML = themeGroups.map(([name, copy, path]) => card(name, copy, path, true)).join('');
     $('#socials-grid').innerHTML = [card('Socials configuration', 'Existing social labels, destinations, visibility, and synchronization remain in the current configuration. Media is managed centrally in Media Library.', 'socials/socials.json')].join('');
+    $('#popups-grid').innerHTML = [
+      card('Orbit Popup content', 'Existing copy, CTA, visibility, delay, and signup behavior remain in the current popup configuration.', 'system/orbit-popup.json'),
+      card('Orbit popup image', 'The Orbit photo is managed in Media Library. Its original public fallback is retained unless you intentionally stage a replacement.', 'slots/home-orbit-visual'),
+      card('Email capture connection', 'The current signup integration is preserved. This preview does not query, replace, or submit to it.', '')
+    ].join('');
+    $('#maintenance-grid').innerHTML = [
+      card('Maintenance appearance workspace', 'The detailed existing UFO design, background controls, text controls, and responsive positioning stay in the dedicated maintenance workflow.', 'system/maintenance.json'),
+      card('Maintenance media', 'Maintenance background photos and videos belong in Media Library and are assigned into the maintenance workspace.', ''),
+      card('Activation protection', 'Turning maintenance on remains an explicit confirmed production action—never a result of previewing this tab.', '')
+    ].join('');
+    $('#settings-grid').innerHTML = [
+      card('Authentication', 'Mothership login and authorization stay untouched by this interface redesign.', ''),
+      card('Cloudflare services', 'Current Worker, media storage, and route configuration remain preserved; no secret is exposed in this preview.', ''),
+      card('Support & tickets', 'Existing support-center and ticket administration remain separate from routine website editing.', '')
+    ].join('');
     $('#seo-grid').innerHTML = pages.filter((page) => page.id !== 'maintenance').map((page) => card(page.label, page.title, page.url)).join('');
   }
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach((screen) => screen.classList.toggle('active', screen.dataset.screen === id));
     document.querySelectorAll('.nav-item').forEach((button) => button.classList.toggle('active', button.dataset.nav === id));
     $('.sidebar').classList.remove('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  let toastTimer;
+  function toast(message) {
+    const node = $('#preview-toast');
+    node.textContent = message; node.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => node.classList.remove('show'), 3400);
+  }
+  function showDialog() { $('#preview-dialog').hidden = false; }
+  function hideDialog() { $('#preview-dialog').hidden = true; }
 
   document.querySelectorAll('[data-nav]').forEach((button) => button.addEventListener('click', () => showScreen(button.dataset.nav)));
   document.querySelectorAll('[data-jump]').forEach((button) => button.addEventListener('click', () => showScreen(button.dataset.jump)));
@@ -104,5 +134,30 @@
     $('#canvas-wrap').className = `canvas-wrap viewport-${button.dataset.viewport}`;
   }));
   $('.mobile-menu').addEventListener('click', () => $('.sidebar').classList.toggle('open'));
+  document.querySelectorAll('[data-inspector-tab]').forEach((button) => button.addEventListener('click', () => {
+    inspectorTab = button.dataset.inspectorTab;
+    document.querySelectorAll('[data-inspector-tab]').forEach((item) => item.classList.toggle('active', item === button));
+    renderInspector();
+  }));
+  $('#preview-safety').addEventListener('click', showDialog);
+  document.querySelectorAll('.dialog-close').forEach((button) => button.addEventListener('click', hideDialog));
+  $('#preview-dialog').addEventListener('click', (event) => { if (event.target === $('#preview-dialog')) hideDialog(); });
+  $('#preview-search').addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    const query = event.currentTarget.value.trim().toLowerCase();
+    const matches = [
+      ['media', ['media', 'photo', 'video', 'image', 'upload', 'replace', 'crop']],
+      ['maintenance', ['maintenance', 'ufo']],
+      ['popups', ['popup', 'orbit', 'email']],
+      ['socials', ['social', 'instagram', 'tiktok', 'youtube', 'snapchat', 'facebook']],
+      ['design', ['design', 'theme', 'color', 'branding', 'menu']],
+      ['seo', ['seo', 'analytics', 'title']],
+      ['pages', ['page', 'navigation']],
+      ['settings', ['settings', 'cloudflare', 'authentication', 'support']]
+    ];
+    const match = matches.find(([, words]) => words.some((word) => query.includes(word)));
+    if (match) { showScreen(match[0]); toast(`Opened ${match[0].replace(/\b\w/g, (letter) => letter.toUpperCase())}.`); }
+    else { toast(query ? 'Nothing matched in this safe preview yet.' : 'Type a control name, then press Enter.'); }
+  });
   renderPages(); renderSections(); renderInspector(); buildResources(); selectPage('home');
 })();
