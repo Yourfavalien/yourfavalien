@@ -21,15 +21,17 @@
     { id: 'maintenance', label: 'Maintenance', url: 'https://yourfavalien.com/maintenance.html', title: 'YourFavAlien Maintenance', sections: [{ id: 'maintenance-experience', label: 'Maintenance experience', type: 'Dedicated workflow', note: 'Opens separately; it cannot be activated from this preview.' }] }
   ];
 
+  const assetBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+  const assetVersion = '20261016-profile-icons2';
   const media = [
-    ['home-hero-media', 'Home', 'Homepage hero image / video', 'slots/home-hero-media'],
-    ['home-orbit-visual', 'Home', 'Orbit popup photo', 'slots/home-orbit-visual'],
-    ['socials-hero', 'Socials', 'Socials hero photo', 'slots/socials-hero'],
-    ['socials-tiktok-profile', 'Socials', 'TikTok profile photo', 'slots/socials-tiktok-profile'],
-    ['socials-instagram-profile', 'Socials', 'Instagram profile photo', 'slots/socials-instagram-profile'],
-    ['socials-snapchat-profile', 'Socials', 'Snapchat profile photo', 'slots/socials-snapchat-profile'],
-    ['socials-facebook-profile', 'Socials', 'Facebook profile photo', 'slots/socials-facebook-profile'],
-    ['socials-youtube-profile', 'Socials', 'YouTube profile photo', 'slots/socials-youtube-profile']
+    { id: 'home-hero-media', group: 'Home', label: 'Homepage hero image / video', path: 'slots/home-hero-media', kind: 'video' },
+    { id: 'home-orbit-visual', group: 'Home', label: 'Orbit popup photo', path: 'slots/home-orbit-visual', unavailable: 'No custom slot is currently published. The original public fallback is retained; nothing is guessed or replaced.' },
+    { id: 'socials-hero', group: 'Socials', label: 'Socials hero photo', path: 'slots/socials-hero' },
+    { id: 'socials-tiktok-profile', group: 'Socials', label: 'TikTok profile photo', path: 'slots/socials-tiktok-profile' },
+    { id: 'socials-instagram-profile', group: 'Socials', label: 'Instagram profile photo', path: 'slots/socials-instagram-profile' },
+    { id: 'socials-snapchat-profile', group: 'Socials', label: 'Snapchat profile photo', path: 'slots/socials-snapchat-profile' },
+    { id: 'socials-facebook-profile', group: 'Socials', label: 'Facebook profile photo', path: 'slots/socials-facebook-profile' },
+    { id: 'socials-youtube-profile', group: 'Socials', label: 'YouTube profile photo', path: 'slots/socials-youtube-profile', unavailable: 'No custom slot is currently published. The original Socials fallback remains in use.' }
   ];
   const themeGroups = [
     ['Site menu', 'Menu background, lettering, current page, and hover/focus colors.', 'theme/theme.json'],
@@ -53,8 +55,11 @@
   }
   function renderInspector() {
     $('#inspector-heading').textContent = currentSection.label;
+    const mediaItem = media.find((item) => item.id === currentSection.id);
     const path = currentSection.path ? `<div class="data-row"><span>EXISTING SLOT PATH</span><b>${esc(currentSection.path)}</b></div>` : '';
-    $('#inspector-content').innerHTML = `<div class="inspector-block"><h3>${esc(currentSection.type)}</h3><p>${esc(currentSection.note)}</p>${path}<div class="data-row"><span>PAGE REFERENCE</span><b>${esc(currentPage.label)}</b></div><div class="locked-action">Editing controls are intentionally locked here. The current APIs publish directly, so a true server-side draft and review flow must exist before these controls can write.</div></div>`;
+    const mediaLibraryAction = mediaItem ? `<button class="library-action" data-jump="media">Manage this asset in Media Library →</button>` : '';
+    $('#inspector-content').innerHTML = `<div class="inspector-block"><h3>${esc(currentSection.type)}</h3><p>${esc(currentSection.note)}</p>${path}<div class="data-row"><span>PAGE REFERENCE</span><b>${esc(currentPage.label)}</b></div>${mediaLibraryAction}<div class="locked-action"><strong>Media stays centralized.</strong><br>Replace, crop, position, remove, and restore actions belong in Media Library—not scattered through page settings. Those actions will remain protected by a staged draft and explicit publish review.</div></div>`;
+    document.querySelector('#inspector-content [data-jump="media"]')?.addEventListener('click', () => showScreen('media'));
   }
   function selectPage(id) {
     currentPage = pages.find((page) => page.id === id) || pages[0];
@@ -68,14 +73,22 @@
     currentSection = currentPage.sections.find((section) => section.id === id) || currentPage.sections[0];
     renderSections(); renderInspector();
   }
-  function card(title, copy, path, swatch = false) {
-    return `<article class="resource-card">${swatch ? '<div class="asset-swatch">Mapped existing configuration</div>' : ''}<p class="eyebrow">${esc(path ? 'CURRENT REFERENCE' : 'PRESERVED AREA')}</p><h2>${esc(title)}</h2><p>${esc(copy)}</p>${path ? `<code>${esc(path)}</code>` : ''}</article>`;
+  function assetUrl(item) { return item && !item.unavailable ? `${assetBase}${item.path}?v=${assetVersion}` : ''; }
+  function mediaPreview(item) {
+    if (item.unavailable) return `<div class="media-unavailable">Original public fallback retained<br><small>no replacement guessed</small></div>`;
+    const source = assetUrl(item);
+    return item.kind === 'video'
+      ? `<video class="media-thumb" muted loop autoplay playsinline preload="metadata" src="${esc(source)}"></video>`
+      : `<img class="media-thumb" src="${esc(source)}" alt="Current ${esc(item.label)}" loading="lazy">`;
+  }
+  function card(title, copy, path, swatch = false, preview = '') {
+    return `<article class="resource-card">${preview || (swatch ? '<div class="asset-swatch">Mapped existing configuration</div>' : '')}<p class="eyebrow">${esc(path ? 'CURRENT REFERENCE' : 'PRESERVED AREA')}</p><h2>${esc(title)}</h2><p>${esc(copy)}</p>${path ? `<code>${esc(path)}</code>` : ''}</article>`;
   }
   function buildResources() {
     $('#pages-grid').innerHTML = pages.filter((page) => page.id !== 'maintenance').map((page) => card(page.label, `Published page title: ${page.title}`, page.url)).join('');
-    $('#media-grid').innerHTML = media.map(([id, group, label, path]) => card(label, `${group} · existing mapped media slot`, path, true)).join('');
+    $('#media-grid').innerHTML = media.map((item) => card(item.label, item.unavailable || `${item.group} · actual asset loaded from its current Cloudflare slot.`, item.path, false, mediaPreview(item))).join('');
     $('#design-grid').innerHTML = themeGroups.map(([name, copy, path]) => card(name, copy, path, true)).join('');
-    $('#socials-grid').innerHTML = [card('Socials configuration', 'Existing social labels, destinations, visibility, and synchronization remain in the current configuration.', 'socials/socials.json'), ...media.filter((slot) => slot[1] === 'Socials').map(([, group, label, path]) => card(label, `${group} media mapping; no asset is copied or replaced.`, path, true))].join('');
+    $('#socials-grid').innerHTML = [card('Socials configuration', 'Existing social labels, destinations, visibility, and synchronization remain in the current configuration. Media is managed centrally in Media Library.', 'socials/socials.json')].join('');
     $('#seo-grid').innerHTML = pages.filter((page) => page.id !== 'maintenance').map((page) => card(page.label, page.title, page.url)).join('');
   }
   function showScreen(id) {
