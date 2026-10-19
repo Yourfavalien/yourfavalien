@@ -23,7 +23,7 @@
   </main>
   <script>
     (() => {
-      const statusUrl = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/system/maintenance.json';
+      const statusUrl = 'https://yourfavalien.com/assets/system/maintenance.json';
       const message = document.getElementById('maintenanceMessage');
       const title = document.getElementById('maintenanceTitle');
       const page = document.querySelector('.page');
@@ -49,11 +49,21 @@
         document.documentElement.style.setProperty('--maintenance-light', ship.light || '#37456f');
         document.documentElement.style.setProperty('--maintenance-purple', ship.purple || '#4a3565');
         if (background.url) {
-          document.body.style.backgroundImage = `linear-gradient(rgba(3,3,6,${number(background.overlay,0)/100}),rgba(3,3,6,${number(background.overlay,0)/100})),url("${String(background.url).replace(/"/g, '%22')}")`;
-          document.body.style.backgroundPosition = `${positionX}% ${positionY}%`;
-          document.body.style.backgroundSize = background.size || 'cover';
-          document.body.style.backgroundAttachment = 'fixed';
-          document.body.style.backgroundColor = '#030306';
+          let layer = document.getElementById('maintenanceCustomBackground');
+          if (!layer) {
+            layer = document.createElement('div');
+            layer.id = 'maintenanceCustomBackground';
+            layer.setAttribute('aria-hidden', 'true');
+            Object.assign(layer.style, { position: 'fixed', inset: '0', zIndex: '-4', pointerEvents: 'none' });
+            document.body.prepend(layer);
+          }
+          const backgroundUrl = String(background.url)
+            .replace('https://yourfavalien-mothership.aydenmtz54.workers.dev', 'https://yourfavalien.com')
+            .replace(/"/g, '%22');
+          layer.style.backgroundImage = `linear-gradient(rgba(3,3,6,${number(background.overlay,0)/100}),rgba(3,3,6,${number(background.overlay,0)/100})),url("${backgroundUrl}")`;
+          layer.style.backgroundPosition = `${positionX}% ${positionY}%`;
+          layer.style.backgroundSize = background.size || 'cover';
+          layer.style.filter = `brightness(${number(background.brightness,100)/100})`;
         }
         if (appearance.heading) title.textContent = String(appearance.heading).slice(0, 120);
         if (appearance.message) message.textContent = String(appearance.message).slice(0, 240);
