@@ -23,7 +23,8 @@
   </main>
   <script>
     (() => {
-      const statusUrl = 'https://yourfavalien.com/assets/system/maintenance.json';
+      // Read the same live Mothership setting that the dashboard writes.
+      const statusUrl = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/api/settings/maintenance';
       const message = document.getElementById('maintenanceMessage');
       const title = document.getElementById('maintenanceTitle');
       const page = document.querySelector('.page');
