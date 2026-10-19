@@ -25,9 +25,47 @@
     (() => {
       const statusUrl = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/system/maintenance.json';
       const message = document.getElementById('maintenanceMessage');
+      const title = document.getElementById('maintenanceTitle');
+      const page = document.querySelector('.page');
+      const ufo = document.querySelector('.ufo-wrap');
       const fallback = 'Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.';
       const legacyFallback = 'The Mothership is recalibrating this sector. New transmission incoming — check back soon.';
       let redirecting = false;
+
+      function number(value, fallback) {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : fallback;
+      }
+
+      function applyAppearance(appearance) {
+        if (!appearance || typeof appearance !== 'object') return;
+        const background = appearance.background || {};
+        const ship = appearance.ufo || {};
+        const text = appearance.text || {};
+        const positionX = innerWidth <= 700 ? number(background.mx, 50) : number(background.x, 50);
+        const positionY = innerWidth <= 700 ? number(background.my, 50) : number(background.y, 50);
+        document.documentElement.style.setProperty('--maintenance-metal', ship.metal || '#d6d2dc');
+        document.documentElement.style.setProperty('--maintenance-dim', ship.dim || '#77717e');
+        document.documentElement.style.setProperty('--maintenance-light', ship.light || '#37456f');
+        document.documentElement.style.setProperty('--maintenance-purple', ship.purple || '#4a3565');
+        if (background.url) {
+          document.body.style.backgroundImage = `linear-gradient(rgba(3,3,6,${number(background.overlay,0)/100}),rgba(3,3,6,${number(background.overlay,0)/100})),url("${String(background.url).replace(/"/g, '%22')}")`;
+          document.body.style.backgroundPosition = `${positionX}% ${positionY}%`;
+          document.body.style.backgroundSize = background.size || 'cover';
+          document.body.style.backgroundAttachment = 'fixed';
+          document.body.style.backgroundColor = '#030306';
+        }
+        if (appearance.heading) title.textContent = String(appearance.heading).slice(0, 120);
+        if (appearance.message) message.textContent = String(appearance.message).slice(0, 240);
+        title.style.cssText += `;transform:translate(${number(text.hx,0)}%,${number(text.hy,0)}%);font-size:calc(clamp(42px,7.2vw,84px) * ${number(text.size,1)});text-align:${text.align || 'center'}`;
+        message.style.cssText += `;transform:translate(${number(text.px,0)}%,${number(text.py,0)}%);text-align:${text.align || 'center'}`;
+        const scale = innerWidth <= 700 ? number(ship.mscale,1) : number(ship.scale,1);
+        ufo.style.cssText += `;transform:translate(${number(innerWidth<=700?ship.mx:ship.x,0)}%,${number(innerWidth<=700?ship.my:ship.y,0)}%) scale(${scale});z-index:${number(ship.z,1)}`;
+        ufo.querySelectorAll('.metal').forEach(node => node.style.stroke = ship.metal || '#d6d2dc');
+        ufo.querySelectorAll('.dim').forEach(node => node.style.stroke = ship.dim || '#77717e');
+        ufo.querySelectorAll('.light:not(.purple)').forEach(node => node.style.fill = ship.light || '#37456f');
+        ufo.querySelectorAll('.light.purple').forEach(node => node.style.fill = ship.purple || '#4a3565');
+      }
 
       async function refreshStatus() {
         if (redirecting) return;
@@ -45,6 +83,7 @@
           }
           const saved = String(data.message || '').trim();
           message.textContent = (!saved || saved === legacyFallback ? fallback : saved).slice(0, 240);
+          applyAppearance(data.appearance);
         } catch (error) {}
       }
 
