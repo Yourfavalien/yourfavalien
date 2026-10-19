@@ -31,6 +31,7 @@
       const ufo = document.querySelector('.ufo-wrap');
       const fallback = 'Our UFO needed a few repairs. We’re fixing things up now and we’ll be back in orbit soon.';
       const legacyFallback = 'The Mothership is recalibrating this sector. New transmission incoming — check back soon.';
+      const previewMode = new URLSearchParams(location.search).get('mothership-preview') === '1';
       let redirecting = false;
 
       function number(value, fallback) {
@@ -51,32 +52,60 @@
         document.documentElement.style.setProperty('--maintenance-purple', ship.purple || '#4a3565');
         if (background.url) {
           let layer = document.getElementById('maintenanceCustomBackground');
-          if (!layer) {
-            layer = document.createElement('div');
+          const isVideo = background.type === 'video';
+          if (!layer || (isVideo && layer.tagName !== 'VIDEO') || (!isVideo && layer.tagName !== 'DIV')) {
+            layer?.remove();
+            layer = document.createElement(isVideo ? 'video' : 'div');
             layer.id = 'maintenanceCustomBackground';
             layer.setAttribute('aria-hidden', 'true');
             Object.assign(layer.style, { position: 'fixed', inset: '0', zIndex: '-4', pointerEvents: 'none' });
+            if (isVideo) {
+              layer.muted = true;
+              layer.loop = true;
+              layer.playsInline = true;
+              layer.autoplay = true;
+              Object.assign(layer.style, { width: '100%', height: '100%', objectFit: background.size || 'cover' });
+            }
             document.body.prepend(layer);
           }
           const backgroundUrl = String(background.url)
             .replace('https://yourfavalien-mothership.aydenmtz54.workers.dev', 'https://yourfavalien.com')
             .replace(/"/g, '%22');
-          layer.style.backgroundImage = `linear-gradient(rgba(3,3,6,${number(background.overlay,0)/100}),rgba(3,3,6,${number(background.overlay,0)/100})),url("${backgroundUrl}")`;
-          layer.style.backgroundPosition = `${positionX}% ${positionY}%`;
-          layer.style.backgroundSize = background.size || 'cover';
-          layer.style.filter = `brightness(${number(background.brightness,100)/100})`;
+          if (isVideo) {
+            if (layer.src !== backgroundUrl) layer.src = backgroundUrl;
+            layer.style.objectPosition = `${positionX}% ${positionY}%`;
+            layer.style.objectFit = background.size || 'cover';
+            layer.style.filter = `brightness(${number(background.brightness,100)/100})`;
+            layer.play().catch(() => {});
+          } else {
+            layer.style.backgroundImage = `linear-gradient(rgba(3,3,6,${number(background.overlay,0)/100}),rgba(3,3,6,${number(background.overlay,0)/100})),url("${backgroundUrl}")`;
+            layer.style.backgroundPosition = `${positionX}% ${positionY}%`;
+            layer.style.backgroundSize = background.size || 'cover';
+            layer.style.filter = `brightness(${number(background.brightness,100)/100})`;
+          }
         }
         if (appearance.heading) title.textContent = String(appearance.heading).slice(0, 120);
         if (appearance.message) message.textContent = String(appearance.message).slice(0, 240);
         title.style.cssText += `;transform:translate(${number(text.hx,0)}%,${number(text.hy,0)}%);font-size:calc(clamp(42px,7.2vw,84px) * ${number(text.size,1)});text-align:${text.align || 'center'}`;
         message.style.cssText += `;transform:translate(${number(text.px,0)}%,${number(text.py,0)}%);text-align:${text.align || 'center'}`;
         const scale = innerWidth <= 700 ? number(ship.mscale,1) : number(ship.scale,1);
-        ufo.style.cssText += `;transform:translate(${number(innerWidth<=700?ship.mx:ship.x,0)}%,${number(innerWidth<=700?ship.my:ship.y,0)}%) scale(${scale});z-index:${number(ship.z,1)}`;
+        ufo.style.cssText += `;display:${ship.hidden ? 'none' : 'block'};transform:translate(${number(innerWidth<=700?ship.mx:ship.x,0)}%,${number(innerWidth<=700?ship.my:ship.y,0)}%) scale(${scale});z-index:${number(ship.z,1)}`;
         ufo.querySelectorAll('.metal').forEach(node => node.style.stroke = ship.metal || '#d6d2dc');
         ufo.querySelectorAll('.dim').forEach(node => node.style.stroke = ship.dim || '#77717e');
         ufo.querySelectorAll('.light:not(.purple)').forEach(node => node.style.fill = ship.light || '#37456f');
         ufo.querySelectorAll('.light.purple').forEach(node => node.style.fill = ship.purple || '#4a3565');
       }
+
+      function applySettings(data) {
+        const saved = String(data.message || '').trim();
+        message.textContent = (!saved || saved === legacyFallback ? fallback : saved).slice(0, 240);
+        applyAppearance(data.appearance);
+      }
+
+      window.addEventListener('message', event => {
+        if (!previewMode || event.origin !== location.origin || event.data?.type !== 'yfa-maintenance-preview') return;
+        applySettings(event.data.settings || {});
+      });
 
       async function refreshStatus() {
         if (redirecting) return;
@@ -84,7 +113,7 @@
           const response = await fetch(`${statusUrl}?v=${Date.now()}`, { cache: 'no-store' });
           if (!response.ok) return;
           const data = await response.json();
-          if (data.enabled !== true) {
+          if (!previewMode && data.enabled !== true) {
             redirecting = true;
             const params = new URLSearchParams(location.search);
             const from = params.get('from');
@@ -92,9 +121,7 @@
             window.location.replace(`${target}${target.includes('?') ? '&' : '?'}maintenance-cleared=${Date.now()}`);
             return;
           }
-          const saved = String(data.message || '').trim();
-          message.textContent = (!saved || saved === legacyFallback ? fallback : saved).slice(0, 240);
-          applyAppearance(data.appearance);
+          applySettings(data);
         } catch (error) {}
       }
 
