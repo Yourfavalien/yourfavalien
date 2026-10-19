@@ -33,7 +33,10 @@
       socials: () => { click('socialsTab'); setTimeout(() => scrollTo('socialsView'), 0); },
       popup: () => { showControls('yfaPopupControl'); setTimeout(() => reveal('yfaPopupControl'), 80); },
       maintenance: () => { click('maintenanceTab'); setTimeout(() => reveal('yfaMaintenanceControl'), 80); },
-      settings: () => showControls('xiloTraining')
+      // Keep Settings on an administrative panel that is already available as
+      // soon as Mothership loads. Other settings remain below it in the same
+      // protected controls area, rather than leaving this destination empty.
+      settings: () => { showControls('yfaBadgeControl'); setTimeout(() => reveal('yfaBadgeControl'), 80); }
     };
     sidebar.querySelectorAll('[data-area]').forEach(button => button.addEventListener('click', () => {
       sidebar.querySelectorAll('[data-area]').forEach(item => item.removeAttribute('aria-current'));
