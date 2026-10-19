@@ -1,0 +1,19 @@
+/* Mothership editor workspace: preserves the existing visual system while
+   giving the controls a proper application-style layout. */
+@media (min-width: 920px) {
+  .shell { width: min(1480px, calc(100% - 48px)); }
+  .dashboard { display: grid; grid-template-columns: 214px minmax(0, 1fr); column-gap: 22px; align-items: start; }
+  .dashboard .topbar { grid-column: 1 / -1; margin-bottom: 20px; padding: 22px 4px; border-bottom: 1px solid var(--line); }
+  .dashboard-tabs { position: sticky; top: 22px; display: grid; grid-column: 1; width: 100%; margin: 0; padding: 10px; border-radius: 18px; background: rgba(10,5,9,.7); }
+  .dashboard-tab { width: 100%; text-align: left; padding: 12px 13px; border-radius: 10px; }
+  .control-directory { display: none; }
+  .dashboard-view { grid-column: 2; min-width: 0; border: 1px solid var(--line); border-radius: 20px; padding: 24px; background: rgba(18,10,17,.72); }
+  #maintenanceView { grid-column: 2; }
+  #maintenanceView .ym-grid { grid-template-columns: minmax(0, 1.35fr) minmax(310px, .85fr); }
+  #maintenanceView .ym-preview { min-height: 610px; aspect-ratio: auto; }
+  #maintenanceView .ym-controls { align-content: start; }
+}
+
+@media (max-width: 919px) {
+  #maintenanceView .ym-preview { min-height: 520px; }
+}
