@@ -59,6 +59,17 @@
     const utilities = document.createElement('section'); utilities.id = 'yfaAppUtilities'; utilities.className = 'yfa-app-utilities'; home.insertAdjacentElement('afterend', utilities);
     const placeUtilities = () => ['yfaPopupControl', 'yfaBadgeControl'].forEach(id => { const panel = document.getElementById(id); if (panel && panel.parentElement !== utilities) utilities.append(panel); });
     placeUtilities(); setTimeout(placeUtilities, 400); setTimeout(placeUtilities, 1200);
+
+    // An iframe's browser default is only 150px high when its parent gets its
+    // height from a responsive minimum. Give the real maintenance page an
+    // explicit workspace height so it remains fully usable under the control cards.
+    const sizeMaintenancePreview = () => {
+      const frame = document.getElementById('ymLivePreview');
+      if (!frame) return;
+      frame.style.height = `${Math.max(460, Math.min(900, Math.round(window.innerHeight * 0.68)))}px`;
+    };
+    sizeMaintenancePreview(); setTimeout(sizeMaintenancePreview, 400); setTimeout(sizeMaintenancePreview, 1200);
+    window.addEventListener('resize', sizeMaintenancePreview);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
 })();
