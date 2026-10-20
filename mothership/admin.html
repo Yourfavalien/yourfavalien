@@ -187,7 +187,8 @@
     </section>
   </main>
 
-  <script src="../mothership-config.js?v=20261016-profile-icons2"></script>
+  <script src="https://descopecdn.com/npm/@descope/web-js-sdk@1.54.4/dist/index.umd.js" integrity="sha384-Mzy5HRAhIVMW+iTgiIdeYT5AlFGOi7FTmIp/izytT+gl4/NhJCq9g6YuqGhnyDfO" crossorigin="anonymous"></script>
+  <script src="../mothership-config.js?v=20261020-descope-session"></script>
   <script>
     (() => {
       const cfg = window.YFA_MOTHERSHIP;
@@ -1076,12 +1077,17 @@
       reloadTrainingBtn.addEventListener('click', loadTraining);
 
       logoutBtn.addEventListener('click', async () => {
-        await client.auth.signOut();
+        const { error } = await client.auth.signOut();
+        if (error) window.alert(error.message || 'Could not complete logout. Please try again.');
       });
 
       async function startMothership() {
         const { data } = await client.auth.getSession();
-        userEmail.textContent = data?.session?.user?.email || 'Cloudflare Access secured';
+        if (!data?.session?.user) {
+          window.location.replace('/mothership/login.html?next=%2Fmothership%2Fadmin.html');
+          return;
+        }
+        userEmail.textContent = data.session.user.email;
         renderSlots();
         await loadTheme();
         await loadSocials();

@@ -6,12 +6,12 @@
 
   const cfg = window.YFA_MOTHERSHIP || {};
   const READ_BASE = 'https://yourfavalien-mothership.aydenmtz54.workers.dev';
-  const WRITE_BASE = window.location.origin;
+  const ADMIN_API = `${window.location.origin}/mothership/api`;
 
   const assetUrl = path => `${READ_BASE}/assets/${String(path || '').replace(/^\/+/, '')}?v=${Date.now()}`;
-  const settingUrl = key => `${READ_BASE}/api/settings/${encodeURIComponent(key)}?v=${Date.now()}`;
-  const writeAssetUrl = path => `${WRITE_BASE}/api/assets/${String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/')}`;
-  const writeSettingUrl = key => `${WRITE_BASE}/api/settings/${encodeURIComponent(key)}`;
+  const settingUrl = key => `${ADMIN_API}/settings/${encodeURIComponent(key)}?v=${Date.now()}`;
+  const writeAssetUrl = path => `${ADMIN_API}/assets/${String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/')}`;
+  const writeSettingUrl = key => `${ADMIN_API}/settings/${encodeURIComponent(key)}`;
   const POSITION_PATH = 'system/image-positions.json';
   let positionState = { version: 1, updatedAt: null, slots: {} };
 

@@ -1,7 +1,7 @@
 window.YFA_MOTHERSHIP = {
   assetBase: 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/',
   settingsBase: 'https://yourfavalien-mothership.aydenmtz54.workers.dev/api/settings/',
-  adminApiBase: '/api',
+  adminApiBase: /^\/mothership\/support(?:\/|$)/i.test(window.location.pathname || '') ? '/mothership/api/support' : '/mothership/api',
   storageNamespace: 'cloudflare-r2',
   themePath: 'theme/theme.json',
   socialsPath: 'socials/socials.json',
@@ -75,8 +75,7 @@ window.YFA_MOTHERSHIP = {
   ]
 };
 
-// Cloudflare Access protects Mothership, R2 stores files, and the Worker exposes the
-// small storage surface used by the dashboard controls.
+// The Mothership Worker checks the Descope session before serving admin controls.
 (function () {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   if (!isMothership || window.YFA_CLOUDFLARE_CLIENT) return;
@@ -92,24 +91,23 @@ window.YFA_MOTHERSHIP = {
     return new Error(message);
   }
 
-  async function getAccessSession() {
+  async function getOwnerSession() {
     try {
-      const response = await fetch('/cdn-cgi/access/get-identity', {
+      const response = await fetch(`${cfg.adminApiBase}/auth/me`, {
         credentials: 'same-origin',
         cache: 'no-store'
       });
       if (!response.ok) return null;
       const identity = await response.json();
-      const email = identity.email || identity.user || identity.name || 'Authenticated user';
+      if (!identity.user || !identity.user.id || !identity.user.email) return null;
       return {
-        access_token: 'cloudflare-access',
-        token_type: 'bearer',
         user: {
-          id: identity.user_uuid || identity.sub || email,
-          email,
-          app_metadata: { provider: 'cloudflare-access' },
+          id: identity.user.id,
+          email: identity.user.email,
+          app_metadata: { provider: 'descope' },
           user_metadata: {}
-        }
+        },
+        expires_at: identity.expiresAt
       };
     } catch (error) {
       return null;
@@ -119,12 +117,12 @@ window.YFA_MOTHERSHIP = {
   const client = {
     auth: {
       async getSession() {
-      const session = await getAccessSession();
+      const session = await getOwnerSession();
       return { data: { session }, error: null };
       },
       onAuthStateChange(callback) {
         let active = true;
-        getAccessSession().then(session => {
+        getOwnerSession().then(session => {
           if (active && typeof callback === 'function') callback(session ? 'SIGNED_IN' : 'SIGNED_OUT', session);
         });
         return {
@@ -136,12 +134,32 @@ window.YFA_MOTHERSHIP = {
         };
       },
       async signInWithPassword() {
-        const session = await getAccessSession();
-        if (!session) return { data: { session: null }, error: new Error('Cloudflare Access session not found.') };
+        const session = await getOwnerSession();
+        if (!session) return { data: { session: null }, error: new Error('Mothership session not found.') };
         return { data: { session }, error: null };
       },
       async signOut() {
-        window.location.assign('/cdn-cgi/access/logout');
+        let logoutError = null;
+        try {
+          if (typeof window.Descope !== 'function') throw new Error('Descope logout is unavailable. Refresh and try again.');
+          const sdk = window.Descope({ projectId: 'P3Kto1HcQtuOP8lNxNqJsi8hAwv2', persistTokens: true, autoRefresh: true });
+          const result = await sdk.logout();
+          if (result && result.ok === false) throw new Error('Descope could not end the session. Please try again.');
+        } catch (error) {
+          logoutError = error;
+        }
+        try {
+          const response = await fetch(`${cfg.adminApiBase}/auth/logout`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store'
+          });
+          if (!response.ok) throw await apiError(response, 'Could not end the Mothership session.');
+        } catch (error) {
+          logoutError = logoutError || error;
+        }
+        if (logoutError) return { error: logoutError };
+        window.location.assign('/mothership/login.html');
         return { error: null };
       }
     },
@@ -189,7 +207,7 @@ window.YFA_MOTHERSHIP = {
           },
           async download(path) {
             try {
-              const response = await fetch(`${cfg.assetBase}${encodePath(path)}?v=${Date.now()}`, { cache: 'no-store' });
+              const response = await fetch(`${cfg.adminApiBase}/assets/${encodePath(path)}?v=${Date.now()}`, { credentials: 'same-origin', cache: 'no-store' });
               if (!response.ok) return { data: null, error: await apiError(response, 'Could not download Cloudflare asset.') };
               return { data: await response.blob(), error: null };
             } catch (error) {
@@ -198,10 +216,10 @@ window.YFA_MOTHERSHIP = {
           },
           async list(prefix = '', options = {}) {
             try {
-              const url = new URL(cfg.assetBase.replace(/assets\/$/, 'api/assets'));
+              const url = new URL(`${cfg.adminApiBase}/assets`, window.location.origin);
               url.searchParams.set('prefix', String(prefix || '').replace(/^\/+/, ''));
               url.searchParams.set('limit', String(options.limit || 100));
-              const response = await fetch(url, { cache: 'no-store' });
+              const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store' });
               if (!response.ok) return { data: null, error: await apiError(response, 'Could not list Cloudflare assets.') };
               const payload = await response.json();
               return { data: payload.items || [], error: null };
