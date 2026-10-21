@@ -232,15 +232,38 @@
 
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
-      const settingsUrl = cfg.assetBase + cfg.themePath + '?v=' + Date.now();
-      fetch(settingsUrl, { cache: 'no-store' })
-        .then(function (response) { return response.ok ? response.json() : null; })
-        .then(function (data) {
-          if (!data) return;
-          if (data.menu) applyMenuSettings(data.menu);
-          applyHomepageControls(data.homeHero);
-        })
-        .catch(function () {});
+      const version = '?v=' + Date.now();
+      const assetUrl = cfg.assetBase + cfg.themePath + version;
+      const settingsUrl = cfg.settingsBase
+        ? cfg.settingsBase.replace(/\\/?$/, '/') + 'theme' + version
+        : null;
+
+      function readTheme(url) {
+        return fetch(url, { cache: 'no-store' }).then(function (response) {
+          if (!response.ok) throw new Error('Could not load homepage settings');
+          return response.json();
+        }).then(function (data) {
+          return data && data.theme && data.theme.homeHero ? data.theme
+            : data && data.value && data.value.homeHero ? data.value
+            : data;
+        });
+      }
+
+      // Mothership writes through /settings/theme. Read that same settings
+      // source first; older sites may still publish theme/theme.json as an asset.
+      const themePromise = settingsUrl
+        ? readTheme(settingsUrl).then(function (data) {
+            return data && data.homeHero && typeof data.homeHero.titleEnabled === 'boolean'
+              ? data
+              : readTheme(assetUrl);
+          }, function () { return readTheme(assetUrl); })
+        : readTheme(assetUrl);
+
+      themePromise.then(function (data) {
+        if (!data) return;
+        if (data.menu) applyMenuSettings(data.menu);
+        applyHomepageControls(data.homeHero);
+      }).catch(function () {});
     }
 
     return button;
