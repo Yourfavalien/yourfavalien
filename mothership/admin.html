@@ -660,13 +660,12 @@
           const blob = new Blob([serialized], { type: 'application/json' });
 
           // 1. Keep public R2 asset storage updated for live website visitors
-          const uploadPromise = (client && client.storage)
-            ? client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
+          if (!client || !client.storage) throw new Error('Cloudflare storage is unavailable.');
+          const uploadPromise = client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
                 contentType: 'application/json',
                 cacheControl: '60',
                 upsert: true
-              })
-            : Promise.resolve({});
+              });
 
           // 2. Keep Cloudflare theme settings API updated
           const settingsPromise = fetch(`${cfg.adminApiBase}/settings/theme`, {
@@ -675,10 +674,14 @@
             cache: 'no-store',
             headers: { 'Content-Type': 'application/json' },
             body: serialized
-          }).catch(() => null);
+          });
 
-          const [uploadResult] = await Promise.all([uploadPromise, settingsPromise]);
-          if (uploadResult && uploadResult.error) throw uploadResult.error;
+          const [uploadResult, settingsResponse] = await Promise.all([uploadPromise, settingsPromise]);
+          if (uploadResult?.error) throw uploadResult.error;
+          if (!settingsResponse.ok) {
+            const details = await settingsResponse.json().catch(() => ({}));
+            throw new Error(details.error || `Cloudflare settings save failed (HTTP ${settingsResponse.status}).`);
+          }
 
           setStatus(themeStatus, `Homepage lettering ${homeHeroState.titleEnabled ? 'shown' : 'hidden'}. Refresh the homepage to see the change.`, 'ok');
         } catch (error) {
@@ -839,9 +842,13 @@
             cache: 'no-store',
             headers: { 'Content-Type': 'application/json' },
             body: payload
-          }).catch(() => null);
-          const [uploadResult] = await Promise.all([uploadPromise, settingsPromise]);
-          if (uploadResult && uploadResult.error) throw uploadResult.error;
+          });
+          const [uploadResult, settingsResponse] = await Promise.all([uploadPromise, settingsPromise]);
+          if (uploadResult?.error) throw uploadResult.error;
+          if (!settingsResponse.ok) {
+            const details = await settingsResponse.json().catch(() => ({}));
+            throw new Error(details.error || `Cloudflare settings save failed (HTTP ${settingsResponse.status}).`);
+          }
           setStatus(themeStatus, 'Homepage menu, button, and appearance saved.', 'ok');
         } catch (error) {
           setStatus(themeStatus, error.message || 'Could not save the theme.', 'error');
