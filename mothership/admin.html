@@ -656,19 +656,33 @@
           const payload = await response.json();
           payload.homeHero = Object.assign({}, payload.homeHero || {}, { titleEnabled: homeHeroState.titleEnabled });
           payload.updatedAt = new Date().toISOString();
-          // Keep the lettering switch on the same Cloudflare settings endpoint
-          // used by the Mothership theme Save button.
-          const saved = await fetch(`${cfg.adminApiBase}/settings/theme`, {
+          const serialized = JSON.stringify(payload, null, 2);
+          const blob = new Blob([serialized], { type: 'application/json' });
+
+          // 1. Keep public R2 asset storage updated for live website visitors
+          if (!client || !client.storage) throw new Error('Cloudflare storage is unavailable.');
+          const uploadPromise = client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
+                contentType: 'application/json',
+                cacheControl: '60',
+                upsert: true
+              });
+
+          // 2. Keep Cloudflare theme settings API updated
+          const settingsPromise = fetch(`${cfg.adminApiBase}/settings/theme`, {
             method: 'PUT',
             credentials: 'same-origin',
             cache: 'no-store',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload, null, 2)
+            body: serialized
           });
-          if (!saved.ok) {
-            const details = await saved.json().catch(() => ({}));
-            throw new Error(details.error || `Could not save homepage lettering (HTTP ${saved.status}).`);
+
+          const [uploadResult, settingsResponse] = await Promise.all([uploadPromise, settingsPromise]);
+          if (uploadResult?.error) throw uploadResult.error;
+          if (!settingsResponse.ok) {
+            const details = await settingsResponse.json().catch(() => ({}));
+            throw new Error(details.error || `Cloudflare settings save failed (HTTP ${settingsResponse.status}).`);
           }
+
           setStatus(themeStatus, `Homepage lettering ${homeHeroState.titleEnabled ? 'shown' : 'hidden'}. Refresh the homepage to see the change.`, 'ok');
         } catch (error) {
           setStatus(themeStatus, error.message || 'Could not save the homepage lettering setting.', 'error');
@@ -817,13 +831,24 @@
         try {
           const payload = JSON.stringify({ version: 5, updatedAt: new Date().toISOString(), colors: themeState, menu: menuState, homeIdentity: homeIdentityState, homeHero: homeHeroState }, null, 2);
           const blob = new Blob([payload], { type: 'application/json' });
-          await client.storage.from(cfg.storageNamespace).remove([cfg.themePath]);
-          const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
+          const uploadPromise = client.storage.from(cfg.storageNamespace).upload(cfg.themePath, blob, {
             contentType: 'application/json',
             cacheControl: '60',
-            upsert: false
+            upsert: true
           });
-          if (error) throw error;
+          const settingsPromise = fetch(`${cfg.adminApiBase}/settings/theme`, {
+            method: 'PUT',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+          });
+          const [uploadResult, settingsResponse] = await Promise.all([uploadPromise, settingsPromise]);
+          if (uploadResult?.error) throw uploadResult.error;
+          if (!settingsResponse.ok) {
+            const details = await settingsResponse.json().catch(() => ({}));
+            throw new Error(details.error || `Cloudflare settings save failed (HTTP ${settingsResponse.status}).`);
+          }
           setStatus(themeStatus, 'Homepage menu, button, and appearance saved.', 'ok');
         } catch (error) {
           setStatus(themeStatus, error.message || 'Could not save the theme.', 'error');

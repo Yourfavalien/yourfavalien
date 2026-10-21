@@ -140,31 +140,76 @@
         replacement.src = selectedUrl;
       } else if (contentType.startsWith('video/')) {
         replacement = document.createElement('video');
+        replacement.id = 'yfaHeroReplacement';
         replacement.autoplay = true;
         replacement.muted = true;
         replacement.defaultMuted = true;
+        replacement.volume = 0;
         replacement.loop = true;
         replacement.playsInline = true;
+        replacement.controls = false;
         replacement.preload = 'auto';
+        replacement.disableRemotePlayback = true;
+        replacement.disablePictureInPicture = true;
         replacement.setAttribute('autoplay', '');
         replacement.setAttribute('muted', '');
         replacement.setAttribute('playsinline', '');
         replacement.setAttribute('webkit-playsinline', '');
-        replacement.src = selectedUrl;
+        replacement.setAttribute('x-webkit-airplay', 'deny');
+        replacement.setAttribute('disableRemotePlayback', '');
+        replacement.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback noplaybackrate');
+        replacement.removeAttribute('controls');
       } else return;
       replacement.id = 'yfaHeroReplacement';
       wireRetry(replacement);
       Object.assign(replacement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', maxWidth:'none', maxHeight:'none', objectFit:'cover', objectPosition:'center', zIndex:'0', pointerEvents:'none' });
       applyPosition(replacement, phoneSelected && selectedUrl === phoneUrl ? 'home-hero-phone' : 'home-hero-media');
+      const existingReplacement = document.getElementById('yfaHeroReplacement');
+      if (existingReplacement) {
+        if (existingReplacement.src === selectedUrl) {
+          if (existingReplacement.tagName === 'VIDEO' && existingReplacement.paused) {
+            existingReplacement.play().catch(() => {});
+          }
+          return;
+        }
+        existingReplacement.remove();
+      }
       const restoreOriginal = () => { original.style.opacity=''; original.style.visibility=''; replacement.remove(); };
       replacement.addEventListener('error', restoreOriginal, { once:true });
       original.style.opacity = '0';
       original.style.visibility = 'hidden';
       original.insertAdjacentElement('afterend', replacement);
+      replacement.src = selectedUrl;
       if (replacement.tagName === 'VIDEO') {
-        const startPlayback = () => replacement.play().catch(() => {});
-        replacement.addEventListener('loadeddata', startPlayback, { once:true });
-        replacement.addEventListener('canplay', startPlayback, { once:true });
+        const enforceAutoplay = () => {
+          replacement.controls = false;
+          replacement.removeAttribute('controls');
+          replacement.muted = true;
+          replacement.defaultMuted = true;
+          replacement.volume = 0;
+          replacement.playsInline = true;
+        };
+        const startPlayback = () => {
+          enforceAutoplay();
+          const playback = replacement.play();
+          if (playback && typeof playback.catch === 'function') {
+            playback.catch(() => {});
+          }
+        };
+        ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach(evt => {
+          replacement.addEventListener(evt, startPlayback, { once: true });
+        });
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && replacement.paused) startPlayback();
+        });
+        window.addEventListener('pageshow', () => {
+          if (replacement.paused) startPlayback();
+        });
+        const resumeOnUserTouch = () => {
+          if (replacement.paused) startPlayback();
+        };
+        window.addEventListener('touchstart', resumeOnUserTouch, { once: true, passive: true, capture: true });
+        window.addEventListener('pointerdown', resumeOnUserTouch, { once: true, passive: true });
         startPlayback();
       }
     } catch (error) {}

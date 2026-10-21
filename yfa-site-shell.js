@@ -187,7 +187,17 @@
       const cta = saved.cta && typeof saved.cta === 'object' ? saved.cta : {};
       button.classList.toggle('yfa-home-menu-disabled', saved.menuEnabled === false);
       const homeTitle = document.querySelector('#home .hero-logo');
-      if (homeTitle) homeTitle.hidden = saved.titleEnabled === false;
+      if (homeTitle) {
+        const isHidden = saved.titleEnabled === false;
+        homeTitle.hidden = isHidden;
+        if (isHidden) {
+          homeTitle.setAttribute('hidden', '');
+          homeTitle.style.setProperty('display', 'none', 'important');
+        } else {
+          homeTitle.removeAttribute('hidden');
+          homeTitle.style.removeProperty('display');
+        }
+      }
       if (homeCta) { homeCta.remove(); homeCta = null; }
       if (cta.enabled !== true) return;
 
@@ -237,8 +247,9 @@
         .then(function (response) { return response.ok ? response.json() : null; })
         .then(function (data) {
           if (!data) return;
+          const heroSettings = data.homeHero || (data.theme && data.theme.homeHero) || (data.value && data.value.homeHero);
           if (data.menu) applyMenuSettings(data.menu);
-          applyHomepageControls(data.homeHero);
+          if (heroSettings) applyHomepageControls(heroSettings);
         })
         .catch(function () {});
     }
