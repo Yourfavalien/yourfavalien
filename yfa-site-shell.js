@@ -235,7 +235,7 @@
       const version = '?v=' + Date.now();
       const assetUrl = cfg.assetBase + cfg.themePath + version;
       const settingsUrl = cfg.settingsBase
-        ? cfg.settingsBase.replace(/\\/?$/, '/') + 'theme' + version
+        ? (cfg.settingsBase.endsWith('/') ? cfg.settingsBase : cfg.settingsBase + '/') + 'theme' + version
         : null;
 
       function readTheme(url) {
