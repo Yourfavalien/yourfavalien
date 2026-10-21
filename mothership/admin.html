@@ -95,6 +95,9 @@
           <div class="menu-label-field"><label for="homeCtaFont">BUTTON FONT</label><select id="homeCtaFont"><option value="courier">Courier</option><option value="space">Space Mono</option><option value="editorial">Editorial Serif</option><option value="major">Major Mono</option><option value="clean">Clean Sans</option></select></div>
           <div class="menu-label-field home-range"><label for="homeCtaFontSize">FONT SIZE</label><output id="homeCtaFontSizeValue" for="homeCtaFontSize">14 px</output><input id="homeCtaFontSize" type="range" min="10" max="24" step="1" value="14"></div>
           <div class="menu-label-field home-range" style="grid-column:1/-1"><label for="homeCtaRadius">CORNER ROUNDNESS</label><output id="homeCtaRadiusValue" for="homeCtaRadius">24 px</output><input id="homeCtaRadius" type="range" min="0" max="30" step="1" value="24"><div class="home-shape-presets"><button type="button" data-home-cta-radius="0">Rectangle</button><button type="button" data-home-cta-radius="12">Rounded</button><button type="button" data-home-cta-radius="24">Pill</button></div></div>
+          <div class="menu-label-field home-range"><label for="homeCtaX">MOVE LEFT / RIGHT</label><output id="homeCtaXValue" for="homeCtaX">50%</output><input id="homeCtaX" type="range" min="8" max="92" step="1" value="50"></div>
+          <div class="menu-label-field home-range"><label for="homeCtaY">MOVE UP / DOWN</label><output id="homeCtaYValue" for="homeCtaY">62%</output><input id="homeCtaY" type="range" min="12" max="88" step="1" value="62"></div>
+          <div class="menu-label-field" style="grid-column:1/-1"><label>QUICK POSITION</label><div class="home-shape-presets"><button type="button" data-home-cta-position="top">Top</button><button type="button" data-home-cta-position="center">Center</button><button type="button" data-home-cta-position="bottom">Bottom</button></div></div>
         </div>
       </section>
       <section class="menu-editor" aria-labelledby="menuEditorTitle">
@@ -225,6 +228,11 @@
       const homeCtaRadius = document.getElementById('homeCtaRadius');
       const homeCtaRadiusValue = document.getElementById('homeCtaRadiusValue');
       const homeCtaRadiusButtons = Array.from(document.querySelectorAll('[data-home-cta-radius]'));
+      const homeCtaX = document.getElementById('homeCtaX');
+      const homeCtaXValue = document.getElementById('homeCtaXValue');
+      const homeCtaY = document.getElementById('homeCtaY');
+      const homeCtaYValue = document.getElementById('homeCtaYValue');
+      const homeCtaPositionButtons = Array.from(document.querySelectorAll('[data-home-cta-position]'));
       const socialsControlForm = document.getElementById('socialsControlForm');
       const socialsEditor = document.getElementById('socialsEditor');
       const customSocialsEditor = document.getElementById('customSocialsEditor');
@@ -287,7 +295,7 @@
       let themeState = { ...defaultTheme };
       const defaultHomeIdentity = { text: 'model · main character energy · fashion', enabled: true };
       let homeIdentityState = { ...defaultHomeIdentity };
-      const defaultHomeHero = { menuEnabled: true, titleEnabled: false, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24 } };
+      const defaultHomeHero = { menuEnabled: true, titleEnabled: false, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24, x: 50, y: 62 } };
       let homeHeroState = JSON.parse(JSON.stringify(defaultHomeHero));
       let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
       let selectedConversation = null;
@@ -593,6 +601,8 @@
               homeHeroState.cta.font = ['courier','space','editorial','major','clean'].includes(cta.font) ? cta.font : 'courier';
               homeHeroState.cta.fontSize = Math.min(24, Math.max(10, Number(cta.fontSize) || 14));
               homeHeroState.cta.radius = Number.isFinite(Number(cta.radius)) ? Math.min(30, Math.max(0, Number(cta.radius))) : 24;
+              homeHeroState.cta.x = Number.isFinite(Number(cta.x)) ? Math.min(92, Math.max(8, Number(cta.x))) : 50;
+              homeHeroState.cta.y = Number.isFinite(Number(cta.y)) ? Math.min(88, Math.max(12, Number(cta.y))) : 62;
             }
           }
         } catch (error) {}
@@ -622,6 +632,10 @@
         homeCtaFontSizeValue.textContent = `${homeHeroState.cta.fontSize} px`;
         homeCtaRadius.value = String(homeHeroState.cta.radius);
         homeCtaRadiusValue.textContent = `${homeHeroState.cta.radius} px`;
+        homeCtaX.value = String(homeHeroState.cta.x);
+        homeCtaXValue.textContent = `${homeHeroState.cta.x}%`;
+        homeCtaY.value = String(homeHeroState.cta.y);
+        homeCtaYValue.textContent = `${homeHeroState.cta.y}%`;
       }
 
       menuPresetButtons.forEach(button => button.addEventListener('click', () => {
@@ -732,6 +746,24 @@
         homeHeroState.cta.radius = Number(button.dataset.homeCtaRadius);
         renderHomeHeroEditor();
         setStatus(themeStatus, 'Unsaved homepage button shape.');
+      }));
+      homeCtaX.addEventListener('input', () => {
+        homeHeroState.cta.x = Number(homeCtaX.value);
+        homeCtaXValue.textContent = `${homeHeroState.cta.x}%`;
+        setStatus(themeStatus, 'Unsaved homepage button position.');
+      });
+      homeCtaY.addEventListener('input', () => {
+        homeHeroState.cta.y = Number(homeCtaY.value);
+        homeCtaYValue.textContent = `${homeHeroState.cta.y}%`;
+        setStatus(themeStatus, 'Unsaved homepage button position.');
+      });
+      homeCtaPositionButtons.forEach(button => button.addEventListener('click', () => {
+        const positions = { top: { x: 50, y: 25 }, center: { x: 50, y: 50 }, bottom: { x: 50, y: 78 } };
+        const position = positions[button.dataset.homeCtaPosition];
+        if (!position) return;
+        Object.assign(homeHeroState.cta, position);
+        renderHomeHeroEditor();
+        setStatus(themeStatus, 'Unsaved homepage button position.');
       }));
 
       function renderColors() {

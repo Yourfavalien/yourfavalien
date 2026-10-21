@@ -256,7 +256,9 @@
           style: document.querySelector('[data-home-cta-style][aria-pressed="true"]')?.dataset.homeCtaStyle || 'outline',
           font: document.getElementById('homeCtaFont')?.value || 'courier',
           fontSize: Math.min(24, Math.max(10, Number(document.getElementById('homeCtaFontSize')?.value) || 14)),
-          radius: Math.min(30, Math.max(0, Number(document.getElementById('homeCtaRadius')?.value) || 0))
+          radius: Math.min(30, Math.max(0, Number(document.getElementById('homeCtaRadius')?.value) || 0)),
+          x: Math.min(92, Math.max(8, Number(document.getElementById('homeCtaX')?.value) || 50)),
+          y: Math.min(88, Math.max(12, Number(document.getElementById('homeCtaY')?.value) || 62))
         }
       };
       if (ctaEnabled && homeHero.cta.action === 'custom' && !/^(https:\/\/|\/)/i.test(ctaUrl)) throw new Error('Use a full https:// link or a site path beginning with /.');

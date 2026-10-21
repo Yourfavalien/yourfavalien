@@ -212,8 +212,12 @@
       homeCta.dataset.yfaCtaFont = ['courier','space','editorial','major','clean'].includes(cta.font) ? cta.font : 'courier';
       const fontSize = Math.min(24, Math.max(10, Number(cta.fontSize) || 14));
       const radius = Number.isFinite(Number(cta.radius)) ? Math.min(30, Math.max(0, Number(cta.radius))) : 24;
+      const positionX = Number.isFinite(Number(cta.x)) ? Math.min(92, Math.max(8, Number(cta.x))) : 50;
+      const positionY = Number.isFinite(Number(cta.y)) ? Math.min(88, Math.max(12, Number(cta.y))) : 62;
       homeCta.style.setProperty('--yfa-cta-font-size', fontSize + 'px');
       homeCta.style.setProperty('--yfa-cta-radius', radius + 'px');
+      homeCta.style.setProperty('left', positionX + '%', 'important');
+      homeCta.style.setProperty('top', positionY + '%', 'important');
       homeCta.style.setProperty('border-radius', radius + 'px', 'important');
       homeCta.textContent = (String(cta.text || '').trim() || 'Enter my orbit').slice(0, 40);
       if (action === 'menu') {
