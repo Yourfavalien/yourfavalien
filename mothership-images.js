@@ -140,12 +140,17 @@
         replacement.src = selectedUrl;
       } else if (contentType.startsWith('video/')) {
         replacement = document.createElement('video');
-        replacement.src = selectedUrl;
         replacement.autoplay = true;
         replacement.muted = true;
+        replacement.defaultMuted = true;
         replacement.loop = true;
         replacement.playsInline = true;
         replacement.preload = 'auto';
+        replacement.setAttribute('autoplay', '');
+        replacement.setAttribute('muted', '');
+        replacement.setAttribute('playsinline', '');
+        replacement.setAttribute('webkit-playsinline', '');
+        replacement.src = selectedUrl;
       } else return;
       replacement.id = 'yfaHeroReplacement';
       wireRetry(replacement);
@@ -156,7 +161,12 @@
       original.style.opacity = '0';
       original.style.visibility = 'hidden';
       original.insertAdjacentElement('afterend', replacement);
-      if (replacement.tagName === 'VIDEO') replacement.play().catch(() => {});
+      if (replacement.tagName === 'VIDEO') {
+        const startPlayback = () => replacement.play().catch(() => {});
+        replacement.addEventListener('loadeddata', startPlayback, { once:true });
+        replacement.addEventListener('canplay', startPlayback, { once:true });
+        startPlayback();
+      }
     } catch (error) {}
   }
 

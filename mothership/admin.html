@@ -646,9 +646,28 @@
         homeHeroState.menuEnabled = homeMenuEnabled.checked;
         setStatus(themeStatus, 'Unsaved homepage menu change.');
       });
-      homeTitleEnabled.addEventListener('change', () => {
+      homeTitleEnabled.addEventListener('change', async () => {
         homeHeroState.titleEnabled = homeTitleEnabled.checked;
-        setStatus(themeStatus, 'Unsaved homepage lettering visibility change.');
+        homeTitleEnabled.disabled = true;
+        setStatus(themeStatus, 'Saving homepage lettering setting…');
+        try {
+          const response = await fetch(themePublicUrl(), { cache: 'no-store' });
+          if (!response.ok) throw new Error('Could not load the current homepage settings.');
+          const payload = await response.json();
+          payload.homeHero = Object.assign({}, payload.homeHero || {}, { titleEnabled: homeHeroState.titleEnabled });
+          payload.updatedAt = new Date().toISOString();
+          const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.themePath, new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), {
+            contentType: 'application/json', cacheControl: '60', upsert: true
+          });
+          if (error) throw error;
+          setStatus(themeStatus, `Homepage lettering ${homeHeroState.titleEnabled ? 'shown' : 'hidden'}. Refresh the homepage to see the change.`, 'ok');
+        } catch (error) {
+          setStatus(themeStatus, error.message || 'Could not save the homepage lettering setting.', 'error');
+          homeHeroState.titleEnabled = !homeTitleEnabled.checked;
+          homeTitleEnabled.checked = homeHeroState.titleEnabled;
+        } finally {
+          homeTitleEnabled.disabled = false;
+        }
       });
       homeCtaEnabled.addEventListener('change', () => {
         homeHeroState.cta.enabled = homeCtaEnabled.checked;
