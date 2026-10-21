@@ -247,6 +247,7 @@
       const ctaEnabled = document.getElementById('homeCtaEnabled')?.checked === true;
       const homeHero = {
         menuEnabled: document.getElementById('homeMenuEnabled')?.checked !== false,
+        titleEnabled: document.getElementById('homeTitleEnabled')?.checked !== false,
         cta: {
           enabled: ctaEnabled,
           text: document.getElementById('homeCtaText')?.value.trim() || 'Enter my orbit',
