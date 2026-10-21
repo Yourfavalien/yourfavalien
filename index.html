@@ -8,7 +8,7 @@
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <link rel="preload" as="image" href="/assets/yfa-loader-transmission.webp?v=20260910-mobile-1">
 <link rel="stylesheet" href="/yfa-site-shell.css?v=20260914-home-controls-2">
-<script src="/yfa-site-shell.js?v=20261021-home-title-rollback"></script>
+<script src="/yfa-site-shell.js?v=20261021-home-controls-fix"></script>
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
   <link rel="shortcut icon" href="favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
@@ -389,6 +389,36 @@ section#home {
   transform: none !important;
   object-fit: cover;
   object-position: center;
+}
+#yfaHeroReplacement {
+  position: absolute !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  transform: none !important;
+  object-fit: cover !important;
+  object-position: center;
+  pointer-events: none !important;
+  z-index: 0;
+}
+#yfaHeroReplacement::-webkit-media-controls,
+#yfaHeroReplacement::-webkit-media-controls-enclosure,
+#yfaHeroReplacement::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+#yfaHeroReplacement::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.hero-logo[hidden] {
+  display: none !important;
 }
 </style>
 
@@ -952,7 +982,7 @@ body.yfa-orbit-open { overflow:hidden !important; }
 <script src="mothership-config.js?v=20261020-home-phone"></script>
 <script src="site-enhancements.js?v=20260914-1"></script>
 <script src="mothership-theme.js?v=20260908-2"></script>
-<script src="mothership-images.js?v=20261021-phone-autoplay"></script>
+<script src="mothership-images.js?v=20261021-phone-autoplay-fix"></script>
 <script id="xilo-chat-loader">
 (function () {
   const root = window.location.origin + '/';

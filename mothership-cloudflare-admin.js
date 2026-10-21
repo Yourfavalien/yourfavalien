@@ -261,7 +261,10 @@
       };
       if (ctaEnabled && homeHero.cta.action === 'custom' && !/^(https:\/\/|\/)/i.test(ctaUrl)) throw new Error('Use a full https:// link or a site path beginning with /.');
       const payload = JSON.stringify({ version: 5, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
-      await apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload });
+      await Promise.all([
+        apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload }),
+        apiFetch(writeAssetUrl(cfg.themePath || 'theme/theme.json'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {})
+      ]);
       setStatus(status, 'Homepage menu, button, and appearance saved.', 'ok');
     } catch (error) {
       setStatus(status, error.message || 'Could not save the theme.', 'error');
