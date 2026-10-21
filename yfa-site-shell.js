@@ -232,8 +232,8 @@
 
     const cfg = window.YFA_MOTHERSHIP;
     if (cfg && cfg.themePath) {
-      const settingsUrl = cfg.assetBase + cfg.themePath + '?v=' + Math.floor(Date.now() / 60000);
-      fetch(settingsUrl)
+      const settingsUrl = cfg.assetBase + cfg.themePath + '?v=' + Date.now();
+      fetch(settingsUrl, { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : null; })
         .then(function (data) {
           if (!data) return;
