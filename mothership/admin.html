@@ -76,6 +76,7 @@
         <div class="color-note">These controls affect only the opening homepage. Every other page keeps its regular menu.</div>
         <div class="home-control-toggles">
           <label class="home-control-toggle"><input id="homeMenuEnabled" type="checkbox" checked> Show the regular menu button on the homepage</label>
+          <label class="home-control-toggle"><input id="homeTitleEnabled" type="checkbox" checked> Show the large homepage lettering</label>
           <label class="home-control-toggle"><input id="homeCtaEnabled" type="checkbox"> Show a custom button on the homepage</label>
         </div>
         <div class="menu-label-grid">
@@ -211,6 +212,7 @@
       const themeStatus = document.getElementById('themeStatus');
       const homeIdentityText = document.getElementById('homeIdentityText');
       const homeMenuEnabled = document.getElementById('homeMenuEnabled');
+      const homeTitleEnabled = document.getElementById('homeTitleEnabled');
       const homeCtaEnabled = document.getElementById('homeCtaEnabled');
       const homeCtaText = document.getElementById('homeCtaText');
       const homeCtaAction = document.getElementById('homeCtaAction');
@@ -285,7 +287,7 @@
       let themeState = { ...defaultTheme };
       const defaultHomeIdentity = { text: 'model · main character energy · fashion', enabled: true };
       let homeIdentityState = { ...defaultHomeIdentity };
-      const defaultHomeHero = { menuEnabled: true, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24 } };
+      const defaultHomeHero = { menuEnabled: true, titleEnabled: true, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24 } };
       let homeHeroState = JSON.parse(JSON.stringify(defaultHomeHero));
       let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
       let selectedConversation = null;
@@ -462,7 +464,9 @@
 
         async function refreshPreview() {
           const url = publicUrl(slot);
-          const missing = slot.media
+          const missing = slot.id === 'home-hero-phone'
+            ? 'No phone-specific hero media yet — phones are using the computer hero instead.'
+            : slot.media
             ? 'No Mothership hero media yet — homepage is using the original Vimeo video.'
             : 'No Mothership image yet — website is using its original image.';
           const controller = new AbortController();
@@ -520,7 +524,7 @@
               upsert: false
             });
             if (error) throw error;
-            setStatus(status, slot.media ? 'Updated. Your homepage will use this hero media.' : 'Updated. Your live site will use this picture.', 'ok');
+            setStatus(status, slot.id === 'home-hero-phone' ? 'Updated. Phones will use this hero media when available.' : slot.media ? 'Updated. Your homepage will use this hero media.' : 'Updated. Your live site will use this picture.', 'ok');
             await refreshPreview();
           } catch (err) {
             setStatus(status, err.message || 'Upload failed.', 'error');
@@ -532,13 +536,13 @@
         });
 
         deleteBtn.addEventListener('click', async () => {
-          if (!confirm(slot.media ? `Remove “${slot.label}”? The homepage will fall back to its original Vimeo video.` : `Remove the Mothership image for “${slot.label}”? The website will fall back to its original image.`)) return;
+          if (!confirm(slot.id === 'home-hero-phone' ? 'Remove the phone-specific hero media? Phones will use the computer hero instead.' : slot.media ? `Remove “${slot.label}”? The homepage will fall back to its original Vimeo video.` : `Remove the Mothership image for “${slot.label}”? The website will fall back to its original image.`)) return;
           setStatus(status, 'Removing…');
           deleteBtn.disabled = true;
           try {
             const { error } = await client.storage.from(cfg.storageNamespace).remove([slot.path]);
             if (error) throw error;
-            setStatus(status, slot.media ? 'Removed. Original Vimeo homepage video is active again.' : 'Removed. Original website image is active again.', 'ok');
+            setStatus(status, slot.id === 'home-hero-phone' ? 'Removed. Phones will use the computer hero instead.' : slot.media ? 'Removed. Original Vimeo homepage video is active again.' : 'Removed. Original website image is active again.', 'ok');
             await refreshPreview();
           } catch (err) {
             setStatus(status, err.message || 'Remove failed.', 'error');
@@ -579,6 +583,7 @@
             }
             if (data && data.homeHero) {
               homeHeroState.menuEnabled = data.homeHero.menuEnabled !== false;
+              homeHeroState.titleEnabled = data.homeHero.titleEnabled !== false;
               const cta = data.homeHero.cta || {};
               homeHeroState.cta.enabled = cta.enabled === true;
               homeHeroState.cta.text = (String(cta.text || '').trim() || defaultHomeHero.cta.text).slice(0, 40);
@@ -605,6 +610,7 @@
 
       function renderHomeHeroEditor() {
         homeMenuEnabled.checked = homeHeroState.menuEnabled;
+        homeTitleEnabled.checked = homeHeroState.titleEnabled !== false;
         homeCtaEnabled.checked = homeHeroState.cta.enabled;
         homeCtaText.value = homeHeroState.cta.text;
         homeCtaAction.value = homeHeroState.cta.action;
@@ -639,6 +645,10 @@
       homeMenuEnabled.addEventListener('change', () => {
         homeHeroState.menuEnabled = homeMenuEnabled.checked;
         setStatus(themeStatus, 'Unsaved homepage menu change.');
+      });
+      homeTitleEnabled.addEventListener('change', () => {
+        homeHeroState.titleEnabled = homeTitleEnabled.checked;
+        setStatus(themeStatus, 'Unsaved homepage lettering visibility change.');
       });
       homeCtaEnabled.addEventListener('change', () => {
         homeHeroState.cta.enabled = homeCtaEnabled.checked;

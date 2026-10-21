@@ -116,24 +116,31 @@
   }
 
   async function applyHomeHeroMedia() {
-    const slot = slotMap.get('home-hero-media');
     const hero = document.querySelector('#home .hero-bg');
     const original = document.getElementById('heroVideo');
-    if (!slot || !hero || !original) return;
-    const url = remoteUrl('home-hero-media');
+    if (!slotMap.has('home-hero-media') || !hero || !original) return;
+    const desktopUrl = remoteUrl('home-hero-media');
+    const phoneUrl = window.matchMedia('(max-width: 599px)').matches ? remoteUrl('home-hero-phone') : null;
+    let selectedUrl = phoneUrl || desktopUrl;
+    const phoneSelected = Boolean(phoneUrl);
+    const url = selectedUrl;
     if (!url) return;
     try {
-      const response = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+      let response = await fetch(selectedUrl, { method: 'HEAD', cache: 'no-store' });
+      if (!response.ok && phoneUrl) {
+        selectedUrl = desktopUrl;
+        response = await fetch(selectedUrl, { method: 'HEAD', cache: 'no-store' });
+      }
       if (!response.ok) return;
       const contentType = (response.headers.get('content-type') || '').toLowerCase();
       let replacement = null;
       if (contentType.startsWith('image/')) {
         replacement = document.createElement('img');
         replacement.alt = 'YourFavAlien homepage hero';
-        replacement.src = url;
+        replacement.src = selectedUrl;
       } else if (contentType.startsWith('video/')) {
         replacement = document.createElement('video');
-        replacement.src = url;
+        replacement.src = selectedUrl;
         replacement.autoplay = true;
         replacement.muted = true;
         replacement.loop = true;
@@ -143,7 +150,7 @@
       replacement.id = 'yfaHeroReplacement';
       wireRetry(replacement);
       Object.assign(replacement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', maxWidth:'none', maxHeight:'none', objectFit:'cover', objectPosition:'center', zIndex:'0', pointerEvents:'none' });
-      applyPosition(replacement, 'home-hero-media');
+      applyPosition(replacement, phoneSelected && selectedUrl === phoneUrl ? 'home-hero-phone' : 'home-hero-media');
       const restoreOriginal = () => { original.style.opacity=''; original.style.visibility=''; replacement.remove(); };
       replacement.addEventListener('error', restoreOriginal, { once:true });
       original.style.opacity = '0';

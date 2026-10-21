@@ -10,6 +10,7 @@ window.YFA_MOTHERSHIP = {
   supportPath: 'support/support-center.json',
   slots: [
     { id: 'home-hero-media', group: 'Home', label: 'Homepage hero image / video', path: 'slots/home-hero-media', media: true },
+    { id: 'home-hero-phone', group: 'Home', label: 'Homepage phone image or video', path: 'slots/home-hero-phone', media: true },
     { id: 'home-orbit-visual', group: 'Home', label: 'Orbit popup photo', path: 'slots/home-orbit-visual' },
     { id: 'socials-hero', group: 'Socials', label: 'Socials hero photo', path: 'slots/socials-hero' },
     { id: 'socials-tiktok-profile', group: 'Socials', label: 'TikTok profile photo', path: 'slots/socials-tiktok-profile' },

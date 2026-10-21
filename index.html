@@ -8,7 +8,7 @@
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <link rel="preload" as="image" href="/assets/yfa-loader-transmission.webp?v=20260910-mobile-1">
 <link rel="stylesheet" href="/yfa-site-shell.css?v=20260914-home-controls-2">
-<script src="/yfa-site-shell.js?v=20260927-business-label-1"></script>
+<script src="/yfa-site-shell.js?v=20261020-home-title-visibility"></script>
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
   <link rel="shortcut icon" href="favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
@@ -84,6 +84,7 @@
     section#home { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0a0507; }
     .hero-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
     .hero-logo { position: relative; z-index: 2; display: flex; gap: clamp(40px,8vw,120px); align-items: baseline; margin: 0; }
+    .hero-logo[hidden] { display: none !important; }
     .hero-logo span { font-family: 'Space Mono',monospace; font-weight: 700; font-size: clamp(28px,6vw,72px); color: var(--white); letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
     .logo-your { position: relative; }
     .logo-fav-inner { display: inline-flex; align-items: baseline; gap: 0; }
@@ -948,10 +949,10 @@ body.yfa-orbit-open { overflow:hidden !important; }
   });
 })();
 </script>
-<script src="mothership-config.js?v=20260914-5"></script>
+<script src="mothership-config.js?v=20261020-home-phone"></script>
 <script src="site-enhancements.js?v=20260914-1"></script>
 <script src="mothership-theme.js?v=20260908-2"></script>
-<script src="mothership-images.js?v=20260914-2"></script>
+<script src="mothership-images.js?v=20261020-home-phone"></script>
 <script id="xilo-chat-loader">
 (function () {
   const root = window.location.origin + '/';

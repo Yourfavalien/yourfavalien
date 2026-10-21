@@ -186,6 +186,8 @@
       const saved = settings && typeof settings === 'object' ? settings : {};
       const cta = saved.cta && typeof saved.cta === 'object' ? saved.cta : {};
       button.classList.toggle('yfa-home-menu-disabled', saved.menuEnabled === false);
+      const homeTitle = document.querySelector('#home .hero-logo');
+      if (homeTitle) homeTitle.hidden = saved.titleEnabled === false;
       if (homeCta) { homeCta.remove(); homeCta = null; }
       if (cta.enabled !== true) return;
 
