@@ -76,7 +76,7 @@
         <div class="color-note">These controls affect only the opening homepage. Every other page keeps its regular menu.</div>
         <div class="home-control-toggles">
           <label class="home-control-toggle"><input id="homeMenuEnabled" type="checkbox" checked> Show the regular menu button on the homepage</label>
-          <label class="home-control-toggle"><input id="homeTitleEnabled" type="checkbox" checked> Show the large homepage lettering</label>
+          <label class="home-control-toggle"><input id="homeTitleEnabled" type="checkbox"> Show the “YourFavAlien” homepage header</label>
           <label class="home-control-toggle"><input id="homeCtaEnabled" type="checkbox"> Show a custom button on the homepage</label>
         </div>
         <div class="menu-label-grid">
@@ -287,7 +287,7 @@
       let themeState = { ...defaultTheme };
       const defaultHomeIdentity = { text: 'model · main character energy · fashion', enabled: true };
       let homeIdentityState = { ...defaultHomeIdentity };
-      const defaultHomeHero = { menuEnabled: true, titleEnabled: true, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24 } };
+      const defaultHomeHero = { menuEnabled: true, titleEnabled: false, cta: { enabled: false, text: 'Enter my orbit', action: 'menu', url: '', style: 'outline', font: 'courier', fontSize: 14, radius: 24 } };
       let homeHeroState = JSON.parse(JSON.stringify(defaultHomeHero));
       let menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
       let selectedConversation = null;
@@ -583,7 +583,7 @@
             }
             if (data && data.homeHero) {
               homeHeroState.menuEnabled = data.homeHero.menuEnabled !== false;
-              homeHeroState.titleEnabled = data.homeHero.titleEnabled !== false;
+              homeHeroState.titleEnabled = data.homeHero.titleEnabled === true;
               const cta = data.homeHero.cta || {};
               homeHeroState.cta.enabled = cta.enabled === true;
               homeHeroState.cta.text = (String(cta.text || '').trim() || defaultHomeHero.cta.text).slice(0, 40);

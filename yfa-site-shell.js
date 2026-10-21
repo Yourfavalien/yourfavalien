@@ -188,7 +188,7 @@
       button.classList.toggle('yfa-home-menu-disabled', saved.menuEnabled === false);
       const homeTitle = document.querySelector('#home .hero-logo');
       if (homeTitle) {
-        const isHidden = saved.titleEnabled === false;
+        const isHidden = saved.titleEnabled !== true;
         homeTitle.hidden = isHidden;
         if (isHidden) {
           homeTitle.setAttribute('hidden', '');
