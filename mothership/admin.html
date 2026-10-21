@@ -656,10 +656,19 @@
           const payload = await response.json();
           payload.homeHero = Object.assign({}, payload.homeHero || {}, { titleEnabled: homeHeroState.titleEnabled });
           payload.updatedAt = new Date().toISOString();
-          const { error } = await client.storage.from(cfg.storageNamespace).upload(cfg.themePath, new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), {
-            contentType: 'application/json', cacheControl: '60', upsert: true
+          // Keep the lettering switch on the same Cloudflare settings endpoint
+          // used by the Mothership theme Save button.
+          const saved = await fetch(`${cfg.adminApiBase}/settings/theme`, {
+            method: 'PUT',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload, null, 2)
           });
-          if (error) throw error;
+          if (!saved.ok) {
+            const details = await saved.json().catch(() => ({}));
+            throw new Error(details.error || `Could not save homepage lettering (HTTP ${saved.status}).`);
+          }
           setStatus(themeStatus, `Homepage lettering ${homeHeroState.titleEnabled ? 'shown' : 'hidden'}. Refresh the homepage to see the change.`, 'ok');
         } catch (error) {
           setStatus(themeStatus, error.message || 'Could not save the homepage lettering setting.', 'error');
