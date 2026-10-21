@@ -263,7 +263,7 @@
       const payload = JSON.stringify({ version: 5, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
       await Promise.all([
         apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload }),
-        apiFetch(writeAssetUrl(cfg.themePath || 'theme/theme.json'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {})
+        apiFetch(writeAssetUrl(cfg.themePath || 'theme/theme.json'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
       ]);
       setStatus(status, 'Homepage menu, button, and appearance saved.', 'ok');
     } catch (error) {
