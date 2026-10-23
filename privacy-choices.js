@@ -3,12 +3,26 @@
 
   if (window.YFA_PRIVACY) return;
   const STORAGE_KEY = 'yfa-privacy-choices-v1';
-  const defaults = { preferences: false, xiloStorage: false, analytics: false, advertising: false };
+  // Cookie-free analytics is on by default unless the visitor opts out.
+  const defaults = { preferences: false, xiloStorage: false, analytics: true, advertising: false };
+  const metricoolIntroducedAt = Date.parse('2026-10-23T06:55:04Z');
+  const browserBlocksAnalytics = () => navigator.globalPrivacyControl === true;
 
   function read() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-      return saved && saved.version === 1 ? Object.assign({}, defaults, saved.choices) : null;
+      if (!saved || saved.version !== 1) return null;
+      const current = Object.assign({}, defaults, saved.choices);
+      // Earlier "Accept optional" choices saved analytics=false because
+      // Metricool did not exist yet. Recognize that legacy acceptance, but
+      // preserve every later analytics opt-out and all "Reject optional" choices.
+      const savedAt = Date.parse(saved.savedAt);
+      if (Number.isFinite(savedAt) && savedAt < metricoolIntroducedAt &&
+          saved.choices?.analytics === false &&
+          saved.choices.preferences === true && saved.choices.xiloStorage === true) {
+        current.analytics = true;
+      }
+      return current;
     } catch (_) { return null; }
   }
 
@@ -16,12 +30,12 @@
   let metricoolScriptRequested = false;
   let metricoolVisitRecorded = false;
 
-  // Load website analytics only after the visitor has allowed this category.
+  // Load analytics by default, but respect stored opt-outs and browser privacy signals.
   function loadMetricoolIfAllowed() {
-    if (!choices || !choices.analytics || metricoolVisitRecorded) return;
+    if (!api.allows('analytics') || metricoolVisitRecorded) return;
 
     function recordVisit() {
-      if (!choices || !choices.analytics || metricoolVisitRecorded) return;
+      if (!api.allows('analytics') || metricoolVisitRecorded) return;
       if (!window.beTracker || typeof window.beTracker.t !== 'function') return;
       window.beTracker.t({ hash: 'b6a13e8ef3101900e1f581361cd46681' });
       metricoolVisitRecorded = true;
@@ -45,9 +59,17 @@
   }
 
   const api = window.YFA_PRIVACY = {
-    allows: function (category) { return category === 'necessary' || Boolean(choices && choices[category]); },
+    allows: function (category) {
+      if (category === 'necessary') return true;
+      if (category === 'analytics' && browserBlocksAnalytics()) return false;
+      return Boolean((choices || defaults)[category]);
+    },
     hasChoice: function () { return Boolean(choices); },
-    getChoices: function () { return Object.assign({}, defaults, choices || {}); },
+    getChoices: function () {
+      const result = Object.assign({}, defaults, choices || {});
+      if (browserBlocksAnalytics()) result.analytics = false;
+      return result;
+    },
     open: function () { openSettings(); }
   };
 
@@ -87,16 +109,16 @@
   function applyAndClose(next) { save(next); close(); }
 
   function openSummary() {
-    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Cookies & privacy</h2><p>We use necessary technology to operate and protect the site. With your permission, we can also measure anonymous website visits with Metricool, remember site preferences, and keep Xilo chat history during your browser session. Read our <a href="/privacy.html">privacy policy</a>.</p><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="accept">Accept optional</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button><button class="yfa-privacy__manage" data-action="manage">Customize choices</button></div></section>';
+    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Cookies & privacy</h2><p>We use necessary technology to operate and protect the site. Cookie-free website analytics through Metricool is ON by default. You can turn analytics off here or anytime under Privacy Choices. Other optional features require your permission. Read our <a href="/privacy.html">privacy policy</a>.</p><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="accept">Accept optional</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button><button class="yfa-privacy__manage" data-action="manage">Customize choices</button></div></section>';
     overlay.hidden = false;
   }
 
   function openSettings() {
-    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Customize choices</h2><p>Choose which optional features to allow. Website analytics measures visits without cookies. Xilo still works without chat storage, but refreshing or leaving the page resets its visible history.</p><div class="yfa-privacy__details">' +
+    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Customize choices</h2><p>Website analytics is ON by default and can be switched off here; it does not use analytics cookies. Xilo still works without chat storage, but refreshing or leaving the page resets its visible history.</p><div class="yfa-privacy__details">' +
       categoryRow('necessary', 'Necessary and security', 'Required for the site, Cloudflare protection, and remembering this choice.', 'on') +
       categoryRow('preferences', 'Site preferences', 'Remembers optional interface choices such as signup-popup dismissal.', false) +
       categoryRow('xiloStorage', 'Xilo chat storage', 'Keeps recent Xilo messages and a conversation token only for this browser session.', false) +
-      categoryRow('analytics', 'Website analytics (Metricool)', 'Shares anonymous page-visit information with Metricool to help us understand site traffic. No analytics cookies.', false) +
+      categoryRow('analytics', 'Website analytics (Metricool)', 'On by default. Sends page-visit information to Metricool without analytics cookies. You may turn it off anytime.', browserBlocksAnalytics() ? 'off' : false) +
       '</div><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="save">Save choices</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button></div></section>';
     overlay.hidden = false;
   }
@@ -107,7 +129,7 @@
     overlay.addEventListener('click', function (event) {
       const action = event.target.closest('[data-action]')?.dataset.action;
       if (action === 'accept') applyAndClose({ preferences: true, xiloStorage: true, analytics: true });
-      if (action === 'reject') applyAndClose(defaults);
+      if (action === 'reject') applyAndClose({ preferences: false, xiloStorage: false, analytics: false, advertising: false });
       if (action === 'manage') openSettings();
       if (action === 'save') {
         const next = {};
