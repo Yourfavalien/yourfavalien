@@ -8,6 +8,8 @@
   const pathname = window.location.pathname.toLowerCase();
   if (pathname.startsWith('/mothership') || pathname.endsWith('/maintenance.html')) return;
   const isCampaignPage = pathname.endsWith('/dont-look-away.html');
+  const campaignPreview = isCampaignPage && new URLSearchParams(window.location.search).get('mothership-preview') === '1';
+  let campaignWatcherStarted = false;
 
   let finished = false;
   function reveal() {
@@ -26,7 +28,39 @@
   function goToCampaign() {
     if (finished || isCampaignPage) return;
     finished = true;
-    window.location.replace(CAMPAIGN_PAGE);
+    const current = window.location.pathname + window.location.search + window.location.hash;
+    window.location.replace(`${CAMPAIGN_PAGE}?from=${encodeURIComponent(current)}`);
+  }
+
+  function campaignReturnTarget() {
+    const candidate = new URLSearchParams(window.location.search).get('from') || '/';
+    if (!candidate.startsWith('/') || candidate.startsWith('//') || candidate.toLowerCase().startsWith('/mothership')) return '/';
+    return candidate;
+  }
+
+  async function watchCampaignState() {
+    if (!isCampaignPage || campaignPreview) return;
+    try {
+      const response = await fetch(`${STATUS_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) return;
+      const status = await response.json();
+      if (status && status.enabled === true && !hasLocalPreviewPass()) {
+        window.location.replace(`${MAINTENANCE_PAGE}?from=${encodeURIComponent(campaignReturnTarget())}`);
+        return;
+      }
+      if (!status || status.campaignEnabled !== true) window.location.replace(campaignReturnTarget());
+    } catch (error) {
+      // Stay on the campaign if the status service is temporarily unavailable.
+    }
+  }
+
+  function startCampaignWatcher() {
+    if (!isCampaignPage || campaignPreview || campaignWatcherStarted) return;
+    campaignWatcherStarted = true;
+    window.setInterval(watchCampaignState, 60000);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') watchCampaignState();
+    });
   }
 
   function hasLocalPreviewPass() {
@@ -48,6 +82,15 @@
       window.clearTimeout(safetyTimer);
       if (status && status.enabled === true && !hasLocalPreviewPass()) {
         goToMaintenance();
+        return;
+      }
+      if (isCampaignPage) {
+        if (!campaignPreview && (!status || status.campaignEnabled !== true)) {
+          window.location.replace(campaignReturnTarget());
+          return;
+        }
+        reveal();
+        startCampaignWatcher();
         return;
       }
       if (status && status.campaignEnabled === true && !isCampaignPage && window.YFA_IS_404 !== true) {
