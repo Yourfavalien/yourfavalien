@@ -40,7 +40,9 @@
 
   const safetyTimer = window.setTimeout(reveal, 1500);
 
-  fetch(`${STATUS_URL}?v=${Math.floor(Date.now() / 60000)}`, { cache: 'no-store' })
+  // Use a unique request so Campaign and Maintenance switches take effect on
+  // the next navigation instead of waiting for the public settings cache.
+  fetch(`${STATUS_URL}?v=${Date.now()}`, { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { enabled: false })
     .then(status => {
       window.clearTimeout(safetyTimer);
