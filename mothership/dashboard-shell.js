@@ -16,12 +16,12 @@
 
     const layout = document.createElement('div'); layout.className = 'yfa-app-layout';
     const appBar = document.createElement('header'); appBar.className = 'yfa-app-sidebar';
-    appBar.innerHTML = `<div class="yfa-app-brand"><span>✦</span><div><b>MOTHERSHIP</b><small>YourFavAlien control center</small></div></div><nav class="yfa-app-nav" aria-label="Mothership navigation"><button data-area="dashboard" aria-current="page">Dashboard</button><button data-area="editor">Website Editor</button><button data-area="pages">Pages & Navigation</button><button data-area="design">Design & Branding</button><button data-area="media">Media Library</button><button data-area="socials">Socials & Links</button><button data-area="popup">Popups & Email</button><button data-area="maintenance">Maintenance</button><button data-area="settings">Settings</button></nav><a class="yfa-app-view-site" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View site</a>`;
+    appBar.innerHTML = `<div class="yfa-app-brand"><span>✦</span><div><b>MOTHERSHIP</b><small>YourFavAlien control center</small></div></div><nav class="yfa-app-nav" aria-label="Mothership navigation"><button data-area="dashboard" aria-current="page">Dashboard</button><button data-area="campaign">Campaign Mode</button><button data-area="editor">Website Editor</button><button data-area="pages">Pages & Navigation</button><button data-area="design">Design & Branding</button><button data-area="media">Media Library</button><button data-area="socials">Socials & Links</button><button data-area="popup">Popups & Email</button><button data-area="maintenance">Maintenance</button><button data-area="settings">Settings</button></nav><a class="yfa-app-view-site" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View site</a>`;
     const main = document.createElement('main'); main.className = 'yfa-app-main';
     dashboard.parentNode.insertBefore(layout, dashboard); layout.append(appBar, main); main.append(dashboard);
 
     const home = document.createElement('section'); home.id = 'yfaAppHome'; home.className = 'yfa-app-home';
-    home.innerHTML = `<article class="yfa-app-welcome"><div class="eyebrow">YOURFAVALIEN · WEBSITE CONTROL</div><h1>Welcome back to Mothership.</h1><p>Manage your real site without losing the tools that already run it.</p><div class="yfa-app-actions"><button data-jump="yfaWebsiteEditor">Open editor</button><button data-jump="websiteImages">Manage media</button><button data-jump="yfaMaintenanceControl">Maintenance</button></div></article><article class="yfa-app-status"><div class="eyebrow">SITE STATUS</div><strong>Protected controls connected</strong><small>Publishing stays explicit. Opening a tool never changes your public website by itself.</small></article>`;
+    home.innerHTML = `<article class="yfa-app-welcome"><div class="eyebrow">YOURFAVALIEN · WEBSITE CONTROL</div><h1>Welcome back to Mothership.</h1><p>Manage your real site without losing the tools that already run it.</p><div class="yfa-app-actions"><button data-jump="yfaCampaignControl">Campaign Mode</button><button data-jump="yfaWebsiteEditor">Open editor</button><button data-jump="websiteImages">Manage media</button><button data-jump="yfaMaintenanceControl">Maintenance</button></div></article><article class="yfa-app-status"><div class="eyebrow">SITE STATUS</div><strong>Protected controls connected</strong><small>Publishing stays explicit. Opening a tool never changes your public website by itself.</small></article>`;
     dashboard.querySelector('.topbar')?.insertAdjacentElement('afterend', home);
 
     const editor = document.createElement('section'); editor.id = 'yfaWebsiteEditor'; editor.className = 'yfa-website-editor hidden';
@@ -31,12 +31,14 @@
     const controlsView = document.getElementById('controlsView');
     const socialsView = document.getElementById('socialsView');
     const maintenanceView = document.getElementById('maintenanceView');
+    const campaignView = document.getElementById('campaignView');
     const showControls = anchor => { editor.classList.add('hidden'); click('controlsTab'); setTimeout(() => reveal(anchor), 0); };
-    const showEditor = () => { hide(controlsView, socialsView, maintenanceView); editor.classList.remove('hidden'); editor.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    const showEditor = () => { hide(controlsView, socialsView, maintenanceView, campaignView); editor.classList.remove('hidden'); editor.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const showMaintenance = () => { editor.classList.add('hidden'); click('maintenanceTab'); setTimeout(() => reveal('yfaMaintenanceControl'), 80); };
+    const showCampaign = () => { editor.classList.add('hidden'); click('campaignTab'); setTimeout(() => reveal('campaignView'), 80); };
     const showSocials = () => { editor.classList.add('hidden'); click('socialsTab'); setTimeout(() => scrollTo('socialsView'), 0); };
 
-    home.querySelectorAll('[data-jump]').forEach(button => button.addEventListener('click', () => button.dataset.jump === 'yfaWebsiteEditor' ? showEditor() : button.dataset.jump === 'yfaMaintenanceControl' ? showMaintenance() : showControls(button.dataset.jump)));
+    home.querySelectorAll('[data-jump]').forEach(button => button.addEventListener('click', () => button.dataset.jump === 'yfaCampaignControl' ? showCampaign() : button.dataset.jump === 'yfaWebsiteEditor' ? showEditor() : button.dataset.jump === 'yfaMaintenanceControl' ? showMaintenance() : showControls(button.dataset.jump)));
     editor.querySelectorAll('[data-editor-page]').forEach(button => button.addEventListener('click', () => {
       editor.querySelectorAll('[data-editor-page]').forEach(item => item.classList.remove('active'));
       button.classList.add('active'); editor.querySelector('#yfaEditorPreview').src = button.dataset.editorPage;
@@ -49,7 +51,7 @@
     editor.querySelectorAll('[data-editor-control]').forEach(button => button.addEventListener('click', () => button.dataset.editorControl === 'socialsView' ? showSocials() : showControls(button.dataset.editorControl)));
 
     const actions = {
-      dashboard: () => { editor.classList.add('hidden'); home.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, editor: showEditor,
+      dashboard: () => { editor.classList.add('hidden'); home.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, campaign: showCampaign, editor: showEditor,
       pages: () => showControls('menuEditorTitle'), design: () => showControls('themeColors'), media: () => showControls('websiteImages'), socials: showSocials,
       popup: () => { showControls('yfaPopupControl'); setTimeout(() => reveal('yfaPopupControl'), 80); }, maintenance: showMaintenance,
       settings: () => { showControls('yfaBadgeControl'); setTimeout(() => reveal('yfaBadgeControl'), 80); }
