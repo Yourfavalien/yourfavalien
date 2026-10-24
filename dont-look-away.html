@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script defer src="/mothership-maintenance.js?v=20261024-campaign"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Don’t Look Away — YourFavAlien</title>
+  <meta name="description" content="Don’t look away. The signal is changing. Your Favorite Alien.">
+  <link rel="canonical" href="https://yourfavalien.com/dont-look-away.html">
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <style>
+    @font-face{font-family:YFABodoni;src:url('/assets/bodoni-moda-regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+    @font-face{font-family:YFAInter;src:url('/assets/inter-light.ttf') format('truetype');font-style:normal;font-weight:300;font-display:swap}
+    :root{color-scheme:dark;--paper:#f4f2ef;--black:#000}
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;background:var(--black);overflow:hidden}
+    body{color:var(--paper);font-family:YFAInter,Arial,sans-serif}
+    .campaign{position:fixed;inset:0;isolation:isolate;background:#000;overflow:hidden}
+    .campaign-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;filter:brightness(.78);animation:yfa-photo-in 1.4s cubic-bezier(.22,.75,.25,1) both}
+    .campaign-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.23) 0,transparent 29%,transparent 62%,rgba(0,0,0,.31) 100%)}
+    .campaign-grain{position:absolute;inset:-18%;opacity:.055;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.85'/%3E%3C/svg%3E");animation:yfa-grain .7s steps(2,end) infinite}
+    .campaign-rule{position:absolute;z-index:2;left:4.2vw;right:4.2vw;top:34.8%;height:1px;background:rgba(255,255,255,.42);transform:rotate(-2.3deg);transform-origin:left center;animation:yfa-rule 1.15s .35s cubic-bezier(.22,.75,.25,1) both}
+    .campaign-title{position:absolute;z-index:3;inset:0;margin:0;font-family:YFABodoni,'Times New Roman',serif;font-weight:400;line-height:.76;letter-spacing:-.07em}
+    .campaign-title>span{position:absolute;display:block;white-space:nowrap;text-shadow:0 3px 30px rgba(0,0,0,.18)}
+    .campaign-title .mobile-break{position:static;display:inline}
+    .campaign-title .dont{top:7vh;left:4.2vw;font-size:clamp(92px,13.4vw,258px);animation:yfa-word-left 1s .12s cubic-bezier(.22,.75,.25,1) both}
+    .campaign-title .look{right:4.1vw;bottom:7.2vh;font-size:clamp(72px,9.6vw,185px);animation:yfa-word-right 1s .24s cubic-bezier(.22,.75,.25,1) both}
+    .campaign-signal{position:absolute;z-index:3;right:4.4vw;top:39.5%;margin:0;font-size:clamp(7px,.65vw,11px);letter-spacing:.48em;text-transform:lowercase;animation:yfa-fade .9s .82s both}
+    .campaign-brand{position:absolute;z-index:3;left:4.3vw;bottom:3.4vh;margin:0;font-size:clamp(7px,.55vw,9px);letter-spacing:.46em;white-space:nowrap;animation:yfa-fade .9s .92s both}
+    .campaign-star{position:absolute;z-index:3;right:4.3vw;top:7vh;width:18px;height:18px;animation:yfa-fade 1s 1s both}
+    .campaign-star::before,.campaign-star::after{content:"";position:absolute;top:50%;left:50%;background:#fff;transform:translate(-50%,-50%)}
+    .campaign-star::before{width:1px;height:18px}.campaign-star::after{width:18px;height:1px}
+    @keyframes yfa-photo-in{from{opacity:0;transform:scale(1.018)}to{opacity:1;transform:scale(1)}}
+    @keyframes yfa-word-left{from{opacity:0;transform:translate3d(-34px,0,0)}to{opacity:1;transform:none}}
+    @keyframes yfa-word-right{from{opacity:0;transform:translate3d(34px,0,0)}to{opacity:1;transform:none}}
+    @keyframes yfa-rule{from{opacity:0;transform:rotate(-2.3deg) scaleX(0)}to{opacity:1;transform:rotate(-2.3deg) scaleX(1)}}
+    @keyframes yfa-fade{from{opacity:0}to{opacity:1}}
+    @keyframes yfa-grain{0%{transform:translate3d(-2%,1%,0)}25%{transform:translate3d(2%,-2%,0)}50%{transform:translate3d(1%,2%,0)}75%{transform:translate3d(-1%,-1%,0)}100%{transform:translate3d(2%,1%,0)}}
+    @media(max-width:700px){
+      .campaign-photo{object-position:49% center;filter:brightness(.69)}
+      .campaign-shade{background:linear-gradient(180deg,rgba(0,0,0,.12),transparent 44%,rgba(0,0,0,.32))}
+      .campaign-rule{left:auto;right:8.8vw;top:5.2vh;bottom:5.2vh;width:1px;height:auto;transform:none}
+      .campaign-title .dont{top:7vh;left:18vw;font-size:clamp(65px,21vw,94px);transform:rotate(90deg);transform-origin:left top;animation:yfa-fade 1s .12s both}
+      .campaign-title .look{right:auto;left:22vw;bottom:11vh;font-size:clamp(67px,21vw,91px);line-height:.77;white-space:normal;width:76vw}
+      .campaign-title .look .mobile-break{display:block}
+      .campaign-signal{top:auto;right:5.8vw;bottom:39vh;font-size:7px;letter-spacing:.34em;transform:rotate(90deg);transform-origin:right bottom}
+      .campaign-brand{left:5.6vw;bottom:3.8vh;font-size:6.5px;letter-spacing:.38em}
+      .campaign-star{right:6.7vw;top:4.5vh;width:14px;height:14px}.campaign-star::before{height:14px}.campaign-star::after{width:14px}
+    }
+    @media(max-width:390px){.campaign-title .look{left:19vw;font-size:20.5vw}.campaign-signal{bottom:37vh}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.campaign-photo{transform:none}.campaign-grain{display:none}}
+  </style>
+  <script defer src="/privacy-choices.js?v=20261023-default-on"></script>
+</head>
+<body>
+  <main class="campaign" aria-labelledby="campaign-title">
+    <img class="campaign-photo" src="/assets/dont-look-away-campaign.jpeg" alt="Black-and-white conceptual fashion photograph" fetchpriority="high" decoding="sync">
+    <div class="campaign-shade" aria-hidden="true"></div>
+    <div class="campaign-grain" aria-hidden="true"></div>
+    <div class="campaign-rule" aria-hidden="true"></div>
+    <h1 class="campaign-title" id="campaign-title">
+      <span class="dont">DON’T</span>
+      <span class="look">LOOK <span class="mobile-break">AWAY.</span></span>
+    </h1>
+    <p class="campaign-signal">signal is changing.</p>
+    <span class="campaign-star" aria-hidden="true"></span>
+    <p class="campaign-brand">YOUR FAVORITE ALIEN</p>
+  </main>
+</body>
+</html>
