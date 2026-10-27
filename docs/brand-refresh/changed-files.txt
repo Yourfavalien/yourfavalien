@@ -6,6 +6,8 @@ assets/06_YFA_Chrome_Monogram.png
 assets/06_YFA_Chrome_Monogram_Clean.png
 assets/apple-touch-icon.png
 assets/favicon.png
+assets/yfa-popup-ufo.png
+assets/yfa-popup-ufo.webp
 contact.html
 docs/brand-refresh/README.md
 docs/brand-refresh/after-popup-mobile.png
@@ -30,6 +32,7 @@ help-tickets.html
 help.html
 index.html
 mothership-popup-gate.js
+mothership-support-admin.js
 mothership/support/index.html
 orbit-popup.js
 page.html
