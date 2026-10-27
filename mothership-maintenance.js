@@ -7,8 +7,18 @@
 
   const pathname = window.location.pathname.toLowerCase();
   if (pathname.startsWith('/mothership') || pathname.endsWith('/maintenance.html')) return;
+  // Support stays reachable during a campaign, including every ticket/help route.
+  const supportPages = new Set([
+    '/help', '/help-article', '/help-category', '/help-contact', '/help-privacy',
+    '/help-ticket', '/help-ticket-confirmation', '/help-tickets', '/status'
+  ]);
+  function isSupportPage(path) {
+    return supportPages.has(path.toLowerCase().replace(/\/+$/, '').replace(/\.html$/, ''));
+  }
+  const isSupportCenterPage = isSupportPage(pathname);
   const isCampaignPage = pathname.endsWith('/dont-look-away.html');
   const campaignPreview = isCampaignPage && new URLSearchParams(window.location.search).get('mothership-preview') === '1';
+  const campaignReturnIsSupport = isCampaignPage && isSupportPage(campaignReturnTarget().split(/[?#]/)[0]);
   let campaignWatcherStarted = false;
 
   let finished = false;
@@ -48,7 +58,7 @@
         window.location.replace(`${MAINTENANCE_PAGE}?from=${encodeURIComponent(campaignReturnTarget())}`);
         return;
       }
-      if (!status || status.campaignEnabled !== true) window.location.replace(campaignReturnTarget());
+      if (campaignReturnIsSupport || !status || status.campaignEnabled !== true) window.location.replace(campaignReturnTarget());
     } catch (error) {
       // Stay on the campaign if the status service is temporarily unavailable.
     }
@@ -85,7 +95,7 @@
         return;
       }
       if (isCampaignPage) {
-        if (!campaignPreview && (!status || status.campaignEnabled !== true)) {
+        if (!campaignPreview && (campaignReturnIsSupport || !status || status.campaignEnabled !== true)) {
           window.location.replace(campaignReturnTarget());
           return;
         }
@@ -93,7 +103,7 @@
         startCampaignWatcher();
         return;
       }
-      if (status && status.campaignEnabled === true && !isCampaignPage && window.YFA_IS_404 !== true) {
+      if (status && status.campaignEnabled === true && !isCampaignPage && !isSupportCenterPage && window.YFA_IS_404 !== true) {
         goToCampaign();
         return;
       }
