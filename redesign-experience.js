@@ -358,11 +358,6 @@
     const film = document.querySelector('[data-intro-film]');
     const play = document.querySelector('[data-intro-play]');
     if (!intro || !film) return;
-    const params = new URLSearchParams(location.search);
-    const forced = params.get('intro') === '1';
-    let seen = false;
-    try { seen = sessionStorage.getItem('yfa-experience-v2-intro') === '1'; } catch (error) {}
-    if (seen && !forced) { intro.hidden = true; return; }
     document.body.classList.add('is-intro-open');
     film.src = isPhone() ? 'assets/yfa-intro-mobile.mp4' : 'assets/yfa-intro-desktop.mp4';
     intro.focus();
@@ -370,7 +365,6 @@
       if (intro.classList.contains('is-leaving')) return;
       intro.classList.add('is-leaving');
       document.body.classList.remove('is-intro-open');
-      try { sessionStorage.setItem('yfa-experience-v2-intro', '1'); } catch (error) {}
       setTimeout(() => {
         intro.hidden = true;
         film.pause();
