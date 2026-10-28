@@ -7,7 +7,7 @@
   const THEME_URL = `${MOTHERSHIP}theme/theme.json`;
   const HERO_DESKTOP = `${MOTHERSHIP}slots/home-hero-media`;
   const HERO_PHONE = `${MOTHERSHIP}slots/home-hero-phone`;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduceMotion = { get matches() { let saved=false; try{saved=localStorage.getItem('yfa-access-reduce')==='1';}catch{} return saved || window.matchMedia('(prefers-reduced-motion: reduce)').matches; } };
   const isPhone = () => window.matchMedia('(max-width: 599px)').matches;
 
   const safeId = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(-72);
@@ -24,9 +24,17 @@
   });
 
   async function getJson(url) {
-    const response = await fetch(`${url}?v=${Date.now()}`, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Request failed (${response.status})`);
-    return response.json();
+    let failure;
+    for (let attempt=0; attempt<2; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(()=>controller.abort(), 10000);
+      try {
+        const response = await fetch(`${url}?v=${Date.now()}`, {cache:'no-store', signal:controller.signal});
+        if (!response.ok) throw new Error(`Request failed (${response.status})`);
+        return await response.json();
+      } catch(error) { failure=error; } finally { clearTimeout(timer); }
+    }
+    throw failure;
   }
 
   function pointFor(item) {
@@ -41,17 +49,19 @@
     if (isVideo(item)) {
       const video = document.createElement('video');
       const makeFallback = () => {
-        const link = document.createElement('a');
+        const link = document.createElement('button');
+        link.type = 'button';
         link.className = 'yfa-video-fallback';
-        link.href = item.url;
+        link.href = '#';
         link.target = '_blank';
         link.rel = 'noopener';
-        link.textContent = 'Open original video';
-        link.setAttribute('aria-label', `Open original video: ${alt}`);
+        link.textContent = 'Retry video';
+        link.addEventListener('click', event=>{event.preventDefault(); const replacement=mediaNode(item); link.replaceWith(replacement); observeMedia(replacement.parentElement);});
+        link.setAttribute('aria-label', `Retry video: ${alt}`);
         return link;
       };
-      if (/\.mov(?:\?|$)/i.test(String(item.path || item.url || '')) && !video.canPlayType('video/quicktime')) return makeFallback();
-      video.dataset.src = item.url;
+      const playbackUrl = /1788944597025-7a50e954\.mov/.test(item.url) ? '/assets/gallery-page-1-1788944597025.mp4' : item.url;
+      video.dataset.src = playbackUrl;
       video.muted = true;
       video.defaultMuted = true;
       video.loop = true;
@@ -124,7 +134,7 @@
             video.src = video.dataset.src;
             video.load();
           }
-          video.play().catch(() => {});
+          if(reduceMotion.matches){video.controls=true;}else{video.play().catch(() => {});}
         } else {
           video.pause();
         }
@@ -190,7 +200,7 @@
       });
       home.replaceChildren(...nodes);
       const footer = document.querySelector('body > .yfa-footer');
-      if (footer) home.appendChild(footer);
+      // Footer remains outside the uninterrupted photography rail.
       observeMedia(home);
       installHorizontalGallery(home);
       renderManagedLinks(content);
@@ -249,7 +259,7 @@
 
   function installHorizontalGallery(gallery) {
     window.addEventListener('wheel', event => {
-      if (event.ctrlKey) return;
+      if (event.ctrlKey || event.target.closest('.yfa-footer,.yfa-options,input,button')) return;
       const rawDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       if (!rawDelta) return;
       event.preventDefault();
@@ -264,11 +274,11 @@
   }
 
   function renderGalleryError(error) {
-    document.querySelectorAll('[data-featured-gallery],[data-full-gallery]').forEach(root => {
+    document.querySelectorAll('[data-home-gallery],[data-featured-gallery],[data-full-gallery]').forEach(root => {
       const message = document.createElement('p');
       message.className = 'yfa-loading';
       message.textContent = 'The archive signal is unavailable. Please try again.';
-      root.replaceChildren(message);
+      const retry=document.createElement('button'); retry.textContent='Retry photography'; retry.onclick=async()=>{try{renderGallery(await getJson(CONTENT_URL));}catch(error){renderGalleryError(error);}}; root.replaceChildren(message,retry);
     });
     console.warn('YourFavAlien preview gallery:', error);
   }
@@ -371,11 +381,10 @@
         document.querySelector('#main')?.focus({ preventScroll: true });
       }, 750);
     };
-    const offerPlay = () => {
-      if (!play) { finish(); return; }
-      play.hidden = false;
-      play.focus();
-    };
+    const offerPlay = finish;
+    const watchdog=setTimeout(finish, 20000);
+    film.addEventListener('playing',()=>clearTimeout(watchdog),{once:true});
+    film.addEventListener('stalled',()=>setTimeout(()=>{if(!intro.hidden && film.readyState<3)finish();},5000));
     const startFilm = () => {
       if (play) play.hidden = true;
       film.play().catch(offerPlay);
@@ -393,7 +402,7 @@
     });
     film.addEventListener('ended', finish, { once: true });
     film.addEventListener('error', finish, { once: true });
-    if (reduceMotion.matches) offerPlay();
+    if (reduceMotion.matches) finish();
     else startFilm();
   }
 
