@@ -2,7 +2,7 @@
   'use strict';
 
   const feed = document.getElementById('instagram-live-feed');
-  if (!feed) return;
+  if (!feed || feed.dataset.feedMode === 'profile') return;
 
   const endpoint = feed.dataset.feedEndpoint;
   if (!endpoint) return;
