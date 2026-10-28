@@ -365,6 +365,7 @@
       history:()=>({undo:history.length,redo:future.length})
     };
     resolvePowerReady(true);
+    window.dispatchEvent(new Event('yfa-editor-ready'));
     await listRevisions();
     window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
   }

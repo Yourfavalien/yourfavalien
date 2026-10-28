@@ -29,21 +29,40 @@ function start(){
   if(block){inspector.replaceChildren();const fields={};for(const name of (block.type==='button'?['title','url']:block.type==='text'?['title','body']:[])){const label=document.createElement('label');label.textContent=name==='url'?'Destination URL':name==='body'?'Text':'Heading / label';const input=document.createElement(name==='body'?'textarea':'input');input.value=block[name]||'';fields[name]=input;label.append(input);inspector.append(label);}const visibility=document.createElement('label'),check=document.createElement('input');check.type='checkbox';check.checked=block.visible!==false;visibility.append(check,document.createTextNode(' Visible on website'));const apply=document.createElement('button');apply.textContent='Apply block to draft';apply.onclick=()=>{const values=Object.fromEntries(Object.entries(fields).map(([key,input])=>[key,input.value]));api().updateBlock(block.id,{...values,visible:check.checked});report('Block updated in draft.');};const remove=document.createElement('button');remove.textContent='Remove block from draft';remove.onclick=()=>{api().removeBlock(block.id);selected=null;render();};inspector.append(visibility,apply,remove);}
   const history=api().history();builder.querySelector('[data-undo]').disabled=!history.undo;builder.querySelector('[data-redo]').disabled=!history.redo;
  }
- const preview=()=>{api().save();mode='preview';builder.querySelector('[data-board]').hidden=true;builder.querySelector('[data-blocks]').hidden=true;const frame=builder.querySelector('[data-frame]');frame.hidden=false;frame.dataset.viewport=viewport;frame.querySelector('iframe').src=route+(route.includes('?')?'&':'?')+'yfa-preview=1&t='+Date.now();report('Private draft preview. Publishing is a separate action.');};
+ const preview=()=>{api()?.save();mode='preview';builder.querySelector('[data-board]').hidden=true;builder.querySelector('[data-blocks]').hidden=true;const frame=builder.querySelector('[data-frame]');frame.hidden=false;frame.dataset.viewport=viewport;frame.querySelector('iframe').src=route+(route.includes('?')?'&':'?')+'yfa-preview=1&t='+Date.now();report('Private draft preview. Publishing is a separate action.');};
  builder.querySelector('[data-arrange]').onclick=()=>{mode='arrange';builder.querySelector('[data-board]').hidden=false;builder.querySelector('[data-blocks]').hidden=false;builder.querySelector('[data-frame]').hidden=true;render();};
  builder.querySelector('[data-save]').onclick=()=>run(()=>api().save(),'Draft saved in this browser.');
- builder.querySelector('[data-preview]').onclick=()=>{if(api())preview();};
+ builder.querySelector('[data-preview]').onclick=()=>preview();
  builder.querySelector('[data-publish]').onclick=()=>run(()=>api().publish(),'Published to your website.');
  builder.querySelector('[data-undo]').onclick=()=>api()?.undo();builder.querySelector('[data-redo]').onclick=()=>api()?.redo();
- builder.querySelector('[data-page]').onchange=e=>{route=e.target.value;if(api())preview();};
+ builder.querySelector('[data-page]').onchange=e=>{route=e.target.value;preview();};
  builder.querySelectorAll('[data-device]').forEach(button=>button.onclick=()=>{viewport=button.dataset.device;builder.querySelector('[data-frame]').dataset.viewport=viewport;builder.querySelectorAll('[data-device]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));});
  builder.querySelectorAll('[data-add-block]').forEach(button=>{button.onclick=()=>{if(api()&&!busy){api().createBlock(button.dataset.addBlock);report('Block added to draft.');}};button.ondragstart=e=>e.dataTransfer.setData('application/x-yfa-new-block',button.dataset.addBlock);});
- const upload=files=>run(()=>api().upload(files),'Media uploaded to draft. Publish when ready.');builder.querySelector('[data-files]').onchange=e=>{if(e.target.files.length)upload(e.target.files);};const canvas=builder.querySelector('.builder-canvas');canvas.ondragover=e=>{if([...e.dataTransfer.types].some(type=>['Files','application/x-yfa-new-block'].includes(type)))e.preventDefault();};canvas.ondrop=e=>{if(busy)return;const type=e.dataTransfer.getData('application/x-yfa-new-block');if(type){e.preventDefault();api().createBlock(type);return;}if(e.dataTransfer.files.length){e.preventDefault();upload(e.dataTransfer.files);}};
+ const upload=files=>run(()=>api().upload(files),'Media uploaded to draft. Publish when ready.');builder.querySelector('[data-files]').onchange=e=>{if(e.target.files.length)upload(e.target.files);};const canvas=builder.querySelector('.builder-canvas');canvas.ondragover=e=>{if([...e.dataTransfer.types].some(type=>['Files','application/x-yfa-new-block'].includes(type)))e.preventDefault();};canvas.ondrop=e=>{if(busy||!api())return;const type=e.dataTransfer.getData('application/x-yfa-new-block');if(type){e.preventDefault();api().createBlock(type);return;}if(e.dataTransfer.files.length){e.preventDefault();upload(e.dataTransfer.files);}};
  builder.querySelector('[data-controls]').onclick=()=>nav.querySelector('[data-area="media"]')?.click();
  window.addEventListener('yfa-editor-change',render);
- const ready=()=>{if(api()){render();report('Ready. Your existing gallery is loaded.');builder.querySelectorAll('button,input,select').forEach(e=>e.disabled=false);render();}else{report('Gallery editor is unavailable. Open Gallery & uploads to retry loading.');}};
- builder.querySelectorAll('button,input,select').forEach(e=>e.disabled=true);
- if(window.YFA_MOTHERSHIP_POWER_READY)window.YFA_MOTHERSHIP_POWER_READY.then(ready);else{const wait=setInterval(()=>{if(window.YFA_MOTHERSHIP_POWER_READY){clearInterval(wait);window.YFA_MOTHERSHIP_POWER_READY.then(ready);}},100);setTimeout(()=>{clearInterval(wait);if(!api())ready();},15000);}
+ const syncAvailability=()=>{
+  builder.querySelectorAll('[data-save],[data-publish],[data-files],[data-add-block]').forEach(e=>e.disabled=busy||!api());
+  builder.querySelectorAll('[data-add-block]').forEach(e=>e.draggable=!!api()&&!busy);
+  if(!api()){builder.querySelector('[data-undo]').disabled=true;builder.querySelector('[data-redo]').disabled=true;}
+ };
+ let connected=false;
+ const ready=()=>{
+  syncAvailability();
+  if(api()){render();if(!connected)report('Ready. Your existing gallery is loaded.');connected=true;return true;}
+  return false;
+ };
+ window.addEventListener('yfa-editor-ready',ready);
+ window.addEventListener('yfa-open-editor',ready);
+ let attempts=0,watched;
+ const check=()=>{
+  if(ready())return;
+  const promise=window.YFA_MOTHERSHIP_POWER_READY;
+  if(promise&&promise!==watched){watched=promise;promise.then(()=>{if(!ready())report('Gallery connection could not load. Reload Mothership to retry; page previews remain available.');}).catch(()=>report('Gallery connection could not load. Reload Mothership to retry.'));}
+  if(++attempts<120)setTimeout(check,500);
+  else report('Gallery connection is taking longer than expected. Reload Mothership to retry; page previews remain available.');
+ };
+ syncAvailability();check();
  show(true);
 }
 const observer=new MutationObserver(start);observer.observe(document.body,{childList:true,subtree:true});start();
