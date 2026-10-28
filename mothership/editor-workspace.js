@@ -3,18 +3,18 @@
 let active=false;
 function activate(){
 if(active)return;active=true;document.getElementById('yfaEditorPreviewEntry')?.remove();
-try{sessionStorage.setItem('yfa-editor-preview-requested','1');}catch{}
-const url=new URL(location.href);url.searchParams.set('editor-preview','1');history.replaceState(null,'',url);
-const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261028-readable';document.head.append(css);document.body.classList.add('yfa-editor-preview');
+
+const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261028-integrated';document.head.append(css);document.body.classList.add('yfa-editor-preview');
 let selected=null,mode='arrange',viewport='desktop',route='/',busy=false;
 const api=()=>window.YFA_VISUAL_EDITOR;
 function start(){
  const main=document.querySelector('.yfa-app-main'),nav=document.querySelector('.yfa-app-nav');if(!main||!nav||document.getElementById('visualBuilder'))return;
  const builder=document.createElement('section');builder.id='visualBuilder';builder.innerHTML=`<header class="builder-toolbar"><strong>MOTHERSHIP <small>Website editor</small></strong><select aria-label="Selected page" data-page><option value="/">Home / Gallery</option><option value="/socials.html">Socials</option><option value="/contact.html">Contact</option><option value="/privacy.html">Privacy</option></select><div class="builder-devices"><button data-device="desktop" aria-pressed="true">Desktop</button><button data-device="tablet" aria-pressed="false">Tablet</button><button data-device="mobile" aria-pressed="false">Phone</button></div><button data-undo>Undo</button><button data-redo>Redo</button><button data-save>Save draft</button><button data-preview>Preview draft</button><button data-publish class="primary">Publish</button></header><div class="builder-status" role="status" aria-live="polite">Loading your existing content…</div><div class="builder-workspace"><aside class="builder-library"><h2>Page content</h2><button data-arrange>Arrange gallery</button><label class="builder-upload">+ Add photos / videos<input data-files type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime"></label><p>Drag photographs to reorder. Drop files onto the canvas to upload. New media appears first.</p><h2>Add content block</h2><button draggable="true" data-add-block="text">Text</button><button draggable="true" data-add-block="button">Button</button><button draggable="true" data-add-block="divider">Divider</button><p>Content blocks join the homepage after the photography. Drag blocks to rearrange them.</p><h2>Website tools</h2><p>Use the sidebar for pages, colors, social links, forms, campaign mode, maintenance, and settings.</p><button data-controls>Open gallery controls</button><p class="builder-note">Draft changes stay private until you publish.</p></aside><section class="builder-canvas" aria-label="Website content canvas"><div data-board class="builder-board" aria-label="Gallery order"></div><div data-blocks class="builder-blocks"></div><div data-frame class="builder-frame" hidden><iframe title="Private website draft preview"></iframe></div></section><aside class="builder-inspector"><h2>Selected media</h2><div data-inspector>Select a photograph or video to edit it.</div></aside></div>`;
- main.prepend(builder);const status=builder.querySelector('.builder-status');
+ const dashboard=document.getElementById('dashboard');if(!dashboard)return;dashboard.querySelector('.topbar')?.insertAdjacentElement('afterend',builder);if(!builder.isConnected)dashboard.prepend(builder);const status=builder.querySelector('.builder-status');
  const report=text=>status.textContent=text;
  const run=async(fn,success)=>{if(busy)return;busy=true;builder.querySelectorAll('button,input,select,textarea').forEach(e=>e.disabled=true);try{await fn();report(success);render();}catch(error){report(error.message||'The change could not be saved.');}finally{busy=false;builder.querySelectorAll('button,input,select,textarea').forEach(e=>e.disabled=false);render();}};
- const show=active=>{builder.hidden=!active;const dashboard=document.getElementById('dashboard');if(active){dashboard?.style.setProperty('display','none','important');document.querySelector('.yfa-website-editor')?.classList.add('hidden');document.body.dataset.workspaceArea='editor';}else{dashboard?.style.removeProperty('display');}};
+ const show=active=>{builder.hidden=!active;if(active){document.querySelectorAll('#dashboard > .dashboard-view').forEach(view=>view.classList.add('hidden'));document.body.dataset.workspaceArea='editor';nav.querySelectorAll('[data-area]').forEach(button=>{if(button.dataset.area==='editor')button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});}};
+ window.addEventListener('yfa-open-editor',()=>show(true));
  nav.addEventListener('click',e=>{const button=e.target.closest('[data-area]');if(button){document.body.dataset.workspaceArea=button.dataset.area;show(button.dataset.area==='editor');}});
  const state=()=>api()?.state();
  function items(){const page=state()?.pages?.find(p=>p.slug==='gallery');const list=page?.images||[];if(page?.orderMode!=='manual')list.sort((a,b)=>time(b)-time(a));return list;}
@@ -48,13 +48,5 @@ function start(){
 }
 const observer=new MutationObserver(start);observer.observe(document.body,{childList:true,subtree:true});start();
 }
-function entry(){
- if(active||document.getElementById('yfaEditorPreviewEntry'))return;
- const host=document.querySelector('.yfa-app-main')||document.getElementById('dashboard');if(!host)return;
- const panel=document.createElement('section');panel.id='yfaEditorPreviewEntry';panel.style.cssText='position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:20px 24px;margin:16px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:14px Arial,sans-serif';
- const copy=document.createElement('div');const title=document.createElement('strong');title.textContent='Your new Mothership editor is ready to preview';const detail=document.createElement('p');detail.textContent='Open the light drag-and-drop workspace. Your existing tools remain available.';detail.style.cssText='margin:7px 0 0;color:#526078;font:13px Arial,sans-serif';copy.append(title,detail);
- const button=document.createElement('button');button.type='button';button.textContent='Open new editor preview';button.style.cssText='border:0;border-radius:5px;padding:13px 18px;background:#151515;color:#fff;font:600 13px Arial,sans-serif;cursor:pointer';button.onclick=activate;panel.append(copy,button);host.prepend(panel);
-}
-let requested=new URLSearchParams(location.search).get('editor-preview')==='1';try{requested=requested||sessionStorage.getItem('yfa-editor-preview-requested')==='1';}catch{}
-if(requested)activate();else{const watch=new MutationObserver(entry);watch.observe(document.body,{childList:true,subtree:true});entry();}
+activate();
 })();
