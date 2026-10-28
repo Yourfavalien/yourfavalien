@@ -300,6 +300,9 @@
   }
 
   async function init() {
+    // The editorial experience has its own Mothership-backed gallery and
+    // navigation renderer. Do not append the legacy vertical gallery/menu to it.
+    if (document.documentElement.dataset.yfaRedesign === 'home' || document.documentElement.dataset.yfaRedesignShell) return;
     injectStyles();
     const content = await loadContent();
     applySeo(content);

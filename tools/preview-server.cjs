@@ -28,7 +28,7 @@ http.createServer((request, response) => {
   const url = new URL(request.url, `http://127.0.0.1:${port}`);
   if (url.pathname.startsWith('/__mothership__/')) return proxy(request, response, url.pathname);
   let pathname = decodeURIComponent(url.pathname);
-  if (pathname === '/') pathname = '/redesign-preview.html';
+  if (pathname === '/') pathname = '/index.html';
   const file = path.resolve(root, `.${pathname}`);
   if (!file.startsWith(root)) { response.writeHead(403); return response.end('Forbidden'); }
   fs.readFile(file, (error, data) => {
@@ -37,5 +37,5 @@ http.createServer((request, response) => {
     response.end(data);
   });
 }).listen(port, '127.0.0.1', () => {
-  console.log(`YourFavAlien protected preview: http://127.0.0.1:${port}/redesign-preview.html?skip-intro=1`);
+  console.log(`YourFavAlien protected preview: http://127.0.0.1:${port}/`);
 });

@@ -1,6 +1,10 @@
 (function () {
   'use strict';
 
+  // Redesigned interior pages provide their own shared navigation and legal
+  // footer while retaining the separately loaded Mothership, Xilo, and privacy integrations.
+  if (document.documentElement.hasAttribute('data-yfa-redesign-shell')) return;
+
   const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
   const isHomePage = normalizedPath === '/' || normalizedPath.toLowerCase().endsWith('/index.html');
   // The first-page video is part of the homepage experience and should play
