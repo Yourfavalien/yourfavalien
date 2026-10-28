@@ -143,6 +143,12 @@
     const nav = document.querySelector('nav');
     if (!nav || nav.querySelector('[data-yfa-custom-link]')) return;
     links.forEach(link => {
+      const duplicate = [...nav.querySelectorAll('a[href]')].some(anchor => {
+        const declaredTarget = anchor.getAttribute('data-yfa-custom-target');
+        if (declaredTarget === link.url) return true;
+        try { return new URL(anchor.href, location.href).href === new URL(link.url, location.origin).href; } catch (error) { return false; }
+      });
+      if (duplicate) return;
       const a = document.createElement('a');
       a.href = link.url;
       a.textContent = link.label;
@@ -157,16 +163,18 @@
   }
 
   function mediaMarkup(item) {
+    if (!item || item.visible === false) return '';
     const url = esc(normalizeMediaUrl(item.url));
     const alt = esc(item.alt || 'YourFavAlien photo');
+    const mediaId = esc(item.id || String(item.path || item.url || '').replace(/[^a-z0-9]+/gi,'-').slice(-72));
     if (!url) return '';
     const r=item.responsive;
     const p=key=>r?.[key]||r?.desktop||{x:50,y:50,zoom:1};
     const responsiveStyle=r?` data-responsive style="--yfa-x-d:${p('desktop').x}%;--yfa-y-d:${p('desktop').y}%;--yfa-z-d:${p('desktop').zoom};--yfa-x-t:${p('tablet').x}%;--yfa-y-t:${p('tablet').y}%;--yfa-z-t:${p('tablet').zoom};--yfa-x-p:${p('phone').x}%;--yfa-y-p:${p('phone').y}%;--yfa-z-p:${p('phone').zoom}"`:'';
     if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) {
-      return `<div class="yfa-gallery-item"><video data-src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
+      return `<div class="yfa-gallery-item" data-media-id="${mediaId}"><video data-src="${url}" preload="none" muted loop playsinline data-yfa-lazy-video aria-label="${alt}"></video></div>`;
     }
-    return `<div class="yfa-gallery-item"${responsiveStyle}><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
+    return `<div class="yfa-gallery-item" data-media-id="${mediaId}"${responsiveStyle}><img src="${url}" alt="${alt}" loading="lazy" decoding="async"></div>`;
   }
 
   function setupLazyVideos(root=document) {
@@ -196,7 +204,7 @@
   }
 
   function setupProgressiveGallery(grid, items) {
-    const media = newestMediaFirst(items);
+    const media = newestMediaFirst((Array.isArray(items) ? items : []).filter(item => item && item.visible !== false));
     let shown = 0;
     const batchSize = 3;
     const appendNext = () => {
@@ -279,8 +287,9 @@
       root.innerHTML = `<div class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><h1>Page not found.</h1><div class="yfa-dynamic-page-copy">This page is not currently published.</div></div></div>`;
       return;
     }
-    const images = Array.isArray(page.images) ? newestMediaFirst(page.images) : [];
-    root.innerHTML = `<main class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><div><h1>${esc(page.title || 'Untitled')}</h1></div>${page.body ? `<div class="yfa-dynamic-page-copy">${esc(page.body)}</div>` : ''}${images.length ? `<div class="yfa-gallery-grid" data-layout="${esc(page.layout || 'editorial')}">${images.map(mediaMarkup).join('')}</div>` : ''}</div></main>`;
+    const visible = Array.isArray(page.images) ? page.images.filter(item => item && item.visible !== false) : [];
+    const images = page.orderMode === 'manual' ? visible : newestMediaFirst(visible);
+    root.innerHTML = `<main class="yfa-dynamic-page"><div class="yfa-dynamic-page-inner"><a class="yfa-page-back" href="/">← Home</a><div><h1>${esc(page.title || 'Untitled')}</h1></div>${page.body ? `<div class="yfa-dynamic-page-copy">${esc(page.body)}</div>` : ''}${images.length ? `<div class="yfa-gallery-grid" data-order="${page.orderMode === 'manual' ? 'manual' : 'newest'}" data-layout="${esc(page.layout || 'editorial')}">${images.map(mediaMarkup).join('')}</div>` : ''}</div></main>`;
     setupLazyVideos(root);
     document.title = page.seoTitle || `${page.title || 'Page'} | YourFavAlien`;
     if (page.description) {

@@ -8,6 +8,7 @@
   }
 
   function sortGallery(grid) {
+    if (grid.dataset.order === 'manual') return;
     const current = [...grid.children].filter(item => item.classList.contains('yfa-gallery-item'));
     if (current.length < 2) return;
     const sorted = [...current].sort((a, b) => uploadTime(b) - uploadTime(a));

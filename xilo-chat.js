@@ -72,7 +72,7 @@
   if (document.documentElement.getAttribute('data-yfa-theme-page') === 'privacy') {
     root.classList.add('xilo-chat--privacy');
   }
-  const isHomepage = window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
+  const isHomepage = document.documentElement?.dataset?.yfaRedesign === 'home' || window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
   if (isHomepage) {
     root.classList.add('xilo-chat--home');
     window.setTimeout(function () { root.classList.add('is-ready'); }, 1800);
