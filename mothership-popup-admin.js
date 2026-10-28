@@ -45,7 +45,7 @@
   const scripts = [
     ['/mothership-image-editor.js?v=20260914-1', 'yfaImageEditor'],
     ['/mothership-cloudflare-admin.js?v=20261021-button-position-fix', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20261027-gallery-controls-5', 'yfaMothershipPower'],
+    ['/mothership-power.js?v=20261028-editor-connection', 'yfaMothershipPower'],
     ['/mothership-complete-admin.js?v=20260905-1', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20260905-1', 'yfaMothershipBadge']
   ];

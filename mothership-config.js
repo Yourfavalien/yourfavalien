@@ -255,7 +255,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20261027-gallery-controls-5'
+    ? '/mothership-popup-admin.js?v=20261028-editor-connection'
     : '/mothership-popup-gate.js?v=20261027-redesign-shell';
   script.defer = true;
   document.head.appendChild(script);
