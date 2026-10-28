@@ -15,7 +15,17 @@
     const url = String(value || '').trim();
     return url.startsWith(legacyMediaBase) ? publicUrl(url.slice(legacyMediaBase.length)) : url;
   };
-  const normalizeMediaItems = items => (Array.isArray(items) ? items : []).map(item => ({ ...item, url: normalizeMediaUrl(item?.url) }));
+  const stableMediaId = item => {
+    const source = String(item?.path || item?.url || 'media').toLowerCase();
+    const token = source.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(-72);
+    return `media-${token || Math.random().toString(16).slice(2)}`;
+  };
+  const normalizeMediaItems = items => (Array.isArray(items) ? items : []).map(item => ({
+    ...item,
+    id: item?.id || stableMediaId(item),
+    visible: item?.visible !== false,
+    url: normalizeMediaUrl(item?.url)
+  }));
   const normalizeContentMedia = content => {
     content.home.sections = (content.home.sections || []).map(section => ({ ...section, images: normalizeMediaItems(section.images) }));
     content.pages = (content.pages || []).map(page => ({ ...page, images: normalizeMediaItems(page.images) }));
@@ -118,7 +128,7 @@
     const path = `${folder}/${Date.now()}-${uid().slice(0,8)}.${ext}`;
     const { error } = await client.storage.from(cfg.storageNamespace).upload(path, file, { upsert:false, contentType:file.type || undefined, cacheControl:'3600' });
     if (error) throw error;
-    return { url: publicUrl(path), path, alt: '', responsive };
+    return { id: uid(), url: publicUrl(path), path, alt: '', visible: true, responsive };
   }
 
   async function uploadBatch(files, folder, status) {
@@ -189,11 +199,17 @@
     (images||[]).forEach((item,index)=>{
       const box=el('div',{class:'power-media'});
       const media=/\.(mp4|webm)(\?|$)/i.test(item.url||'')?`<video src="${item.url}" muted playsinline></video>`:`<img src="${item.url}" alt="">`;
-      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><div class="power-actions"><button class="power-mini" type="button" data-adjust>Adjust</button><button class="power-mini danger" type="button" data-delete>Delete</button></div></div>`;
+      box.setAttribute('aria-disabled', String(item.visible === false));
+      if (item.visible === false) box.style.opacity = '.45';
+      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><label class="power-check" style="margin-top:8px"><input type="checkbox" data-visible ${item.visible!==false?'checked':''}> Visible on site</label><div class="power-actions"><button class="power-mini" type="button" data-up ${index===0?'disabled':''}>Move up</button><button class="power-mini" type="button" data-down ${index===images.length-1?'disabled':''}>Move down</button></div><div class="power-actions"><button class="power-mini" type="button" data-adjust>Adjust</button><label class="power-mini" style="position:relative;overflow:hidden">Replace<input data-replace type="file" accept="image/*,video/mp4,video/webm" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><button class="power-mini danger" type="button" data-delete>Delete</button></div><div class="power-muted" data-media-status></div></div>`;
       const preview=box.querySelector('img');
       if(preview&&item.responsive){const p=item.responsive.desktop||{};preview.style.objectPosition=`${p.x??50}% ${p.y??50}%`;preview.style.transformOrigin=`${p.x??50}% ${p.y??50}%`;preview.style.transform=`scale(${p.zoom||1})`;}
       box.querySelector('[data-alt]').oninput=e=>{item.alt=e.target.value;markDirty();};
+      box.querySelector('[data-visible]').onchange=e=>{item.visible=e.target.checked;box.setAttribute('aria-disabled',String(!item.visible));box.style.opacity=item.visible?'1':'.45';markDirty();};
+      box.querySelector('[data-up]').onclick=()=>{if(index<1)return;[images[index-1],images[index]]=[images[index],images[index-1]];markDirty();rerender();};
+      box.querySelector('[data-down]').onclick=()=>{if(index>=images.length-1)return;[images[index+1],images[index]]=[images[index],images[index+1]];markDirty();rerender();};
       box.querySelector('[data-adjust]').onclick=async()=>{if(!preview||!window.YFA_IMAGE_EDITOR){alert('Only pictures can be adjusted.');return;}const responsive=await window.YFA_IMAGE_EDITOR.edit({src:item.url,initial:item.responsive,title:'Adjust gallery image'});if(!responsive)return;item.responsive=responsive;markDirty();rerender();try{await publish();}catch(error){alert(error.message||'The image position could not be saved.');}};
+      box.querySelector('[data-replace]').onchange=async event=>{const file=event.target.files?.[0];if(!file)return;const status=box.querySelector('[data-media-status]');const old={...item};const folder=String(item.path||'pages/gallery/media').replace(/\/[^/]+$/,'')||'pages/gallery';event.target.disabled=true;status.textContent='Uploading replacement…';try{const replacement=await uploadMedia(file,folder,item.responsive||null);images[index]={...replacement,id:item.id||replacement.id,alt:item.alt||'',visible:item.visible!==false};markDirty();await publish();await removeStoredMedia(old);rerender();}catch(error){images[index]=old;status.textContent=error.message||'Replacement failed.';event.target.disabled=false;}};
       box.querySelector('[data-delete]').onclick=async()=>{ if(!confirm('Delete this image from the section?'))return; images.splice(index,1);markDirty();rerender(); try{await publish();await removeStoredMedia(item);}catch(error){alert(error.message||'The photo could not be deleted.');} };
       container.appendChild(box);
     });
@@ -215,14 +231,16 @@
         <div class="power-field"><label>URL SLUG</label><input data-slug value="${(page.slug||'').replace(/"/g,'&quot;')}" placeholder="photos"></div>
         <div class="power-field full"><label>PAGE TEXT</label><textarea data-body>${page.body||''}</textarea></div>
         <div class="power-field"><label>PHOTO LAYOUT</label><select data-layout><option value="editorial">Editorial mix</option><option value="two">Two columns</option><option value="full">Full width</option></select></div>
+        <div class="power-field"><label>PHOTO ORDER</label><select data-order><option value="newest">Newest first (current)</option><option value="manual">Manual order</option></select></div>
         <div class="power-field"><label>META DESCRIPTION</label><input data-description value="${(page.description||'').replace(/"/g,'&quot;')}"></div>
         <label class="power-check"><input type="checkbox" data-enabled ${page.enabled!==false?'checked':''}> Publish this page</label>
       </div>
       <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label><a class="power-mini" data-open target="_blank" rel="noopener">Open page</a></div><div class="power-muted" data-upload-status></div>
       <div class="power-media-list" data-media></div>`;
     card.querySelector('[data-layout]').value=page.layout||'editorial';
-    const sync=()=>{page.title=card.querySelector('[data-title]').value;page.slug=safe(card.querySelector('[data-slug]').value);card.querySelector('[data-slug]').value=page.slug;page.body=card.querySelector('[data-body]').value;page.layout=card.querySelector('[data-layout]').value;page.description=card.querySelector('[data-description]').value;page.enabled=card.querySelector('[data-enabled]').checked;card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug)}`;markDirty();};
-    card.querySelectorAll('[data-title],[data-slug],[data-body],[data-layout],[data-description],[data-enabled]').forEach(n=>{n.addEventListener('input',sync);n.addEventListener('change',sync);});
+    card.querySelector('[data-order]').value=page.orderMode||'newest';
+    const sync=()=>{page.title=card.querySelector('[data-title]').value;page.slug=safe(card.querySelector('[data-slug]').value);card.querySelector('[data-slug]').value=page.slug;page.body=card.querySelector('[data-body]').value;page.layout=card.querySelector('[data-layout]').value;page.orderMode=card.querySelector('[data-order]').value;page.description=card.querySelector('[data-description]').value;page.enabled=card.querySelector('[data-enabled]').checked;card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug)}`;markDirty();};
+    card.querySelectorAll('[data-title],[data-slug],[data-body],[data-layout],[data-order],[data-description],[data-enabled]').forEach(n=>{n.addEventListener('input',sync);n.addEventListener('change',sync);});
     card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug||'')}`;
     card.querySelector('[data-remove]').onclick=()=>{if(confirm('Remove this page?')){data.pages.splice(index,1);markDirty();renderPages();}};
     card.querySelector('[data-upload]').onchange=async e=>{const input=e.currentTarget,files=[...input.files];input.disabled=true;try{const result=await uploadBatch(files,`pages/${page.slug||'page'}`,card.querySelector('[data-upload-status]'));if(result.uploaded.length){page.images.unshift(...result.uploaded);markDirty();renderPages();await publish();}if(result.errors.length)alert(`${result.uploaded.length} file(s) uploaded.\n\n${result.errors.join('\n')}`);}catch(error){alert(error.message||'Upload failed.');}finally{input.disabled=false;}};

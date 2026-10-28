@@ -30,13 +30,13 @@
   loadScript('/site-complete.js?v=20260909-menu-stability4','yfa-site-complete');
   loadScript('/site-badge.js?v=20260905-1','yfa-site-badge');
 
-  const publicBase = 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
+  const publicBase = cfg.assetBase || 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/';
   const popupPath = cfg.popupPath || 'system/orbit-popup.json';
   const cacheVersion = Math.floor(Date.now() / 60000);
   const statusUrl = `${publicBase}${popupPath}?v=${cacheVersion}`;
   const advancedUrl = `${publicBase}system/site-advanced.json?v=${cacheVersion}`;
 
-  function pageKey(){const p=(location.pathname||'/').replace(/\/+$/,'').toLowerCase()||'/';if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k)||p.endsWith('/'+k+'.html'))return k;return'';}
+  function pageKey(){const declared=document.documentElement?.dataset?.yfaThemePage;if(declared)return declared;const p=(location.pathname||'/').replace(/\/+$/,'').toLowerCase()||'/';if(p==='/'||p.endsWith('/index.html'))return'home';for(const k of ['about','contact','privacy','socials'])if(p.endsWith('/'+k)||p.endsWith('/'+k+'.html'))return k;return'';}
   function enablePopup(){if(document.querySelector('script[data-yfa-orbit-component]'))return;const script=document.createElement('script');script.src='/orbit-popup.js?v=20261027-chrome';script.defer=true;script.dataset.yfaOrbitComponent='true';document.head.appendChild(script);}
 
   Promise.all([

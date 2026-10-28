@@ -1,6 +1,6 @@
 window.YFA_MOTHERSHIP = {
-  assetBase: 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/',
-  settingsBase: 'https://yourfavalien-mothership.aydenmtz54.workers.dev/api/settings/',
+  assetBase: /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '') ? '/__mothership__/assets/' : 'https://yourfavalien-mothership.aydenmtz54.workers.dev/assets/',
+  settingsBase: /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '') ? '/__mothership__/api/settings/' : 'https://yourfavalien-mothership.aydenmtz54.workers.dev/api/settings/',
   adminApiBase: /^\/mothership\/support(?:\/|$)/i.test(window.location.pathname || '') ? '/mothership/api/support' : '/mothership/api',
   storageNamespace: 'cloudflare-r2',
   themePath: 'theme/theme.json',
