@@ -374,7 +374,7 @@
       setTimeout(() => {
         intro.hidden = true;
         film.pause();
-        document.querySelector('.yfa-skip')?.focus();
+        document.querySelector('#main')?.focus({ preventScroll: true });
       }, 750);
     };
     const offerPlay = () => {
