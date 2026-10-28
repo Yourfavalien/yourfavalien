@@ -216,12 +216,13 @@
     const host = document.querySelector('.yfa-footer__links');
     if (!host) return;
     const existing = new Set([...host.querySelectorAll('a[href]')].map(link => new URL(link.href, location.href).pathname.toLowerCase()));
-    (content.navigation?.customLinks || []).forEach(item => {
+    const addLink = item => {
       if (!item || item.enabled === false || !item.label || !item.url) return;
       let url = String(item.url).trim();
       if (/^\/page\.html\?slug=gallery$/i.test(url)) url = '/redesign-gallery.html';
       let parsed;
       try { parsed = new URL(url, location.href); } catch (error) { return; }
+      if (/^\/(about|about\.html)$/i.test(parsed.pathname) || item.id === 'about') return;
       if (!/^https?:$/.test(parsed.protocol) || parsed.origin === location.origin && existing.has(parsed.pathname.toLowerCase())) return;
       const link = document.createElement('a');
       link.href = parsed.href;
@@ -229,7 +230,21 @@
       if (parsed.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
       host.insertBefore(link, host.querySelector('.yfa-footer__copyright') || null);
       existing.add(parsed.pathname.toLowerCase());
+    };
+    (content.navigation?.customLinks || []).forEach(addLink);
+    getJson(`${MOTHERSHIP}system/site-advanced.json`).then(advanced => {
+      (advanced.navigation?.items || []).forEach(addLink);
+    }).catch(() => {});
+  }
+
+  function installPrimaryNavigation() {
+    const nav = document.querySelector('.yfa-nav');
+    if (!nav) return;
+    const trim = () => nav.querySelectorAll('a[href]').forEach(link => {
+      if (!link.matches('.yfa-nav__left,.yfa-brand,.yfa-nav__right')) link.remove();
     });
+    trim();
+    new MutationObserver(trim).observe(nav, { childList: true, subtree: true });
   }
 
   function installHorizontalGallery(gallery) {
@@ -409,6 +424,7 @@
   }
 
   async function boot() {
+    installPrimaryNavigation();
     installMenu();
     installIntro();
     installChrome();
