@@ -1,6 +1,10 @@
 (()=>{
 'use strict';
-if(new URLSearchParams(location.search).get('editor-preview')!=='1')return;
+let active=false;
+function activate(){
+if(active)return;active=true;document.getElementById('yfaEditorPreviewEntry')?.remove();
+try{sessionStorage.setItem('yfa-editor-preview-requested','1');}catch{}
+const url=new URL(location.href);url.searchParams.set('editor-preview','1');history.replaceState(null,'',url);
 const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261028-builder';document.head.append(css);document.body.classList.add('yfa-editor-preview');
 let selected=null,mode='arrange',viewport='desktop',route='/',busy=false;
 const api=()=>window.YFA_VISUAL_EDITOR;
@@ -43,4 +47,14 @@ function start(){
  show(true);
 }
 const observer=new MutationObserver(start);observer.observe(document.body,{childList:true,subtree:true});start();
+}
+function entry(){
+ if(active||document.getElementById('yfaEditorPreviewEntry'))return;
+ const host=document.querySelector('.yfa-app-main')||document.getElementById('dashboard');if(!host)return;
+ const panel=document.createElement('section');panel.id='yfaEditorPreviewEntry';panel.style.cssText='position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:20px 24px;margin:16px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:14px Arial,sans-serif';
+ const copy=document.createElement('div');const title=document.createElement('strong');title.textContent='Your new Mothership editor is ready to preview';const detail=document.createElement('p');detail.textContent='Open the light drag-and-drop workspace. Your existing tools remain available.';detail.style.cssText='margin:7px 0 0;color:#526078;font:13px Arial,sans-serif';copy.append(title,detail);
+ const button=document.createElement('button');button.type='button';button.textContent='Open new editor preview';button.style.cssText='border:0;border-radius:5px;padding:13px 18px;background:#151515;color:#fff;font:600 13px Arial,sans-serif;cursor:pointer';button.onclick=activate;panel.append(copy,button);host.prepend(panel);
+}
+let requested=new URLSearchParams(location.search).get('editor-preview')==='1';try{requested=requested||sessionStorage.getItem('yfa-editor-preview-requested')==='1';}catch{}
+if(requested)activate();else{const watch=new MutationObserver(entry);watch.observe(document.body,{childList:true,subtree:true});entry();}
 })();
