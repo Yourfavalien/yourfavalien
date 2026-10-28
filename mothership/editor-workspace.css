@@ -11,3 +11,24 @@ body.yfa-editor-preview{background:#f3f4f6!important;color:#202124!important;fon
 .yfa-editor-preview .yfa-app-actions button,.yfa-editor-preview .btn,.yfa-editor-preview .power-mini,.yfa-editor-preview .c-mini{background:#f5f6f8!important;border:1px solid #d7dce3!important;color:#202124!important;box-shadow:none!important;border-radius:5px!important;font-family:Arial,sans-serif!important}
 .yfa-editor-preview .yfa-app-actions button:first-child{background:#202124!important;color:#fff!important}.yfa-editor-preview .yfa-app-welcome p,.yfa-editor-preview .yfa-app-status small{color:#697386!important;font:13px/1.6 Arial,sans-serif!important}
 .yfa-editor-preview .yfa-app-main>#dashboard,.yfa-editor-preview .yfa-app-home,.yfa-editor-preview .yfa-app-utilities{margin:20px!important;max-width:none!important}.yfa-editor-preview .power-media-list{gap:16px}.yfa-editor-preview .power-media{background:#fff!important;border-color:#dde1e7!important;border-radius:7px!important}.yfa-editor-preview .danger{color:#ad2431!important}
+/* Readability pass: scoped to the optional owner workspace. */
+.yfa-editor-preview{--ok:#17633d;--warn:#805314;--danger:#a52332}
+.yfa-editor-preview .yfa-app-main .c-section,.yfa-editor-preview .power-status-card,.yfa-editor-preview .c-status,.yfa-editor-preview .power-sticky,.yfa-editor-preview .c-sticky{background:#fff!important;color:#202124!important;border-color:#cbd2dc!important;box-shadow:none!important}
+.yfa-editor-preview .power-muted,.yfa-editor-preview .c-muted,.yfa-editor-preview .c-copy,.yfa-editor-preview .section-copy,.yfa-editor-preview .eyebrow,.yfa-editor-preview .power-field label,.yfa-editor-preview .c-field label{color:#536176!important;font-family:Arial,sans-serif!important;font-size:12px!important;line-height:1.6!important}
+.yfa-editor-preview .power-code,.yfa-editor-preview .power-link{color:#315a8a!important;font-size:12px!important;overflow-wrap:anywhere}
+.yfa-editor-preview .power-badge,.yfa-editor-preview .c-badge{background:#e4f1e9!important;color:#195a38!important;font-size:11px!important}.yfa-editor-preview .power-badge.draft,.yfa-editor-preview .c-badge.warn{background:#fff0cf!important;color:#714800!important}
+#visualBuilder button,#visualBuilder select,.builder-upload{font-size:13px;min-height:38px;line-height:1.4}
+#visualBuilder button:disabled{opacity:1;background:#f0f2f5;color:#747d8b;border-color:#e1e5eb;cursor:not-allowed}
+#visualBuilder button.primary:disabled{background:#59616c;color:#fff}
+.builder-toolbar small,.builder-library p,.builder-media span,.builder-status{color:#536176!important;font-size:12px;line-height:1.6}
+.builder-workspace h2{font-size:14px;margin-bottom:16px}.builder-library h2:not(:first-child){margin-top:28px}.builder-inspector label{font-size:13px;line-height:1.6;color:#384355}
+#visualBuilder .builder-inspector input:not([type=checkbox]),#visualBuilder .builder-inspector textarea{font-size:14px;line-height:1.5;min-height:40px;border-color:#b9c3d1}
+#visualBuilder input::placeholder,#visualBuilder textarea::placeholder{color:#68758a;opacity:1}
+#visualBuilder input[type=checkbox]{width:17px;height:17px;accent-color:#315fba;vertical-align:middle;margin-right:6px}
+.builder-upload input{font-size:12px;line-height:1.5}.builder-upload input::file-selector-button{background:#edf0f5;border:1px solid #c6cfdd;border-radius:4px;padding:8px;color:#263348;margin-bottom:4px;cursor:pointer}
+.builder-media.is-hidden{opacity:1}.builder-media.is-hidden img,.builder-media.is-hidden video{opacity:.45}.builder-media[aria-pressed=true]{outline:2px solid #315fba;background:#edf3ff!important}.builder-devices [aria-pressed=true]{color:#183968!important;border-color:#a6b9dc!important;background:#e8effb!important}
+.yfa-editor-preview .yfa-app-nav button{font-size:13px;line-height:1.45;min-height:40px}.yfa-editor-preview .yfa-app-brand small{font-size:11px;color:#536176}
+.yfa-editor-preview :focus-visible{outline:2px solid #315fba!important;outline-offset:3px}
+.builder-toolbar>*{max-width:100%}.builder-library,.builder-inspector{min-width:0;overflow-wrap:anywhere}.builder-toolbar strong{line-height:1.45}
+@media(max-width:650px){.builder-toolbar{gap:8px;padding:16px}.builder-devices{flex-wrap:wrap;margin:0}.builder-toolbar button,.builder-toolbar select{min-height:44px}#visualBuilder .builder-inspector input:not([type=checkbox]),#visualBuilder .builder-inspector textarea{font-size:16px}.builder-canvas{padding:16px}.builder-inspector,.builder-library{padding:20px}.builder-toolbar strong{width:100%}}
+@media(prefers-reduced-motion:reduce){.yfa-editor-preview *{scroll-behavior:auto!important;transition:none!important}}
