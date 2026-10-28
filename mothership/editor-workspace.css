@@ -32,3 +32,15 @@ body.yfa-editor-preview{background:#f3f4f6!important;color:#202124!important;fon
 .builder-toolbar>*{max-width:100%}.builder-library,.builder-inspector{min-width:0;overflow-wrap:anywhere}.builder-toolbar strong{line-height:1.45}
 @media(max-width:650px){.builder-toolbar{gap:8px;padding:16px}.builder-devices{flex-wrap:wrap;margin:0}.builder-toolbar button,.builder-toolbar select{min-height:44px}#visualBuilder .builder-inspector input:not([type=checkbox]),#visualBuilder .builder-inspector textarea{font-size:16px}.builder-canvas{padding:16px}.builder-inspector,.builder-library{padding:20px}.builder-toolbar strong{width:100%}}
 @media(prefers-reduced-motion:reduce){.yfa-editor-preview *{scroll-behavior:auto!important;transition:none!important}}
+
+/* One application shell: editor and existing tools share the same account bar and navigation. */
+body.yfa-app-ready>.shell{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
+.yfa-editor-preview .yfa-app-main>#dashboard{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#f3f4f6!important;box-shadow:none!important}
+.yfa-editor-preview #dashboard>.topbar{margin:0!important;padding:10px 20px!important;min-height:44px;border:0!important;border-bottom:1px solid #ddd!important;border-radius:0!important;background:#fff!important}
+.yfa-editor-preview #dashboard>.topbar .eyebrow,.yfa-editor-preview #dashboard>.topbar h2{display:none}
+.yfa-editor-preview #dashboard>.topbar .user{color:#536176;font:12px Arial}
+.yfa-editor-preview #dashboard>.dashboard-view{padding:24px}
+.yfa-editor-preview #visualBuilder{min-height:calc(100dvh - 64px);border:0;border-radius:0;box-shadow:none}
+.yfa-editor-preview .builder-toolbar>strong{display:none}.yfa-editor-preview .builder-toolbar{position:sticky;top:0}
+
+.yfa-editor-preview[data-workspace-area]:not([data-workspace-area="dashboard"]) .yfa-app-home,.yfa-editor-preview[data-workspace-area]:not([data-workspace-area="dashboard"]) .yfa-app-utilities{display:none!important}
