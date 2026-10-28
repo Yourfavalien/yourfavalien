@@ -18,10 +18,10 @@ for (const file of previews) {
 }
 expect('Old preview URL forwards to the actual homepage', /location\.replace\('\/' \+ location\.search \+ location\.hash\)/.test(read('redesign-preview.html')));
 const experience = read('redesign-experience.js');
-expect('Intro controller ignores skip URLs and only completes on video end or failure', !/skip-intro|data-intro-skip|setTimeout\(finish/.test(experience) && /film\.addEventListener\('ended', finish/.test(experience));
-expect('Intro returns focus to main without popping the visible skip link', /querySelector\('#main'\)\?\.focus/.test(experience) && /id="main" tabindex="-1"/.test(read('index.html')) && !/querySelector\('\.yfa-skip'\)\?\.focus/.test(experience));
+expect('Intro video returns on every visit with no skip affordance', !/skip-intro|data-intro-skip|yfa-skip|sessionStorage|intro\.hidden = true; return/.test(experience + read('index.html')) && /film\.addEventListener\('ended', finish/.test(experience) && /yfa-intro-desktop\.mp4/.test(experience) && /yfa-intro-mobile\.mp4/.test(experience));
+expect('Intro returns focus to main after its video ends', /querySelector\('#main'\)\?\.focus/.test(experience) && /id="main" tabindex="-1"/.test(read('index.html')));
 expect('Saved Mothership advanced navigation is kept out of the redesigned header and mapped to the footer', /dataset\.yfaRedesign==='home'/.test(read('site-complete.js')) && /\.yfa-footer__links/.test(read('site-complete.js')) && /nav\(data\)/.test(read('site-complete.js')) && /trimPrimary/.test(read('site-complete.js')) && /site-complete\.js\?v=20261028-redesign-navigation-cleanup/.test(read('mothership-popup-gate.js')));
-expect('Production redesign filters injected top links and retains Mothership links in the footer', /installPrimaryNavigation\(\)/.test(read('redesign-experience.js')) && /system\/site-advanced\.json/.test(read('redesign-experience.js')) && /redesign-experience\.js\?v=20261028-intro-focus-return/.test(read('index.html')));
+expect('Production redesign filters injected top links and retains Mothership links in the footer', /installPrimaryNavigation\(\)/.test(read('redesign-experience.js')) && /system\/site-advanced\.json/.test(read('redesign-experience.js')) && /redesign-experience\.js\?v=20261028-intro-every-visit/.test(read('index.html')));
 expect('Redesign Socials, Contact, and Privacy pages use the shared shell', ['socials.html', 'contact.html', 'privacy.html'].every(file => /data-yfa-redesign-shell="interior"/.test(read(file)) && /redesign-page-shell\.js/.test(read(file))));
 expect('Legacy About Moi route redirects to the homepage', /location\.replace\('\/'\)/.test(read('about.html')));
 expect('Legal footer retains copyright, Privacy, choices, and Help', /© 2026 YourFavAlien/.test(read('redesign-page-shell.js')) && /data-yfa-privacy-open/.test(read('redesign-page-shell.js')) && /privacy/.test(read('redesign-page-shell.js')) && /help/.test(read('redesign-page-shell.js')));
@@ -29,7 +29,7 @@ expect('Legal footer retains copyright, Privacy, choices, and Help', /© 2026 Yo
 const productionHome = read('index.html');
 for (const integration of ['mothership-maintenance.js', 'privacy-choices.js', 'mothership-config.js', 'mothership-theme.js', 'mothership-images.js', 'xilo-chat.js']) expect(`Production integration preserved: ${integration}`, productionHome.includes(integration));
 expect('Approved experience is the production homepage, not a preview document', /data-yfa-redesign="home"/.test(productionHome) && /<link rel="canonical" href="https:\/\/yourfavalien\.com\/"/.test(productionHome) && !/noindex/.test(productionHome));
-expect('Homepage retains mandatory intro and removes About Moi navigation', /data-intro-play/.test(productionHome) && !/about\.html|About Moi/i.test(productionHome));
+expect('Homepage retains mandatory intro and removes About Moi navigation', /data-intro-play/.test(productionHome) && !/yfa-skip|Skip to main content|about\.html|About Moi/i.test(productionHome));
 expect('Homepage retains 2026 legal footer and privacy controls', /© 2026 YourFavAlien/.test(productionHome) && /data-yfa-privacy-open/.test(productionHome));
 
 const config = read('mothership-config.js');
