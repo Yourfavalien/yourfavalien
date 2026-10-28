@@ -19,6 +19,7 @@ for (const file of previews) {
 expect('Old preview URL forwards to the actual homepage', /location\.replace\('\/' \+ location\.search \+ location\.hash\)/.test(read('redesign-preview.html')));
 const experience = read('redesign-experience.js');
 expect('Intro controller ignores skip URLs and only completes on video end or failure', !/skip-intro|data-intro-skip|setTimeout\(finish/.test(experience) && /film\.addEventListener\('ended', finish/.test(experience));
+expect('Saved Mothership advanced navigation is kept out of the redesigned header and mapped to the footer', /dataset\.yfaRedesign==='home'/.test(read('site-complete.js')) && /\.yfa-footer__links/.test(read('site-complete.js')) && /site-complete\.js\?v=20261028-redesign-navigation/.test(read('mothership-popup-gate.js')));
 expect('Redesign Socials, Contact, and Privacy pages use the shared shell', ['socials.html', 'contact.html', 'privacy.html'].every(file => /data-yfa-redesign-shell="interior"/.test(read(file)) && /redesign-page-shell\.js/.test(read(file))));
 expect('Legacy About Moi route redirects to the homepage', /location\.replace\('\/'\)/.test(read('about.html')));
 expect('Legal footer retains copyright, Privacy, choices, and Help', /© 2026 YourFavAlien/.test(read('redesign-page-shell.js')) && /data-yfa-privacy-open/.test(read('redesign-page-shell.js')) && /privacy/.test(read('redesign-page-shell.js')) && /help/.test(read('redesign-page-shell.js')));
