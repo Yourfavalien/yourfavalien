@@ -24,6 +24,9 @@
   });
 
   async function getJson(url) {
+    if(url===CONTENT_URL && new URLSearchParams(location.search).get('yfa-preview')==='1'){
+      const draft=localStorage.getItem('yfa-site-content-draft');if(draft)return JSON.parse(draft);
+    }
     let failure;
     for (let attempt=0; attempt<2; attempt++) {
       const controller = new AbortController();
@@ -197,6 +200,15 @@
           }
           nodes.push(card);
         });
+      });
+      (content.home?.blocks||[]).filter(block=>block&&block.visible!==false).forEach(block=>{
+        if(!['text','button','divider'].includes(block.type))return;
+        const article=document.createElement('article');article.className='yfa-editorial-item yfa-managed-block';article.dataset.blockId=block.id;
+        article.style.cssText='display:flex;flex-direction:column;justify-content:center;padding:clamp(24px,5vw,80px);min-width:min(80vw,620px);white-space:normal';
+        if(block.type==='divider'){article.style.minWidth='80px';const line=document.createElement('hr');line.style.cssText='height:50%;border:0;border-left:1px solid #ffffff55';article.append(line);}
+        else if(block.type==='text'){const title=document.createElement('h2');title.textContent=block.title||'';const body=document.createElement('p');body.textContent=block.body||'';body.style.whiteSpace='pre-wrap';article.append(title,body);}
+        else {try{const url=new URL(block.url||'/contact.html',location.origin);if(!['https:','http:','mailto:'].includes(url.protocol))return;const link=document.createElement('a');link.href=url.href;link.textContent=block.title||'Contact';article.append(link);}catch{return;}}
+        nodes.push(article);
       });
       home.replaceChildren(...nodes);
       const footer = document.querySelector('body > .yfa-footer');
