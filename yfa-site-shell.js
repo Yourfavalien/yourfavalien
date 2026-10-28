@@ -33,7 +33,6 @@
     nav.innerHTML = [
       ['index.html', 'home'],
       ['socials.html', 'socials'],
-      ['about.html', 'about moi'],
       ['contact.html', 'contact']
     ].map(function (item) {
       const active = currentPage() === item[0] ? ' class="active"' : '';

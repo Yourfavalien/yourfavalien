@@ -5,7 +5,7 @@
     tick();
   });
   const click = id => document.getElementById(id)?.click();
-  const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollTo = id => { const target=document.getElementById(id); const section=target?.closest('details'); if(section)section.open=true; (section||target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   const reveal = (id, tries = 18) => document.getElementById(id) ? scrollTo(id) : tries > 0 && setTimeout(() => reveal(id, tries - 1), 120);
   const hide = (...nodes) => nodes.forEach(node => node?.classList.add('hidden'));
 
