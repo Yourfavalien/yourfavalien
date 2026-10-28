@@ -14,8 +14,6 @@
   const isVideo = item => /\.(mp4|webm|mov)(?:\?|$)/i.test(String(item?.path || item?.url || ''));
   const visibleMedia = items => (Array.isArray(items) ? items : []).filter(item => item && item.url && item.visible !== false);
   const newestMediaFirst = items => [...items].sort((a, b) => {
-    const videoOrder = Number(isVideo(a)) - Number(isVideo(b));
-    if (videoOrder) return videoOrder;
     const time = item => {
       const explicit = Date.parse(item?.uploadedAt || item?.createdAt || '');
       if (Number.isFinite(explicit)) return explicit;
@@ -189,7 +187,7 @@
       if (!rawDelta) return;
       event.preventDefault();
       const unit = event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? innerWidth : 1;
-      gallery.scrollLeft += rawDelta * unit;
+      gallery.scrollBy({ left: rawDelta * unit, behavior: 'auto' });
     }, { passive: false, capture: true });
     gallery.addEventListener('keydown', event => {
       if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
