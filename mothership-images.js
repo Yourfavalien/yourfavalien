@@ -216,9 +216,10 @@
   }
 
   function loadSiteEnhancements() {
+    if (document.documentElement.dataset.yfaRedesign === 'home' || document.documentElement.dataset.yfaRedesignShell) return;
     if (window.__YFA_SITE_ENHANCEMENTS__ || document.querySelector('script[data-yfa-site-enhancements]')) return;
     const script = document.createElement('script');
-    script.src = '/site-enhancements.js?v=20260914-1';
+    script.src = '/site-enhancements.js?v=20261027-redesign-shell';
     script.defer = true;
     script.dataset.yfaSiteEnhancements = '1';
     document.head.appendChild(script);

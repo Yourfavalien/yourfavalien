@@ -40,6 +40,17 @@
     const alt = item.alt || 'YourFavAlien editorial photograph';
     if (isVideo(item)) {
       const video = document.createElement('video');
+      const makeFallback = () => {
+        const link = document.createElement('a');
+        link.className = 'yfa-video-fallback';
+        link.href = item.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Open original video';
+        link.setAttribute('aria-label', `Open original video: ${alt}`);
+        return link;
+      };
+      if (/\.mov(?:\?|$)/i.test(String(item.path || item.url || '')) && !video.canPlayType('video/quicktime')) return makeFallback();
       video.dataset.src = item.url;
       video.muted = true;
       video.defaultMuted = true;
@@ -48,6 +59,7 @@
       video.preload = priority ? 'metadata' : 'none';
       video.setAttribute('aria-label', alt);
       video.setAttribute('controlslist', 'nodownload noremoteplayback');
+      video.addEventListener('error', () => video.replaceWith(makeFallback()), { once: true });
       return video;
     }
     const image = document.createElement('img');
@@ -148,13 +160,40 @@
   function renderGallery(content) {
     const gallery = (content.pages || []).find(page => String(page.slug).toLowerCase() === 'gallery');
     if (!gallery) throw new Error('The Mothership Gallery page is not published.');
-    const media = newestMediaFirst(visibleMedia(gallery.images));
+    const media = visibleMedia(gallery.images);
+    if (gallery.orderMode !== 'manual') media.sort((a, b) => {
+      const time = item => {
+        const explicit = Date.parse(item?.uploadedAt || item?.createdAt || '');
+        if (Number.isFinite(explicit)) return explicit;
+        const match = String(item?.path || item?.url || '').match(/\/(\d{10,})-/);
+        return match ? Number(match[1]) : 0;
+      };
+      return time(b) - time(a);
+    });
     const home = document.querySelector('[data-home-gallery]');
     if (home) {
       const nodes = media.map((item, index) => editorialItem(item, index, 'gallery'));
+      const sections = (content.home?.sections || []).filter(section => section && section.enabled !== false && Array.isArray(section.images));
+      sections.forEach(section => {
+        const sectionMedia = visibleMedia(section.images);
+        sectionMedia.forEach((item, index) => {
+          const card = editorialItem(item, nodes.length, 'gallery');
+          card.dataset.homeSectionId = section.id || '';
+          if (index === 0 && (section.title || section.caption)) {
+            const label = document.createElement('span');
+            label.className = 'yfa-editorial-item__label';
+            label.textContent = [section.title, section.caption].filter(Boolean).join(' · ');
+            card.appendChild(label);
+          }
+          nodes.push(card);
+        });
+      });
       home.replaceChildren(...nodes);
+      const footer = document.querySelector('body > .yfa-footer');
+      if (footer) home.appendChild(footer);
       observeMedia(home);
       installHorizontalGallery(home);
+      renderManagedLinks(content);
     }
     const featured = document.querySelector('[data-featured-gallery]');
     if (featured) {
@@ -171,6 +210,26 @@
       installParallax(full);
       document.title = `${gallery.title || 'Gallery'} — YourFavAlien`;
     }
+  }
+
+  function renderManagedLinks(content) {
+    const host = document.querySelector('.yfa-footer__links');
+    if (!host) return;
+    const existing = new Set([...host.querySelectorAll('a[href]')].map(link => new URL(link.href, location.href).pathname.toLowerCase()));
+    (content.navigation?.customLinks || []).forEach(item => {
+      if (!item || item.enabled === false || !item.label || !item.url) return;
+      let url = String(item.url).trim();
+      if (/^\/page\.html\?slug=gallery$/i.test(url)) url = '/redesign-gallery.html';
+      let parsed;
+      try { parsed = new URL(url, location.href); } catch (error) { return; }
+      if (!/^https?:$/.test(parsed.protocol) || parsed.origin === location.origin && existing.has(parsed.pathname.toLowerCase())) return;
+      const link = document.createElement('a');
+      link.href = parsed.href;
+      link.textContent = item.label;
+      if (parsed.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+      host.insertBefore(link, host.querySelector('.yfa-footer__copyright') || null);
+      existing.add(parsed.pathname.toLowerCase());
+    });
   }
 
   function installHorizontalGallery(gallery) {
@@ -282,28 +341,51 @@
   function installIntro() {
     const intro = document.querySelector('[data-intro]');
     const film = document.querySelector('[data-intro-film]');
-    const skip = document.querySelector('[data-intro-skip]');
-    if (!intro || !film || !skip) return;
+    const play = document.querySelector('[data-intro-play]');
+    if (!intro || !film) return;
     const params = new URLSearchParams(location.search);
     const forced = params.get('intro') === '1';
-    const skipped = params.get('skip-intro') === '1';
     let seen = false;
     try { seen = sessionStorage.getItem('yfa-experience-v2-intro') === '1'; } catch (error) {}
-    if ((seen && !forced) || skipped || reduceMotion.matches) { intro.hidden = true; return; }
+    if (seen && !forced) { intro.hidden = true; return; }
     document.body.classList.add('is-intro-open');
     film.src = isPhone() ? 'assets/yfa-intro-mobile.mp4' : 'assets/yfa-intro-desktop.mp4';
+    intro.focus();
     const finish = () => {
       if (intro.classList.contains('is-leaving')) return;
       intro.classList.add('is-leaving');
       document.body.classList.remove('is-intro-open');
       try { sessionStorage.setItem('yfa-experience-v2-intro', '1'); } catch (error) {}
-      setTimeout(() => { intro.hidden = true; film.pause(); }, 750);
+      setTimeout(() => {
+        intro.hidden = true;
+        film.pause();
+        document.querySelector('.yfa-skip')?.focus();
+      }, 750);
     };
-    skip.addEventListener('click', finish);
+    const offerPlay = () => {
+      if (!play) { finish(); return; }
+      play.hidden = false;
+      play.focus();
+    };
+    const startFilm = () => {
+      if (play) play.hidden = true;
+      film.play().catch(offerPlay);
+    };
+    play?.addEventListener('click', startFilm);
+    document.addEventListener('keydown', event => {
+      if (intro.hidden || intro.classList.contains('is-leaving')) return;
+      if (event.key === 'Escape') { event.preventDefault(); return; }
+      if (event.key !== 'Tab') return;
+      const focusTarget = play && !play.hidden ? play : intro;
+      if (!intro.contains(document.activeElement) || document.activeElement === focusTarget) {
+        event.preventDefault();
+        focusTarget.focus();
+      }
+    });
     film.addEventListener('ended', finish, { once: true });
     film.addEventListener('error', finish, { once: true });
-    film.play().catch(() => {});
-    setTimeout(finish, 11500);
+    if (reduceMotion.matches) offerPlay();
+    else startFilm();
   }
 
   function installChrome() {

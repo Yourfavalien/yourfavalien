@@ -6,6 +6,8 @@
   if (!cfg || !window.YFA_CLOUDFLARE_CLIENT) return;
 
   const client = window.YFA_CLOUDFLARE_CLIENT;
+  let resolvePowerReady;
+  window.YFA_MOTHERSHIP_POWER_READY = new Promise(resolve => { resolvePowerReady = resolve; });
   const CONTENT_PATH = 'system/site-content.json';
   const DRAFT_KEY = 'yfa-site-content-draft';
   const publicBase = cfg.assetBase;
@@ -33,6 +35,7 @@
   };
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   const safe = value => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+  const pageUrl = page => String(page?.slug || '').toLowerCase() === 'gallery' ? '/redesign-gallery.html' : `/page.html?slug=${encodeURIComponent(page?.slug || '')}`;
 
   const defaults = () => ({
     version: 1,
@@ -168,14 +171,14 @@
   function homeSectionCard(section, index) {
     const card = el('div',{class:'power-card'});
     card.innerHTML = `
-      <div class="power-card-head"><div><div class="power-card-title">PHOTO SECTION ${index+1}</div><div class="power-muted">A vertical homepage section — not a carousel.</div></div><div class="power-row"><button class="power-mini" type="button" data-up>↑</button><button class="power-mini" type="button" data-down>↓</button><button class="power-mini danger" type="button" data-remove>Remove</button></div></div>
+      <div class="power-card-head"><div><div class="power-card-title">PHOTO SECTION ${index+1}</div><div class="power-muted">Its images join the horizontal homepage sequence after the main Gallery.</div></div><div class="power-row"><button class="power-mini" type="button" data-up>↑</button><button class="power-mini" type="button" data-down>↓</button><button class="power-mini danger" type="button" data-remove>Remove</button></div></div>
       <div class="power-grid">
         <div class="power-field"><label>SECTION TITLE</label><input data-title value="${(section.title||'').replace(/"/g,'&quot;')}"></div>
         <div class="power-field"><label>LAYOUT</label><select data-layout><option value="editorial">Editorial mix</option><option value="two">Two columns</option><option value="full">Full-width images</option></select></div>
         <div class="power-field full"><label>CAPTION / DESCRIPTION</label><textarea data-caption>${section.caption||''}</textarea></div>
         <label class="power-check"><input type="checkbox" data-enabled ${section.enabled!==false?'checked':''}> Show this section</label>
       </div>
-      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label></div><div class="power-muted" data-upload-status></div>
+      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" multiple></label></div><div class="power-muted" data-upload-status></div>
       <div class="power-media-list" data-media></div>
     `;
     card.querySelector('[data-layout]').value = section.layout || 'editorial';
@@ -198,10 +201,11 @@
     container.innerHTML='';
     (images||[]).forEach((item,index)=>{
       const box=el('div',{class:'power-media'});
-      const media=/\.(mp4|webm)(\?|$)/i.test(item.url||'')?`<video src="${item.url}" muted playsinline></video>`:`<img src="${item.url}" alt="">`;
+      const isVideoItem=/\.(mp4|webm|mov)(\?|$)/i.test(String(item.path||item.url||''));
+      const media=isVideoItem?`<video src="${item.url}" muted playsinline controls preload="metadata" aria-label="${(item.alt||'Gallery video').replace(/"/g,'&quot;')}"></video>`:`<img src="${item.url}" alt="${(item.alt||'Gallery photo').replace(/"/g,'&quot;')}">`;
       box.setAttribute('aria-disabled', String(item.visible === false));
       if (item.visible === false) box.style.opacity = '.45';
-      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><label class="power-check" style="margin-top:8px"><input type="checkbox" data-visible ${item.visible!==false?'checked':''}> Visible on site</label><div class="power-actions"><button class="power-mini" type="button" data-up ${index===0?'disabled':''}>Move up</button><button class="power-mini" type="button" data-down ${index===images.length-1?'disabled':''}>Move down</button></div><div class="power-actions"><button class="power-mini" type="button" data-adjust>Adjust</button><label class="power-mini" style="position:relative;overflow:hidden">Replace<input data-replace type="file" accept="image/*,video/mp4,video/webm" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><button class="power-mini danger" type="button" data-delete>Delete</button></div><div class="power-muted" data-media-status></div></div>`;
+      box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><label class="power-check" style="margin-top:8px"><input type="checkbox" data-visible ${item.visible!==false?'checked':''}> Visible on site</label><div class="power-actions"><button class="power-mini" type="button" data-up ${index===0?'disabled':''}>Move up</button><button class="power-mini" type="button" data-down ${index===images.length-1?'disabled':''}>Move down</button></div><div class="power-actions"><button class="power-mini" type="button" data-adjust ${isVideoItem?'disabled':''}>Adjust</button><label class="power-mini" style="position:relative;overflow:hidden">Replace<input data-replace type="file" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><button class="power-mini danger" type="button" data-delete>Delete</button></div><div class="power-muted" data-media-status></div></div>`;
       const preview=box.querySelector('img');
       if(preview&&item.responsive){const p=item.responsive.desktop||{};preview.style.objectPosition=`${p.x??50}% ${p.y??50}%`;preview.style.transformOrigin=`${p.x??50}% ${p.y??50}%`;preview.style.transform=`scale(${p.zoom||1})`;}
       box.querySelector('[data-alt]').oninput=e=>{item.alt=e.target.value;markDirty();};
@@ -223,9 +227,11 @@
   }
 
   function pageCard(page,index) {
+    const isMainGallery=String(page.slug||'').toLowerCase()==='gallery';
     const card=el('div',{class:'power-card'});
+    if(isMainGallery) card.setAttribute('data-main-gallery','');
     card.innerHTML=`
-      <div class="power-card-head"><div><div class="power-card-title">${page.title||'NEW PAGE'}</div><div class="power-code">/page.html?slug=${page.slug||''}</div></div><button class="power-mini danger" type="button" data-remove>Remove</button></div>
+      <div class="power-card-head"><div><div class="power-card-title">${page.title||'NEW PAGE'}</div><div class="power-code">${pageUrl(page)}</div></div><button class="power-mini danger" type="button" data-remove>Remove</button></div>
       <div class="power-grid">
         <div class="power-field"><label>PAGE TITLE</label><input data-title value="${(page.title||'').replace(/"/g,'&quot;')}"></div>
         <div class="power-field"><label>URL SLUG</label><input data-slug value="${(page.slug||'').replace(/"/g,'&quot;')}" placeholder="photos"></div>
@@ -235,20 +241,20 @@
         <div class="power-field"><label>META DESCRIPTION</label><input data-description value="${(page.description||'').replace(/"/g,'&quot;')}"></div>
         <label class="power-check"><input type="checkbox" data-enabled ${page.enabled!==false?'checked':''}> Publish this page</label>
       </div>
-      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm" multiple></label><a class="power-mini" data-open target="_blank" rel="noopener">Open page</a></div><div class="power-muted" data-upload-status></div>
+      <div class="power-actions"><label class="btn secondary upload-label">Add pictures / video<input data-upload type="file" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" multiple></label><a class="power-mini" data-open target="_blank" rel="noopener">Open page</a></div><div class="power-muted" data-upload-status></div>
       <div class="power-media-list" data-media></div>`;
     card.querySelector('[data-layout]').value=page.layout||'editorial';
     card.querySelector('[data-order]').value=page.orderMode||'newest';
-    const sync=()=>{page.title=card.querySelector('[data-title]').value;page.slug=safe(card.querySelector('[data-slug]').value);card.querySelector('[data-slug]').value=page.slug;page.body=card.querySelector('[data-body]').value;page.layout=card.querySelector('[data-layout]').value;page.orderMode=card.querySelector('[data-order]').value;page.description=card.querySelector('[data-description]').value;page.enabled=card.querySelector('[data-enabled]').checked;card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug)}`;markDirty();};
+    const sync=()=>{page.title=card.querySelector('[data-title]').value;page.slug=safe(card.querySelector('[data-slug]').value);card.querySelector('[data-slug]').value=page.slug;page.body=card.querySelector('[data-body]').value;page.layout=card.querySelector('[data-layout]').value;page.orderMode=card.querySelector('[data-order]').value;page.description=card.querySelector('[data-description]').value;page.enabled=card.querySelector('[data-enabled]').checked;card.querySelector('[data-open]').href=pageUrl(page);markDirty();};
     card.querySelectorAll('[data-title],[data-slug],[data-body],[data-layout],[data-order],[data-description],[data-enabled]').forEach(n=>{n.addEventListener('input',sync);n.addEventListener('change',sync);});
-    card.querySelector('[data-open]').href=`/page.html?slug=${encodeURIComponent(page.slug||'')}`;
+    card.querySelector('[data-open]').href=pageUrl(page);
     card.querySelector('[data-remove]').onclick=()=>{if(confirm('Remove this page?')){data.pages.splice(index,1);markDirty();renderPages();}};
     card.querySelector('[data-upload]').onchange=async e=>{const input=e.currentTarget,files=[...input.files];input.disabled=true;try{const result=await uploadBatch(files,`pages/${page.slug||'page'}`,card.querySelector('[data-upload-status]'));if(result.uploaded.length){page.images.unshift(...result.uploaded);markDirty();renderPages();await publish();}if(result.errors.length)alert(`${result.uploaded.length} file(s) uploaded.\n\n${result.errors.join('\n')}`);}catch(error){alert(error.message||'Upload failed.');}finally{input.disabled=false;}};
     renderMedia(card.querySelector('[data-media]'),page.images,()=>{markDirty();renderPages();});
     return card;
   }
 
-  function renderPages(){const host=document.getElementById('powerPages');if(!host)return;host.innerHTML='';if(!data.pages.length)host.innerHTML='<div class="power-empty">No extra pages yet. Create one whenever you want a photo journal, project page, lookbook, or anything else.</div>';data.pages.forEach((page,index)=>host.appendChild(pageCard(page,index)));}
+  function renderPages(){const host=document.getElementById('powerPages');if(!host)return;host.innerHTML='';if(!data.pages.length)host.innerHTML='<div class="power-empty">No Gallery or extra pages are configured yet.</div>';const ordered=[...data.pages].sort((a,b)=>(String(b.slug||'').toLowerCase()==='gallery')-(String(a.slug||'').toLowerCase()==='gallery'));ordered.forEach((page,index)=>host.appendChild(pageCard(page,index)));}
 
   function renderLinks(){const host=document.getElementById('powerLinks');if(!host)return;host.innerHTML='';const links=data.navigation.customLinks||[];if(!links.length)host.innerHTML='<div class="power-empty">No extra menu links.</div>';links.forEach((link,index)=>{const card=el('div',{class:'power-card'});card.innerHTML=`<div class="power-grid"><div class="power-field"><label>MENU LABEL</label><input data-label value="${(link.label||'').replace(/"/g,'&quot;')}"></div><div class="power-field"><label>URL</label><input data-url value="${(link.url||'').replace(/"/g,'&quot;')}"></div><label class="power-check"><input data-enabled type="checkbox" ${link.enabled!==false?'checked':''}> Show link</label></div><div class="power-actions"><button class="power-mini danger" data-remove type="button">Remove</button></div>`;const sync=()=>{link.label=card.querySelector('[data-label]').value;link.url=card.querySelector('[data-url]').value;link.enabled=card.querySelector('[data-enabled]').checked;markDirty();};card.querySelectorAll('input').forEach(n=>{n.oninput=sync;n.onchange=sync;});card.querySelector('[data-remove]').onclick=()=>{links.splice(index,1);markDirty();renderLinks();};host.appendChild(card);});}
 
@@ -292,9 +298,9 @@
 
       <section class="power-section"><div class="power-head"><div><h3>Homepage content</h3><div class="power-copy">Add a text intro below the current hero if you want one. You can leave it off and use only pictures.</div></div></div><div class="power-grid"><label class="power-check"><input id="powerHomeShowIntro" data-power-bind type="checkbox"> Show homepage intro</label><div></div><div class="power-field"><label>SMALL EYEBROW</label><input id="powerHomeEyebrow" data-power-bind placeholder="LATEST TRANSMISSION"></div><div class="power-field"><label>HEADING</label><input id="powerHomeTitle" data-power-bind placeholder="A little more of my world."></div><div class="power-field full"><label>PARAGRAPH</label><textarea id="powerHomeBody" data-power-bind></textarea></div></div></section>
 
-      <section class="power-section"><div class="power-head"><div><h3>Homepage photo sections</h3><div class="power-copy">This is the exact scroll-down picture system you asked for. These sections sit below the homepage hero and visitors naturally scroll through them — no carousel.</div></div><button id="powerAddHomeSection" class="btn" type="button">Add photo section</button></div><div id="powerHomeSections"></div></section>
+      <section class="power-section"><div class="power-head"><div><h3>Homepage photo sections</h3><div class="power-copy">The main Gallery leads the horizontal homepage sequence. Photos added to these optional groups follow the Gallery in their saved section order.</div></div><button id="powerAddHomeSection" class="btn" type="button">Add photo section</button></div><div id="powerHomeSections"></div></section>
 
-      <section class="power-section"><div class="power-head"><div><h3>Pages</h3><div class="power-copy">Create extra photo journals, lookbooks, projects, or other pages from the Mothership. Every page gets its own title, text, pictures, and URL slug.</div></div><button id="powerAddPage" class="btn" type="button">Create page</button></div><div id="powerPages"></div></section>
+      <section class="power-section" id="powerGallerySection"><div class="power-head"><div><h3>Gallery &amp; pages</h3><div class="power-copy">Your main Gallery is listed first. Add, replace, reorder, hide, or remove its photos and videos here; new uploads are inserted at the front. Other editable pages remain below it.</div></div><button id="powerAddPage" class="btn" type="button">Create page</button></div><div id="powerPages"></div></section>
 
       <section class="power-section"><div class="power-head"><div><h3>Navigation</h3><div class="power-copy">Control how the fixed menu behaves while visitors scroll and add extra links without touching HTML.</div></div></div><div class="power-grid"><div class="power-field"><label>MENU SCROLL BEHAVIOR</label><select id="powerScrollBehavior" data-power-bind><option value="hide-up-show-down">Hide scrolling up / return scrolling down</option><option value="hide-down-show-up">Hide scrolling down / return scrolling up</option><option value="always">Always visible</option></select></div></div><div class="power-divider"></div><div class="power-head"><div><div class="power-card-title">Extra menu links</div></div><button id="powerAddLink" class="power-mini" type="button">Add link</button></div><div id="powerLinks"></div></section>
 
@@ -329,6 +335,7 @@
     document.getElementById('powerPreview').onclick=()=>saveDraft();
     document.getElementById('powerPublish').onclick=async e=>{const button=e.currentTarget;button.disabled=true;try{await publish();await listRevisions();}catch{}finally{button.disabled=false;}};
     document.getElementById('powerRefreshRevisions').onclick=listRevisions;
+    resolvePowerReady(true);
     await listRevisions();
     window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
   }

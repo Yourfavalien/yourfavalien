@@ -26,7 +26,7 @@
     if (document.querySelector(`script[data-${dataKey}]`)) return;
     const script=document.createElement('script');script.src=src;script.defer=true;script.setAttribute(`data-${dataKey}`,'true');document.head.appendChild(script);
   }
-  loadScript('/site-enhancements.js?v=20260908-3','yfa-site-enhancements');
+  loadScript('/site-enhancements.js?v=20261027-redesign-shell','yfa-site-enhancements');
   loadScript('/site-complete.js?v=20260909-menu-stability4','yfa-site-complete');
   loadScript('/site-badge.js?v=20260905-1','yfa-site-badge');
 
