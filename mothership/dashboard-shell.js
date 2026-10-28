@@ -41,7 +41,7 @@
         await window.YFA_MOTHERSHIP_POWER_READY;
       }
       const powerTab = await waitFor('#powerTab', 60);
-      if (!powerTab || !powerTab.onclick) { showControls('websiteImages'); return; }
+      if (!powerTab) { showControls('websiteImages'); return; }
       powerTab.click();
       const galleryCard = await waitFor('#powerPages [data-main-gallery]', 25);
       const target = galleryCard || await waitFor('#powerPages', 25);

@@ -29,6 +29,8 @@
     url: normalizeMediaUrl(item?.url)
   }));
   const normalizeContentMedia = content => {
+    content.home = content.home || {};
+    content.navigation = content.navigation || {customLinks:[]};
     content.home.sections = (content.home.sections || []).map(section => ({ ...section, images: normalizeMediaItems(section.images) }));
     content.pages = (content.pages || []).map(page => ({ ...page, images: normalizeMediaItems(page.images) }));
     return content;
@@ -89,12 +91,13 @@
   }
 
   async function loadPublished() {
+    const controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),12000);
     try {
-      const response = await fetch(`${publicUrl(CONTENT_PATH)}?v=${Date.now()}`, {cache:'no-store'});
-      if (!response.ok) return defaults();
+      const response = await fetch(`${publicUrl(CONTENT_PATH)}?v=${Date.now()}`, {cache:'no-store',signal:controller.signal});
+      if (!response.ok) throw new Error('Gallery content could not load ('+response.status+'). Please retry.');
       const parsed = await response.json();
       return normalizeContentMedia({ ...defaults(), ...parsed, navigation:{...defaults().navigation,...(parsed.navigation||{})}, home:{...defaults().home,...(parsed.home||{})}, seo:{...defaults().seo,...(parsed.seo||{})}, pages:Array.isArray(parsed.pages)?parsed.pages:[] });
-    } catch { return defaults(); }
+    } catch(error) { throw new Error(error.message || 'Gallery content could not load. Please retry before editing.'); } finally {clearTimeout(timeout);}
   }
 
   function loadDraft() {
@@ -340,6 +343,7 @@
     window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  const start=()=>init().catch(error=>{resolvePowerReady(false);const view=document.getElementById('powerView');if(view){view.replaceChildren();const message=document.createElement('p');message.textContent=error.message;const retry=document.createElement('button');retry.textContent='Reload gallery controls';retry.onclick=()=>location.reload();view.append(message,retry);}});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 

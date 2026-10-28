@@ -11,7 +11,7 @@
   document.querySelector('body > nav')?.remove();
 
   const header = document.createElement('header');
-  header.className = 'yfa-header is-solid';
+  header.className = 'yfa-header';
   header.innerHTML = `<nav class="yfa-nav" aria-label="Primary navigation"><a class="yfa-nav__left" data-route="socials">Socials</a><a class="yfa-brand" data-route="home" aria-label="YourFavAlien home"><img src="/assets/01_Primary_Chrome_Wordmark_Clean.png" alt="YourFavAlien"></a><a class="yfa-nav__right" data-route="contact">Contact</a></nav>`;
   header.querySelectorAll('[data-route]').forEach(link => { link.href = routes[link.dataset.route]; });
 
@@ -22,4 +22,7 @@
 
   document.body.prepend(header);
   document.body.append(footer);
+  const trim=()=>header.querySelectorAll('a').forEach(a=>{if(!a.hasAttribute('data-route'))a.remove();});
+  new MutationObserver(trim).observe(header,{childList:true,subtree:true});
+
 })();
