@@ -152,16 +152,9 @@
     const home = document.querySelector('[data-home-gallery]');
     if (home) {
       const nodes = media.map((item, index) => editorialItem(item, index, 'gallery'));
-      const film = document.createElement('article');
-      film.className = 'yfa-editorial-item yfa-home-film is-visible';
-      film.style.setProperty('--media-ratio', '1.7778');
-      film.innerHTML = '<div class="yfa-editorial-item__frame"><video src="assets/yourfavalien-gallery.mp4" muted loop playsinline preload="metadata" aria-label="YourFavAlien film"></video></div>';
-      home.replaceChildren(...nodes, film);
+      home.replaceChildren(...nodes);
       observeMedia(home);
       installHorizontalGallery(home);
-      const filmVideo = film.querySelector('video');
-      const filmObserver = new IntersectionObserver(entries => entries.forEach(entry => entry.isIntersecting ? filmVideo.play().catch(() => {}) : filmVideo.pause()), { root: home, threshold: .2 });
-      filmObserver.observe(film);
     }
     const featured = document.querySelector('[data-featured-gallery]');
     if (featured) {
