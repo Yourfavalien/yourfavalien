@@ -12,9 +12,17 @@
 
   function nav(data){
     const items=data.navigation?.items;
-    if(!Array.isArray(items)||!items.length)return;
     const redesigned=document.documentElement.dataset.yfaRedesign==='home'||document.documentElement.hasAttribute('data-yfa-redesign-shell');
     if(redesigned){
+      const primary=document.querySelector('.yfa-nav');
+      if(primary){
+        const trimPrimary=()=>primary.querySelectorAll('a[href]').forEach(link=>{
+          if(!link.matches('.yfa-nav__left,.yfa-brand,.yfa-nav__right'))link.remove();
+        });
+        trimPrimary();
+        new MutationObserver(trimPrimary).observe(primary,{childList:true});
+      }
+      if(!Array.isArray(items)||!items.length)return;
       const host=document.querySelector('.yfa-footer__links');
       if(!host)return;
       const existing=new Set([...host.querySelectorAll('a[href]')].map(a=>new URL(a.href,location.href).pathname.toLowerCase()));
@@ -32,6 +40,7 @@
       });
       return;
     }
+    if(!Array.isArray(items)||!items.length)return;
     const navs=[...document.querySelectorAll('nav')].filter(n=>!n.closest('#yfa-orbit-popup-host'));
     navs.forEach(n=>{const anchors=[...n.querySelectorAll('a[href]')];if(!anchors.length)return;const map=new Map();anchors.forEach(a=>{try{const u=new URL(a.href,location.href);const path=u.pathname.toLowerCase();for(const item of items){const target=new URL(item.url,location.origin).pathname.toLowerCase();if(path===target||(target==='/'&&['/','/index.html'].includes(path)))map.set(item.id,a);}}catch{}});items.forEach(item=>{const a=map.get(item.id);if(!a||item.id==='privacy')return;a.textContent=item.label||a.textContent;a.href=item.url||a.href;a.hidden=item.enabled===false;a.style.display=item.enabled===false?'none':'';n.appendChild(a);});});
   }
@@ -47,5 +56,5 @@
 
   function siteEnabled(data){if(data.system?.siteEnabled!==false)return true;if(/^\/mothership/i.test(location.pathname))return true;document.body.innerHTML='<main style="min-height:100vh;display:grid;place-items:center;padding:30px;text-align:center"><div><h1>We’ll be right back.</h1><p>YourFavAlien is temporarily unavailable.</p></div></main>';document.title='YourFavAlien — Temporarily unavailable';return false;}
 
-  load().then(data=>{if(!data)return;if(!siteEnabled(data))return;style(data);content(data);xilo(data);popupWords(data);window.YFA_ADVANCED_SETTINGS=data;});
+  load().then(data=>{if(!data)return;if(!siteEnabled(data))return;style(data);nav(data);content(data);xilo(data);popupWords(data);window.YFA_ADVANCED_SETTINGS=data;});
 })();
