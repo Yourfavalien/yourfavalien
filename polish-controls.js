@@ -28,6 +28,7 @@ if(footer){
  const host=footer.querySelector('.yfa-footer__links');
  const cleanFooter=()=>{
    host?.querySelectorAll('a[href]').forEach(link=>{const url=new URL(link.href,location.href);if(/(?:^|\/)(?:socials|contact|redesign-gallery|gallery|page)(?:\.html)?$/.test(url.pathname)||url.searchParams.get('slug')==='gallery')link.remove();});
+   host?.querySelectorAll('a,button').forEach(control=>{control.style.setProperty('color','#fff','important');control.style.setProperty('font-family','YFAInter, Arial, sans-serif','important');});
    const copyright=host?.querySelector('.yfa-footer__copyright');if(copyright&&copyright.textContent!=='© 2026 YourFavAlien')copyright.textContent='© 2026 YourFavAlien';
  };
  cleanFooter();if(host)new MutationObserver(cleanFooter).observe(host,{childList:true,subtree:true});
