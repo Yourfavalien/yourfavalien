@@ -685,80 +685,26 @@ nav a {
   .card-sub { font-size: 9px; }
 }
 </style>
-<style id="instagram-real-posts-responsive">
-.instagram-card { overflow: hidden; }
+<style id="social-profile-embeds">
+.social-profile-embed:has(iframe:not([src])) { display: none; }
 
-.tiktok-live-feed {
-  display: grid;
-  place-items: center;
-  min-height: 360px;
-  padding: 12px;
-  overflow: hidden;
+.social-profile-embed {
+  container-type: inline-size;
+  padding: 10px;
   background: #111;
 }
 
-.tiktok-live-feed .tiktok-embed {
-  width: 100% !important;
-  max-width: 780px !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-}
-
-.social-feed-status {
-  margin: 0;
-  padding: 34px 18px;
-  color: rgba(255,255,255,.66);
-  font: 11px/1.7 'Courier Prime', monospace;
-  text-align: center;
-}
-
-.instagram-post-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 12px;
-  align-items: start;
-  background: #111;
-}
-
-.instagram-post {
-  min-width: 0;
+.social-profile-embed iframe {
+  display: block;
   width: 100%;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #fff;
+  max-width: 640px;
+  margin-inline: auto;
+  border: 0;
+  border-radius: 8px;
 }
 
-.instagram-post iframe {
-  display: block !important;
-  width: 100% !important;
-  height: 620px !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  background: #fff;
-  box-sizing: border-box !important;
-}
-
-@media (max-width: 700px) {
-  .instagram-post-grid {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-inline: contain;
-    padding: 10px;
-    scrollbar-width: none;
-  }
-
-  .instagram-post-grid::-webkit-scrollbar { display: none; }
-
-  .instagram-post {
-    flex: 0 0 calc(100vw - 40px);
-    max-width: 390px;
-    scroll-snap-align: center;
-  }
+@container (max-width: 400px) {
+  [data-yfa-social="tiktokEmbed"] iframe:not([data-embed-measured]) { height: 389px; }
 }
 
 @media (max-width: 380px) {
@@ -767,21 +713,7 @@ nav a {
     padding-right: 6px;
   }
 
-  .instagram-post-grid {
-    padding-left: 6px;
-    padding-right: 6px;
-  }
-
-  .instagram-post {
-    flex-basis: calc(100vw - 24px);
-  }
-}
-
-@media (min-width: 1200px) {
-  .instagram-post-grid {
-    gap: 16px;
-    padding: 16px;
-  }
+  .social-profile-embed { padding: 4px; }
 }
 </style>
 
@@ -905,33 +837,30 @@ nav a {
 </section>
 <div id="yfa-custom-socials" class="custom-social-groups" aria-label="More links"></div>
 <div class="social-card" data-yfa-social="tiktokEmbed">
-<!-- TikTok's official creator embed always reads the current public profile. -->
-<div class="tiktok-live-feed" aria-label="Latest TikTok posts">
-<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@yourrfavalien" data-unique-id="yourrfavalien" data-embed-type="creator">
-<section><a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" target="_blank">View @yourrfavalien on TikTok</a></section>
-</blockquote>
+<div class="social-profile-embed">
+  <iframe loading="lazy" height="479" data-yfa-src="https://www.tiktok.com/embed/@yourrfavalien" title="Latest TikTok posts from @yourrfavalien" allow="autoplay; encrypted-media; fullscreen"></iframe>
 </div>
 <a href="https://www.tiktok.com/@yourrfavalien" rel="noopener noreferrer" style="text-decoration:none;" target="_blank">
 <div class="card-info">
 <div class="card-platform-icon" style="background:#000;padding:0;overflow:hidden;"><img alt="TikTok profile" decoding="async" loading="eager" fetchpriority="high" src="assets/socials-2.webp" data-yfa-image-slot="socials-tiktok-profile" style="width:100%;height:100%;object-fit:cover;"/></div>
 <div class="card-text">
 <div class="card-name">TikTok</div>
-<div class="card-sub">@yourrfavalien · scroll to see more</div>
+<div class="card-sub">@yourrfavalien · view profile</div>
 </div>
 <div class="card-arrow">›</div>
 </div>
 </a>
 </div>
 <div class="social-card instagram-card" data-yfa-social="instagramEmbed">
-<div id="instagram-live-feed" data-feed-mode="profile" aria-label="Current Instagram profile" style="width:100%;display:flex;justify-content:center">
-  <iframe loading="lazy" scrolling="no" data-yfa-src="https://www.instagram.com/yourrfavalien/embed/" title="YourFavAlien current Instagram profile" style="display:block;width:100%;max-width:540px;height:620px;border:0;background:transparent" allowtransparency="true"></iframe>
+<div class="social-profile-embed">
+  <iframe loading="lazy" height="410" data-yfa-src="https://www.instagram.com/yourrfavalien/embed/" title="Instagram profile and recent posts from @yourrfavalien"></iframe>
 </div>
 <a href="https://www.instagram.com/yourrfavalien" rel="noopener noreferrer" style="text-decoration:none;" target="_blank">
 <div class="card-info">
 <div class="card-platform-icon" style="background:#000;padding:0;overflow:hidden;"><img alt="Instagram profile" decoding="async" loading="eager" fetchpriority="high" src="assets/instagram-profile.webp" data-yfa-image-slot="socials-instagram-profile" style="width:100%;height:100%;object-fit:cover;object-position:center 28%;"/></div>
 <div class="card-text">
 <div class="card-name">Instagram</div>
-<div class="card-sub">@yourrfavalien · swipe posts on phone</div>
+<div class="card-sub">@yourrfavalien · view profile</div>
 </div>
 <div class="card-arrow">›</div>
 </div>
@@ -1011,37 +940,7 @@ nav a {
 
 <script src="mothership-config.js?v=20261027-redesign-shell"></script>
 <script src="mothership-socials.js?v=20261016-profile-icons2"></script>
-<script async src="https://www.tiktok.com/embed.js"></script>
-<script defer src="social-feeds.js?v=20261028-profile"></script>
-
-<script>
-  // Keep social buttons and the page shell responsive; load video embeds only when visitors reach them.
-  (function () {
-    const embeds = Array.from(document.querySelectorAll('iframe[data-yfa-src]'));
-    if (!embeds.length) return;
-    const loadEmbed = function (iframe) {
-      if (!iframe.dataset.yfaSrc || iframe.src) return;
-      iframe.src = iframe.dataset.yfaSrc;
-      delete iframe.dataset.yfaSrc;
-    };
-    const beginObserving = function () {
-      if (!('IntersectionObserver' in window)) {
-        embeds.forEach(loadEmbed);
-        return;
-      }
-      const observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          loadEmbed(entry.target);
-          observer.unobserve(entry.target);
-        });
-      }, { rootMargin: '0px' });
-      embeds.forEach(function (embed) { observer.observe(embed); });
-    };
-    // Let the page shell and direct profile links settle before third-party video requests begin.
-    window.setTimeout(beginObserving, 1200);
-  })();
-</script>
+<script src="social-feeds.js?v=20261108-profile-embeds"></script>
 
 <script id="yfa-page-transitions">
 (function () {

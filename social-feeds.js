@@ -1,61 +1,38 @@
 (function () {
   'use strict';
 
-  const feed = document.getElementById('instagram-live-feed');
-  if (!feed || feed.dataset.feedMode === 'profile') return;
-
-  const endpoint = feed.dataset.feedEndpoint;
-  if (!endpoint) return;
-
-  const isInstagramUrl = value => {
-    try {
-      const url = new URL(value);
-      return url.protocol === 'https:' && /(^|\.)instagram\.com$/i.test(url.hostname);
-    } catch (error) {
-      return false;
+  const providers = {
+    'https://www.tiktok.com': {
+      frame: document.querySelector('[data-yfa-social="tiktokEmbed"] iframe'),
+      getHeight: message => typeof message.signalSource === 'string' ? message.height : undefined
+    },
+    'https://www.instagram.com': {
+      frame: document.querySelector('[data-yfa-social="instagramEmbed"] iframe'),
+      getHeight: message => message.type === 'MEASURE' ? message.details?.height : undefined
     }
   };
 
-  const render = posts => {
-    const validPosts = posts
-      .map(post => ({
-        permalink: String(post && post.permalink || '').trim(),
-        id: String(post && post.id || '').trim()
-      }))
-      .filter(post => post.id && isInstagramUrl(post.permalink))
-      .slice(0, 6);
+  window.addEventListener('message', event => {
+    const provider = providers[event.origin];
+    if (!provider?.frame || event.source !== provider.frame.contentWindow) return;
 
-    if (!validPosts.length) return;
+    let message = event.data;
+    if (typeof message === 'string') {
+      try {
+        message = JSON.parse(message);
+      } catch {
+        return;
+      }
+    }
 
-    const fragment = document.createDocumentFragment();
-    validPosts.forEach((post, index) => {
-      const item = document.createElement('div');
-      item.className = 'instagram-post';
+    if (!message || typeof message !== 'object') return;
+    const height = provider.getHeight(message);
+    if (!Number.isFinite(height) || height < 150) return;
+    provider.frame.height = String(Math.min(Math.ceil(height), 1800));
+    provider.frame.dataset.embedMeasured = "";
+  });
 
-      const iframe = document.createElement('iframe');
-      iframe.loading = 'lazy';
-      iframe.scrolling = 'no';
-      iframe.title = `Instagram post ${index + 1}`;
-      iframe.src = post.permalink.replace(/\/$/, '') + '/embed/';
-      item.appendChild(iframe);
-      fragment.appendChild(item);
-    });
-
-    feed.replaceChildren(fragment);
-  };
-
-  fetch(endpoint, {
-    mode: 'cors',
-    credentials: 'omit',
-    cache: 'no-store',
-    headers: { Accept: 'application/json' }
-  })
-    .then(response => {
-      if (!response.ok) throw new Error(`Instagram feed unavailable (${response.status})`);
-      return response.json();
-    })
-    .then(data => render(Array.isArray(data && data.posts) ? data.posts : []))
-    .catch(() => {
-      // Keep the current embeds visible until the one-time Instagram connection is complete.
-    });
+  for (const { frame } of Object.values(providers)) {
+    if (frame?.dataset.yfaSrc) frame.src = frame.dataset.yfaSrc;
+  }
 })();
