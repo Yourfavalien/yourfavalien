@@ -8,19 +8,18 @@ html[data-yfa-redesign-shell] body{animation-fill-mode:backwards!important}
 html[data-yfa-redesign-shell] body,html[data-yfa-redesign-shell] main{font-family:YFAInter,Arial,sans-serif!important}
 .yfa-nav a{border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;font-family:YFAInter,Arial,sans-serif!important}
 .yfa-nav a:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #fff!important;outline-offset:5px}
-.yfa-footer{position:fixed!important;bottom:0;left:0;right:0;z-index:90;width:100%!important;min-height:0!important;height:auto!important;padding:12px 24px!important;background:#000!important;display:block!important;font:9px/1.5 YFAInter,Arial,sans-serif!important}
+.yfa-footer{position:static!important;width:100%!important;min-height:0!important;height:auto!important;padding:12px 24px!important;background:#000!important;display:block!important;font:9px/1.5 YFAInter,Arial,sans-serif!important}
+html[data-yfa-redesign="home"] .yfa-footer{position:fixed!important;bottom:0;left:0;right:0;z-index:90}
 .yfa-footer>img,.yfa-footer>a{display:none!important}.yfa-footer__links{width:100%;margin:0!important;justify-self:start!important;justify-content:flex-start!important;gap:12px!important}.yfa-footer__copyright{font-size:8px!important}.yfa-footer .yfa-a11y{position:static!important;border:0!important;background:none!important;padding:0!important}.yfa-options{left:50%!important;transform:translateX(-50%)}
 .yfa-more{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:100;background:#000c;color:white;border:0;padding:9px 16px;font:10px Arial;letter-spacing:.18em}
 .yfa-a11y{position:fixed;bottom:12px;left:12px;z-index:110;background:#000c;color:white;border:1px solid #ffffff55;padding:6px;font:10px Arial}.yfa-options{position:fixed;bottom:48px;left:12px;z-index:111;background:#111;color:#fff;padding:18px;max-width:280px}.yfa-options label{display:block;margin:12px 0}
 html.yfa-readable body{font-family:Arial,sans-serif!important;letter-spacing:.025em;line-height:1.6}html.yfa-contrast{--white:#fff;--black:#000}html.yfa-contrast p,html.yfa-contrast a{opacity:1!important;color:#fff!important}html.yfa-reduce *,html.yfa-reduce *:before,html.yfa-reduce *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-@media(max-width:700px){.yfa-footer{padding:20px 40px!important;max-height:45vh;overflow:auto}.yfa-footer:not(.is-open){display:none!important}.yfa-more:not(:focus-visible):not(.is-visible){opacity:0;pointer-events:none}.yfa-footer__links{width:100%;margin:0!important;justify-self:start!important;justify-content:flex-start!important;text-align:left}}
 @media(max-width:700px){
-  html[data-yfa-theme-page="socials"] .yfa-footer {
-    position:static!important;
-    display:block!important;
-    max-height:none;
-    overflow:visible;
-  }
+  .yfa-footer{padding:20px 40px!important}
+  html[data-yfa-redesign="home"] .yfa-footer{max-height:45vh;overflow:auto}
+  html[data-yfa-redesign="home"] .yfa-footer:not(.is-open){display:none!important}
+  .yfa-more:not(:focus-visible):not(.is-visible){opacity:0;pointer-events:none}
+  .yfa-footer__links{text-align:left}
 }
 `;document.head.append(style);
 const footer=document.querySelector('.yfa-footer');
@@ -32,7 +31,7 @@ if(footer){
  };
  cleanFooter();if(host)new MutationObserver(cleanFooter).observe(host,{childList:true,subtree:true});
 
- if(document.documentElement.dataset.yfaThemePage !== 'socials'){
+ if(document.documentElement.dataset.yfaRedesign === 'home'){
   const more=document.createElement('button');more.className='yfa-more';more.textContent='MORE';more.setAttribute('aria-expanded','false');more.setAttribute('aria-controls','yfa-utility-footer');footer.id='yfa-utility-footer';
   const mobile=matchMedia('(max-width:700px)');more.hidden=!mobile.matches;mobile.addEventListener('change',()=>more.hidden=!mobile.matches);
   let open=false,timer;const toggle=()=>{open=!open;footer.classList.toggle('is-open',open);more.textContent=open?'CLOSE':'MORE';more.setAttribute('aria-expanded',String(open));if(open)footer.querySelector('a,button')?.focus();};more.onclick=toggle;document.body.append(more);
