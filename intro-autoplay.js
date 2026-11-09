@@ -60,7 +60,9 @@
       }
       watchPlayback();
       film.play().catch(() => {
-        if (attempt === attempts) retry();
+        // Keep the second attempt's loading window open for canplay/loadeddata.
+        // A rejected play promise is not proof that loading has finished.
+        if (attempt === attempts && attempts < 2) retry();
       });
     };
 
