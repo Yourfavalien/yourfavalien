@@ -381,7 +381,7 @@
     const play = document.querySelector('[data-intro-play]');
     if (!intro || !film) return;
     document.body.classList.add('is-intro-open');
-    film.src = isPhone() ? 'assets/yfa-intro-mobile-20261109.mp4' : 'assets/yfa-intro-desktop-20261109.mp4';
+    film.src = isPhone() ? 'assets/yfa-intro-mobile-20261109.mp4?v=12s-r2' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
     intro.focus();
     const finish = () => {
       if (intro.classList.contains('is-leaving')) return;
