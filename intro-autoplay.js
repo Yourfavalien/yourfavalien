@@ -87,7 +87,7 @@
     film.addEventListener('waiting', watchPlayback);
     film.addEventListener('ended', finish, { once: true });
     film.addEventListener('error', retry);
-    film.src = phone ? 'assets/yfa-intro-mobile-20261109-compat.mp4' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
+    film.src = phone ? 'assets/yfa-intro-mobile-20261109-compat.mp4?v=phone-refresh-6' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
     startFilm();
   }
 
