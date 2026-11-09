@@ -378,13 +378,29 @@
   function installIntro() {
     const intro = document.querySelector('[data-intro]');
     const film = document.querySelector('[data-intro-film]');
-    const play = document.querySelector('[data-intro-play]');
     if (!intro || !film) return;
+    if (reduceMotion.matches) {
+      intro.hidden = true;
+      return;
+    }
+
+    const phoneScreen = matchMedia('(pointer: coarse)').matches &&
+      Math.min(screen.width, screen.height) < 600;
+    const phone = isPhone() || phoneScreen;
+    film.defaultMuted = true;
+    film.muted = true;
+    film.playsInline = true;
     document.body.classList.add('is-intro-open');
-    film.src = isPhone() ? 'assets/yfa-intro-mobile-20261109.mp4?v=12s-r2' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
     intro.focus();
+
+    let attempts = 0;
+    let playbackTimer;
+    let retryTimer;
+    const isLeaving = () => intro.hidden || intro.classList.contains('is-leaving');
     const finish = () => {
-      if (intro.classList.contains('is-leaving')) return;
+      if (isLeaving()) return;
+      clearTimeout(playbackTimer);
+      clearTimeout(retryTimer);
       intro.classList.add('is-leaving');
       document.body.classList.remove('is-intro-open');
       setTimeout(() => {
@@ -393,30 +409,53 @@
         document.querySelector('#main')?.focus({ preventScroll: true });
       }, 750);
     };
-    const offerPlay = finish;
-    const watchdog=setTimeout(finish, 20000);
-    film.addEventListener('playing',()=>clearTimeout(watchdog),{once:true});
-    film.addEventListener('stalled',()=>setTimeout(()=>{if(!intro.hidden && film.readyState<3)finish();},5000));
-    const startFilm = () => {
-      if (play) play.hidden = true;
-      film.play().catch(offerPlay);
+    const retry = () => {
+      if (isLeaving() || retryTimer !== undefined) return;
+      clearTimeout(playbackTimer);
+      if (attempts >= 2) {
+        finish();
+        return;
+      }
+      retryTimer = setTimeout(() => {
+        retryTimer = undefined;
+        startFilm();
+      }, 400);
     };
-    play?.addEventListener('click', startFilm);
+    const watchPlayback = () => {
+      if (isLeaving() || retryTimer !== undefined) return;
+      clearTimeout(playbackTimer);
+      playbackTimer = setTimeout(retry, 5000);
+    };
+    const startFilm = () => {
+      const attempt = ++attempts;
+      if (attempt > 1 && (film.error || (film.currentTime === 0 && film.readyState < 2))) {
+        film.load();
+      }
+      watchPlayback();
+      film.play().catch(() => {
+        if (attempt === attempts) retry();
+      });
+    };
+
     document.addEventListener('keydown', event => {
-      if (intro.hidden || intro.classList.contains('is-leaving')) return;
-      if (event.key === 'Escape') { event.preventDefault(); return; }
-      if (event.key !== 'Tab') return;
-      const focusTarget = play && !play.hidden ? play : intro;
-      if (!intro.contains(document.activeElement) || document.activeElement === focusTarget) {
+      if (isLeaving()) return;
+      if (event.key === 'Escape' || event.key === 'Tab') {
         event.preventDefault();
-        focusTarget.focus();
+        intro.focus();
       }
     });
+    film.addEventListener('playing', () => {
+      clearTimeout(playbackTimer);
+      clearTimeout(retryTimer);
+      retryTimer = undefined;
+    });
+    film.addEventListener('waiting', watchPlayback);
     film.addEventListener('ended', finish, { once: true });
-    film.addEventListener('error', finish, { once: true });
-    if (reduceMotion.matches) finish();
-    else startFilm();
+    film.addEventListener('error', retry);
+    film.src = phone ? 'assets/yfa-intro-mobile-20261109-compat.mp4' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
+    startFilm();
   }
+
 
   function installChrome() {
     const header = document.querySelector('[data-header]');
