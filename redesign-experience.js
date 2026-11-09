@@ -375,88 +375,6 @@
     });
   }
 
-  function installIntro() {
-    const intro = document.querySelector('[data-intro]');
-    const film = document.querySelector('[data-intro-film]');
-    if (!intro || !film) return;
-    if (reduceMotion.matches) {
-      intro.hidden = true;
-      return;
-    }
-
-    const phoneScreen = matchMedia('(pointer: coarse)').matches &&
-      Math.min(screen.width, screen.height) < 600;
-    const phone = isPhone() || phoneScreen;
-    film.defaultMuted = true;
-    film.muted = true;
-    film.playsInline = true;
-    document.body.classList.add('is-intro-open');
-    intro.focus();
-
-    let attempts = 0;
-    let playbackTimer;
-    let retryTimer;
-    const isLeaving = () => intro.hidden || intro.classList.contains('is-leaving');
-    const finish = () => {
-      if (isLeaving()) return;
-      clearTimeout(playbackTimer);
-      clearTimeout(retryTimer);
-      intro.classList.add('is-leaving');
-      document.body.classList.remove('is-intro-open');
-      setTimeout(() => {
-        intro.hidden = true;
-        film.pause();
-        document.querySelector('#main')?.focus({ preventScroll: true });
-      }, 750);
-    };
-    const retry = () => {
-      if (isLeaving() || retryTimer !== undefined) return;
-      clearTimeout(playbackTimer);
-      if (attempts >= 2) {
-        finish();
-        return;
-      }
-      retryTimer = setTimeout(() => {
-        retryTimer = undefined;
-        startFilm();
-      }, 400);
-    };
-    const watchPlayback = () => {
-      if (isLeaving() || retryTimer !== undefined) return;
-      clearTimeout(playbackTimer);
-      playbackTimer = setTimeout(retry, 5000);
-    };
-    const startFilm = () => {
-      const attempt = ++attempts;
-      if (attempt > 1 && (film.error || (film.currentTime === 0 && film.readyState < 2))) {
-        film.load();
-      }
-      watchPlayback();
-      film.play().catch(() => {
-        if (attempt === attempts) retry();
-      });
-    };
-
-    document.addEventListener('keydown', event => {
-      if (isLeaving()) return;
-      if (event.key === 'Escape' || event.key === 'Tab') {
-        event.preventDefault();
-        intro.focus();
-      }
-    });
-    film.addEventListener('playing', () => {
-      clearTimeout(playbackTimer);
-      clearTimeout(retryTimer);
-      retryTimer = undefined;
-    });
-    film.addEventListener('waiting', watchPlayback);
-    film.addEventListener('ended', finish, { once: true });
-    film.addEventListener('error', retry);
-    film.src = phone ? 'assets/yfa-intro-mobile-20261109-compat.mp4' : 'assets/yfa-intro-desktop-20261109.mp4?v=12s-r2';
-    startFilm();
-  }
-
-
   function installChrome() {
     const header = document.querySelector('[data-header]');
     if (!header || header.classList.contains('is-solid')) return;
@@ -479,8 +397,7 @@
 
   async function boot() {
     installPrimaryNavigation();
-    installMenu();
-    installIntro();
+    installMenu(); 
     installChrome();
     installInterlude();
     applyTheme();
