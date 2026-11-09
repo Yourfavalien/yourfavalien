@@ -76,6 +76,14 @@
       clearTimeout(retryTimer);
       retryTimer = undefined;
     });
+    const resumeWhenReady = () => {
+      if (isLeaving() || !film.paused || document.hidden) return;
+      film.muted = true;
+      film.play().catch(() => {});
+    };
+    film.addEventListener('loadeddata', resumeWhenReady);
+    film.addEventListener('canplay', resumeWhenReady);
+    document.addEventListener('visibilitychange', resumeWhenReady);
     film.addEventListener('waiting', watchPlayback);
     film.addEventListener('ended', finish, { once: true });
     film.addEventListener('error', retry);
