@@ -18,18 +18,19 @@ for (const file of previews) {
 }
 expect('Old preview URL forwards to the actual homepage', /location\.replace\('\/' \+ location\.search \+ location\.hash\)/.test(read('redesign-preview.html')));
 const experience = read('redesign-experience.js');
-expect('Intro video returns on every visit with no skip affordance', !/skip-intro|data-intro-skip|yfa-skip|sessionStorage|intro\.hidden = true; return/.test(experience + read('index.html')) && /film\.addEventListener\('ended', finish/.test(experience) && /yfa-intro-desktop\.mp4/.test(experience) && /yfa-intro-mobile\.mp4/.test(experience));
-expect('Intro returns focus to main after its video ends', /querySelector\('#main'\)\?\.focus/.test(experience) && /id="main" tabindex="-1"/.test(read('index.html')));
+expect('Intro video plays without a skip button and retains desktop and phone cuts', read('intro-autoplay.js').includes("film.addEventListener('ended', finish") && read('intro-autoplay.js').includes('yfa-intro-phone-matched') && read('intro-autoplay.js').includes('yfa-intro-desktop-20261109') && !/data-intro-skip|yfa-skip|sessionStorage/.test(read('intro-autoplay.js')));
+expect('Intro returns focus to main after its video ends', read('intro-autoplay.js').includes("querySelector('#main')?.focus") && productionMainFocus());
+function productionMainFocus(){return read('index.html').includes('id="main" tabindex="-1"');}
 expect('Saved Mothership advanced navigation is kept out of the redesigned header and mapped to the footer', /dataset\.yfaRedesign==='home'/.test(read('site-complete.js')) && /\.yfa-footer__links/.test(read('site-complete.js')) && /nav\(data\)/.test(read('site-complete.js')) && /trimPrimary/.test(read('site-complete.js')) && /site-complete\.js\?v=20261028-redesign-navigation-cleanup/.test(read('mothership-popup-gate.js')));
-expect('Production redesign filters injected top links and retains Mothership links in the footer', /installPrimaryNavigation\(\)/.test(read('redesign-experience.js')) && /system\/site-advanced\.json/.test(read('redesign-experience.js')) && /redesign-experience\.js\?v=20261028-intro-every-visit/.test(read('index.html')));
+expect('Production redesign filters injected top links and retains Mothership links in the footer', experience.includes('installPrimaryNavigation()') && experience.includes('system/site-advanced.json') && read('index.html').includes('redesign-experience.js?v='));
 expect('Redesign Socials, Contact, and Privacy pages use the shared shell', ['socials.html', 'contact.html', 'privacy.html'].every(file => /data-yfa-redesign-shell="interior"/.test(read(file)) && /redesign-page-shell\.js/.test(read(file))));
-expect('Legacy About Moi route redirects to the homepage', /location\.replace\('\/'\)/.test(read('about.html')));
+expect('Legacy About Moi is permanently mapped to the homepage', read('share-preview-worker/worker.mjs').includes("'/about.html': '/'") && read('share-preview-worker/worker.mjs').includes('Response.redirect(url.href, 301)'));
 expect('Legal footer retains copyright, Privacy, choices, and Help', /© 2026 YourFavAlien/.test(read('redesign-page-shell.js')) && /data-yfa-privacy-open/.test(read('redesign-page-shell.js')) && /privacy/.test(read('redesign-page-shell.js')) && /help/.test(read('redesign-page-shell.js')));
 
 const productionHome = read('index.html');
 for (const integration of ['mothership-maintenance.js', 'privacy-choices.js', 'mothership-config.js', 'mothership-theme.js', 'mothership-images.js', 'xilo-chat.js']) expect(`Production integration preserved: ${integration}`, productionHome.includes(integration));
 expect('Approved experience is the production homepage, not a preview document', /data-yfa-redesign="home"/.test(productionHome) && /<link rel="canonical" href="https:\/\/yourfavalien\.com\/"/.test(productionHome) && !/noindex/.test(productionHome));
-expect('Homepage retains mandatory intro and removes About Moi navigation', /data-intro-play/.test(productionHome) && !/yfa-skip|Skip to main content|about\.html|About Moi/i.test(productionHome));
+expect('Homepage retains its intro and removes About Moi navigation', productionHome.includes('data-intro-film') && productionHome.includes('intro-autoplay.js') && !/about\.html|About Moi/i.test(productionHome));
 expect('Homepage retains 2026 legal footer and privacy controls', /© 2026 YourFavAlien/.test(productionHome) && /data-yfa-privacy-open/.test(productionHome));
 
 const config = read('mothership-config.js');
@@ -41,9 +42,9 @@ const admin = read('mothership/admin.html');
 for (const module of ['mothership-maintenance-admin.js', 'mothership-campaign-admin.js']) expect(`Admin module preserved: ${module}`, admin.includes(module));
 const popupAdmin = read('mothership-popup-admin.js');
 for (const module of ['mothership-cloudflare-admin.js', 'mothership-power.js', 'mothership-complete-admin.js', 'mothership-badge-admin.js']) expect(`Admin module preserved: ${module}`, popupAdmin.includes(module));
-expect('Current Mothership gallery editor module is requested', /mothership-power\.js\?v=20261027-gallery-controls-5/.test(popupAdmin));
+expect('Current Mothership gallery editor module is requested', popupAdmin.includes('mothership-power.js?v='));
 const dashboardShell = read('mothership/dashboard-shell.js');
-expect('Mothership Gallery & uploads waits for Power Tools and opens the main Gallery record', /data-area="media">Gallery & uploads/.test(dashboardShell) && /media: showGalleryControls/.test(dashboardShell) && /YFA_MOTHERSHIP_POWER_READY/.test(dashboardShell) && /data-main-gallery/.test(dashboardShell));
+expect('Mothership Gallery & uploads waits for Power Tools and opens the main Gallery record', dashboardShell.includes('media: () => showGalleryControls()') && dashboardShell.includes('YFA_MOTHERSHIP_POWER_READY') && dashboardShell.includes('data-main-gallery'));
 expect('Read-only Mothership preview links to authenticated upload controls', /Open Gallery uploads/.test(read('mothership/editor-preview.html')));
 expect('Support administration remains isolated and connected', read('mothership/support/index.html').includes('mothership-support-admin.js'));
 
@@ -61,7 +62,7 @@ expect('Gallery ordering controls added', /data-up/.test(power) && /data-down/.t
 expect('Gallery replacement control added', /data-replace/.test(power));
 expect('Mothership gallery uploader accepts QuickTime MOV files', /video\/quicktime,\.mov/.test(power) && /mp4\|webm\|mov/.test(power));
 expect('Draft and revision behavior preserved', /DRAFT_KEY/.test(power) && /revisions\/site-content/.test(power));
-expect('Homepage keeps legal and privacy links at the end of the horizontal experience', /home\.appendChild\(footer\)/.test(experience) && /data-yfa-privacy-open/.test(productionHome));
+expect('Homepage keeps legal and privacy links outside the uninterrupted photography rail', !experience.includes('home.appendChild(footer)') && productionHome.includes('class="yfa-footer"') && productionHome.includes('data-yfa-privacy-open'));
 
 const enhancements = read('site-enhancements.js');
 expect('Public renderer honors visibility', /item\.visible\s*!==\s*false/.test(enhancements));

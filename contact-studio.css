@@ -1,0 +1,50 @@
+/* Contact studio: isolated from all other pages. */
+html[data-contact-studio],html[data-contact-studio] body{background:#000!important;color:#e6e6e6;min-width:0}
+[data-contact-studio] .studio-contact{padding:155px clamp(22px,5vw,90px) 0;max-width:1800px;margin:auto}
+[data-contact-studio] .studio-intro{margin-bottom:66px}
+[data-contact-studio] .studio-intro h1{margin:0 0 24px;font:800 36px/1.15 Arial,Helvetica,sans-serif;letter-spacing:-.035em;color:#fff}
+[data-contact-studio] .studio-intro p{font:300 13px/1.8 YFAInter,Arial,sans-serif;color:#aaa;letter-spacing:.01em;margin:0;max-width:420px}
+[data-contact-studio] .studio-destinations{display:grid;grid-template-columns:1fr 1.2fr 1fr;column-gap:clamp(28px,4vw,70px);width:100%}
+[data-contact-studio] .studio-destination{display:flex;flex-direction:column;align-items:flex-start;position:relative;min-height:205px;padding:22px 0 28px;border-top:1px solid #424242;text-decoration:none}
+[data-contact-studio] .destination-number{font:10px/1 YFAInter,Arial,sans-serif;color:#747474;margin-bottom:29px}
+[data-contact-studio] .studio-destination h2{font:300 clamp(21px,2.2vw,30px)/1.15 YFAInter,Arial,sans-serif;letter-spacing:-.025em;margin:0 0 19px;white-space:nowrap;color:#cbcbcf;text-shadow:0 1px 1px #4c4c50}
+[data-contact-studio] .destination-copy{font:300 12px/1.7 YFAInter,Arial,sans-serif;color:#aaa;letter-spacing:.01em}
+[data-contact-studio] .destination-arrow{position:absolute;right:1px;top:14px;font:300 25px/1 Arial,sans-serif;color:#b9b9b9;transition:transform .2s,color .2s}
+[data-contact-studio] .studio-destination:hover .destination-arrow{transform:translate(3px,-3px);color:#fff}
+[data-contact-studio] .studio-destination:hover h2{color:#fff}
+[data-contact-studio] .studio-destination:focus-visible{outline:2px solid #eee;outline-offset:7px}
+[data-contact-studio] .studio-email{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px 17px;font:300 10px/1.8 YFAInter,Arial,sans-serif;color:#858585;margin:4px 0 0}
+[data-contact-studio] .studio-email a{color:#bbb;text-decoration-thickness:1px;text-underline-offset:4px;overflow-wrap:anywhere}
+[data-contact-studio] .studio-signature{margin:80px -2vw 40px;pointer-events:none}
+[data-contact-studio] .studio-wordmark{display:block;width:100%;height:auto}
+.contact-skip{position:fixed;left:16px;top:-100px;z-index:200;background:#fff;color:#000;padding:12px}.contact-skip:focus{top:12px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:850px){
+ [data-contact-studio] .studio-contact{padding-top:128px}
+ [data-contact-studio] .studio-intro{margin-bottom:65px}
+ [data-contact-studio] .studio-destinations{column-gap:25px}
+ [data-contact-studio] .studio-destination h2{font-size:clamp(20px,3vw,30px)}
+ [data-contact-studio] .destination-copy{font-size:11px}
+}
+@media(max-width:580px){
+ [data-contact-studio] .studio-contact{padding:119px 22px 0}
+ [data-contact-studio] .studio-intro{margin-bottom:48px}
+ [data-contact-studio] .studio-intro h1{font-size:30px;margin-bottom:23px}
+ [data-contact-studio] .studio-intro p{font-size:12px;line-height:1.8;margin-left:0;max-width:300px}
+ [data-contact-studio] .studio-destinations{display:block}
+ [data-contact-studio] .studio-destination{display:grid;grid-template-columns:21px 1fr 25px;gap:0 11px;min-height:137px;padding:25px 0}
+ [data-contact-studio] .destination-number{grid-row:1/3;align-self:start;margin:7px 0 0;font-size:9px}
+ [data-contact-studio] .studio-destination h2{grid-column:2;align-self:end;font-size:23px;margin:0}
+ [data-contact-studio] .destination-copy{grid-column:2;grid-row:2;margin-top:12px;font-size:11px}
+ [data-contact-studio] .destination-arrow{position:static;grid-column:3;grid-row:1/3;justify-self:end;font-size:24px}
+ [data-contact-studio] .studio-email{display:block;margin-top:21px}
+ [data-contact-studio] .studio-email a{display:block;margin-top:5px}
+ [data-contact-studio] .studio-signature{margin:62px -14px 32px}
+}
+@media(prefers-reduced-motion:reduce){[data-contact-studio] *{scroll-behavior:auto!important;transition:none!important}}
+html.yfa-readable[data-contact-studio] .studio-destination h2{font-family:Arial,sans-serif!important;letter-spacing:normal}
+html.yfa-contrast[data-contact-studio] .studio-destination h2{color:#fff;text-shadow:none}
+[data-contact-studio] .xilo-chat{--xilo-accent:#b9b9bf;--xilo-accent-deep:#74747c;--xilo-cyan:#eee;--xilo-panel:#0b0b0b;--xilo-panel-soft:#1b1b1b;font-family:YFAInter,Arial,sans-serif}
+[data-contact-studio] .xilo-launcher{min-width:86px;min-height:44px;padding:10px 14px;border:1px solid #4c4c4c;border-radius:2px;background:#0b0b0b;box-shadow:none;font:300 11px/1 YFAInter,Arial,sans-serif;letter-spacing:.05em;color:#ddd}
+[data-contact-studio] .xilo-launcher-mark{display:none}
+

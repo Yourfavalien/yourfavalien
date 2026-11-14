@@ -29,7 +29,7 @@
       items.forEach(item=>{
         if(!item||item.enabled===false||!item.label||!item.url||item.id==='privacy')return;
         let target;
-        try{target=new URL(item.url,location.origin);}catch{return;}
+        try{target=new URL(item.url,location.origin);if(target.origin===location.origin){target.pathname=target.pathname.replace(/^\/(contact|socials)\.html$/,'/$1');if(target.pathname==='/index.html')target.pathname='/';}}catch{return;}
         if(target.pathname.toLowerCase().endsWith('/about.html')||target.pathname.toLowerCase()==='/about')return;
         if(target.pathname.toLowerCase().endsWith('/page.html')&&new URLSearchParams(target.search).get('slug')==='gallery'){target=new URL('/redesign-gallery.html',location.origin);}
         if(existing.has(target.pathname.toLowerCase()))return;

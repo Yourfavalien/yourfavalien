@@ -36,7 +36,8 @@
       ['contact.html', 'contact']
     ].map(function (item) {
       const active = currentPage() === item[0] ? ' class="active"' : '';
-      return '<a href="' + item[0] + '"' + active + '>' + item[1] + '</a>';
+      const href = item[1] === 'home' ? '/' : '/' + item[1];
+      return '<a href="' + href + '"' + active + '>' + item[1] + '</a>';
     }).join('');
     document.body.prepend(nav);
     return nav;
@@ -73,7 +74,6 @@
     const corePages = [
       { key: 'home', files: ['/', 'index', 'index.html'] },
       { key: 'socials', files: ['socials', 'socials.html'] },
-      { key: 'about', files: ['about', 'about.html'] },
       { key: 'contact', files: ['contact', 'contact.html'] }
     ];
     function linkPage(link) {
