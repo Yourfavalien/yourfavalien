@@ -43,11 +43,11 @@
   else topbar.insertAdjacentElement('afterend', panel);
 
   const scripts = [
-    ['/mothership-image-editor.js?v=20260914-1', 'yfaImageEditor'],
-    ['/mothership-cloudflare-admin.js?v=20261113-health-check', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20261113-health-check', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20261113-health-check', 'yfaMothershipComplete'],
-    ['/mothership-badge-admin.js?v=20261113-health-check', 'yfaMothershipBadge']
+    ['/mothership-image-editor.js?v=20261113-share-crop', 'yfaImageEditor'],
+    ['/mothership-cloudflare-admin.js?v=20261113-drafts-privacy', 'yfaCloudflareAdmin'],
+    ['/mothership-power.js?v=20261113-drafts-privacy', 'yfaMothershipPower'],
+    ['/mothership-complete-admin.js?v=20261113-drafts-privacy', 'yfaMothershipComplete'],
+    ['/mothership-badge-admin.js?v=20261113-drafts-privacy', 'yfaMothershipBadge']
   ];
 
   scripts.forEach(([src,key]) => {

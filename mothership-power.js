@@ -107,8 +107,10 @@
   function saveDraft() {
     readForm();
     data._draftSavedAt = new Date().toISOString();
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    try {localStorage.setItem(DRAFT_KEY, JSON.stringify(data));}
+    catch(error){throw new Error('Draft could not be saved in this browser: '+error.message);}
     dirty = false;
+    const status=document.getElementById('powerPublishStatus');if(status){status.textContent='Draft saved in this browser. Your public site has not changed.';status.className='status ok';}
     const badge = document.getElementById('powerSaveState');
     if (badge) { badge.textContent = 'DRAFT SAVED'; badge.className = 'power-badge draft'; }
   }
@@ -346,7 +348,7 @@
     document.getElementById('powerAddHomeSection').onclick=()=>{data.home.sections.push({id:uid(),title:'',caption:'',layout:'editorial',enabled:true,images:[]});markDirty();renderHomeSections();};
     document.getElementById('powerAddPage').onclick=()=>{data.pages.push({id:uid(),title:'New Page',slug:`page-${data.pages.length+1}`,body:'',description:'',layout:'editorial',enabled:true,images:[]});markDirty();renderPages();};
     document.getElementById('powerAddLink').onclick=()=>{data.navigation.customLinks.push({id:uid(),label:'New link',url:'/',enabled:true});markDirty();renderLinks();};
-    document.getElementById('powerSaveDraft').onclick=saveDraft;
+    document.getElementById('powerSaveDraft').onclick=()=>{try{saveDraft();}catch(error){const status=document.getElementById('powerPublishStatus');status.textContent=error.message;status.className='status error';}};
     document.getElementById('powerPreview').onclick=()=>saveDraft();
     document.getElementById('powerPublish').onclick=async e=>{const button=e.currentTarget;button.disabled=true;try{await publish();await listRevisions();}catch{}finally{button.disabled=false;}};
     document.getElementById('powerRefreshRevisions').onclick=listRevisions;

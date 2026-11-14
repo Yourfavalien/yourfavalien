@@ -20,6 +20,13 @@ window.YFA_MOTHERSHIP = {
     { id: 'socials-youtube-profile', group: 'Socials', label: 'YouTube profile photo', path: 'slots/socials-youtube-profile' }
   ],
   colorGroups: [
+    { group:'Privacy page', note:'Colors for the public Privacy Policy page.', colors:[
+      {id:'privacy-bg',label:'Privacy background',cssVar:'--privacy-bg',default:'#ffffff',pages:['privacy']},
+      {id:'privacy-ink',label:'Privacy headings',cssVar:'--privacy-ink',default:'#17151a',pages:['privacy']},
+      {id:'privacy-muted',label:'Privacy body text',cssVar:'--privacy-muted',default:'#65606a',pages:['privacy']},
+      {id:'privacy-links',label:'Privacy links',cssVar:'--privacy-blue',default:'#3478e5',pages:['privacy']},
+      {id:'privacy-line',label:'Privacy dividers',cssVar:'--privacy-line',default:'#e7e3e9',pages:['privacy']}
+    ]},
     {
       group: 'Site Menu',
       note: 'Controls the full-screen UFO menu on every active website page.',
@@ -278,7 +285,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20261113-health-check'
+    ? '/mothership-popup-admin.js?v=20261113-drafts-privacy'
     : '/mothership-popup-gate.js?v=20261027-redesign-shell';
   script.defer = true;
   document.head.appendChild(script);

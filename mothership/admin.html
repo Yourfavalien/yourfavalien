@@ -146,7 +146,7 @@
         </div>
       </section>
       <div id="colorGroups" class="color-groups"></div>
-      <div class="theme-actions"><button id="saveThemeBtn" class="btn" type="button">Save appearance &amp; share preview</button><button id="resetThemeBtn" class="btn secondary" type="button">Load original design</button></div>
+      <div class="theme-actions"><button id="saveThemeDraftBtn" class="btn secondary" type="button">Save appearance draft</button><button id="saveThemeBtn" class="btn" type="button">Save appearance &amp; share preview</button><button id="resetThemeBtn" class="btn secondary" type="button">Load original design</button></div>
       <div id="themeStatus" class="status" aria-live="polite"></div>
 
       <div class="divider"></div>
@@ -212,7 +212,7 @@
   </main>
 
   <script src="https://descopecdn.com/npm/@descope/web-js-sdk@1.54.4/dist/index.umd.js" integrity="sha384-Mzy5HRAhIVMW+iTgiIdeYT5AlFGOi7FTmIp/izytT+gl4/NhJCq9g6YuqGhnyDfO" crossorigin="anonymous"></script>
-  <script src="../mothership-config.js?v=20261113-health-check"></script>
+  <script src="../mothership-config.js?v=20261113-drafts-privacy"></script>
   <script>
     (() => {
       const cfg = window.YFA_MOTHERSHIP;
@@ -644,6 +644,10 @@
             }
           }
         } catch (error) {}
+        try {
+          const draft=JSON.parse(localStorage.getItem('yfa-theme-draft')||'null');
+          if(draft){themeState={...themeState,...draft.colors};menuState=draft.menu||menuState;homeIdentityState=draft.homeIdentity||homeIdentityState;homeHeroState=draft.homeHero||homeHeroState;sharePreviewState=draft.sharePreview||sharePreviewState;setStatus(themeStatus,'Appearance draft restored. Publish when ready.','ok');}
+        } catch(error){setStatus(themeStatus,'Could not restore the appearance draft.','error');}
         renderMenuEditor();
         homeIdentityText.value = homeIdentityState.text;
         renderHomeHeroEditor();
@@ -675,9 +679,13 @@
         }
         const extension = ({ 'image/jpeg': 'jpg', 'image/png': 'png' })[file.type];
         const path = `share/preview-${Date.now()}-${crypto.randomUUID()}.${extension}`;
-        setStatus(sharePreviewStatus, 'Uploading preview image…');
+        setStatus(sharePreviewStatus, 'Adjust the share image before uploading.');
         try {
-          const { error } = await client.storage.from(cfg.storageNamespace).upload(path, file, { contentType: file.type, cacheControl: '31536000', upsert: false });
+          if(!window.YFA_IMAGE_EDITOR?.cropShare)throw new Error('Image adjuster is still loading. Try again shortly.');
+          const cropped=await window.YFA_IMAGE_EDITOR.cropShare(file);
+          if(!cropped){setStatus(sharePreviewStatus,'Image selection cancelled. Your share card has not changed.');return;}
+          setStatus(sharePreviewStatus,'Uploading adjusted preview image…');
+          const { error } = await client.storage.from(cfg.storageNamespace).upload(path, cropped, { contentType: cropped.type, cacheControl: '31536000', upsert: false });
           if (error) throw error;
           sharePreviewState.image = `${publicBase}${path}`;
           renderSharePreviewEditor();
@@ -917,6 +925,10 @@
         });
       }
 
+      document.getElementById('saveThemeDraftBtn').onclick=()=>{
+        try {localStorage.setItem('yfa-theme-draft',JSON.stringify({colors:themeState,menu:menuState,homeIdentity:homeIdentityState,homeHero:homeHeroState,sharePreview:sharePreviewState}));setStatus(themeStatus,'Appearance draft saved in this browser. Your public site has not changed.','ok');}
+        catch(error){setStatus(themeStatus,'Draft could not be saved: '+error.message,'error');}
+      };
       async function saveTheme() {
         const invalid = themeDefs.find(def => !isHex(themeState[def.id]));
         if (invalid) {
@@ -967,7 +979,8 @@
             const details = await settingsResponse.json().catch(() => ({}));
             throw new Error(details.error || `Cloudflare settings save failed (HTTP ${settingsResponse.status}).`);
           }
-          setStatus(themeStatus, 'Homepage design and share preview saved.', 'ok');
+          localStorage.removeItem('yfa-theme-draft');
+          setStatus(themeStatus, 'Website appearance and share preview published.', 'ok');
           setStatus(sharePreviewStatus, 'Share preview published. Social apps may take time to refresh their cached card.', 'ok');
         } catch (error) {
           setStatus(themeStatus, error.message || 'Could not save the theme.', 'error');
@@ -984,6 +997,10 @@
         menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
         homeIdentityState = { ...defaultHomeIdentity };
         homeHeroState = JSON.parse(JSON.stringify(defaultHomeHero));
+        try {
+          const draft=JSON.parse(localStorage.getItem('yfa-theme-draft')||'null');
+          if(draft){themeState={...themeState,...draft.colors};menuState=draft.menu||menuState;homeIdentityState=draft.homeIdentity||homeIdentityState;homeHeroState=draft.homeHero||homeHeroState;sharePreviewState=draft.sharePreview||sharePreviewState;setStatus(themeStatus,'Appearance draft restored. Publish when ready.','ok');}
+        } catch(error){setStatus(themeStatus,'Could not restore the appearance draft.','error');}
         renderMenuEditor();
         homeIdentityText.value = homeIdentityState.text;
         renderHomeHeroEditor();
@@ -1277,12 +1294,12 @@
       startMothership();
     })();
   </script>
-  <script src="../mothership-maintenance-admin.js?v=20261113-health-check"></script>
-  <script src="../mothership-campaign-admin.js?v=20261113-health-check"></script>
+  <script src="../mothership-maintenance-admin.js?v=20261113-drafts-privacy"></script>
+  <script src="../mothership-campaign-admin.js?v=20261113-drafts-privacy"></script>
   <script src="../mothership-maintenance-fullscreen.js?v=20261019-1"></script>
-  <link rel="stylesheet" href="dashboard-shell.css?v=20261113-health-check">
-  <script src="dashboard-shell.js?v=20261113-health-check"></script>
-<script defer src="editor-workspace.js?v=20261113-health-check"></script></body>
+  <link rel="stylesheet" href="dashboard-shell.css?v=20261113-drafts-privacy">
+  <script src="dashboard-shell.js?v=20261113-drafts-privacy"></script>
+<script defer src="editor-workspace.js?v=20261113-drafts-privacy"></script></body>
 </html>
 
 

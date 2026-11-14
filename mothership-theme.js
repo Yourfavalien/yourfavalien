@@ -52,7 +52,12 @@
       if (!response.ok) throw new Error('No saved Mothership theme yet.');
       return response.json();
     })
-    .then(data => { apply((data && data.colors) || {}); applyHomeIdentity(data); })
+    .then(data => {
+      if(new URLSearchParams(location.search).has('yfa-preview')){
+        try{const draft=JSON.parse(localStorage.getItem('yfa-theme-draft')||'null');if(draft)data={...data,...draft};}catch(_){}
+      }
+      apply((data && data.colors) || {}); applyHomeIdentity(data);
+    })
     .catch(() => {});
   enableHomeIdentityScroll();
 })();

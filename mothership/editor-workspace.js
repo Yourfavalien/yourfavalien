@@ -4,7 +4,7 @@ let active=false;
 function activate(){
 if(active)return;active=true;document.getElementById('yfaEditorPreviewEntry')?.remove();
 
-const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261113-health-check';document.head.append(css);document.body.classList.add('yfa-editor-preview');
+const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261113-drafts-privacy';document.head.append(css);document.body.classList.add('yfa-editor-preview');
 let selected=null,mode='arrange',viewport='desktop',route='/',busy=false;
 const api=()=>window.YFA_VISUAL_EDITOR;
 function start(){
@@ -31,7 +31,7 @@ function start(){
  }
  const preview=()=>{api()?.save();mode='preview';builder.querySelector('[data-board]').hidden=true;builder.querySelector('[data-blocks]').hidden=true;const frame=builder.querySelector('[data-frame]');frame.hidden=false;frame.dataset.viewport=viewport;frame.querySelector('iframe').src=route+(route.includes('?')?'&':'?')+'yfa-preview=1&t='+Date.now();report('Private draft preview. Publishing is a separate action.');};
  builder.querySelector('[data-arrange]').onclick=()=>{mode='arrange';builder.querySelector('[data-board]').hidden=false;builder.querySelector('[data-blocks]').hidden=false;builder.querySelector('[data-frame]').hidden=true;render();};
- builder.querySelector('[data-save]').onclick=()=>run(()=>api().save(),'Draft saved in this browser.');
+ builder.querySelector('[data-save]').onclick=()=>{[...builder.querySelectorAll('[data-inspector] button')].find(b=>b.textContent.startsWith('Apply'))?.click();run(()=>api().save(),'Draft saved in this browser.');};
  builder.querySelector('[data-preview]').onclick=()=>preview();
  builder.querySelector('[data-publish]').onclick=()=>run(()=>api().publish(),'Published to your website.');
  builder.querySelector('[data-undo]').onclick=()=>api()?.undo();builder.querySelector('[data-redo]').onclick=()=>api()?.redo();

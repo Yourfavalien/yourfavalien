@@ -30,9 +30,10 @@
     @media(max-width:620px){nav{gap:13px;overflow-x:auto;justify-content:flex-start}nav a{white-space:nowrap}main{padding-top:48px}}
   </style>
   <style id="yfa-privacy-cleanup">
+    html[data-yfa-theme-page="privacy"],html[data-yfa-theme-page="privacy"] body{background:var(--privacy-bg,#fff)!important;color:var(--privacy-ink)!important}
     :root{--privacy-ink:#17151a;--privacy-muted:#65606a;--privacy-blue:#3478e5;--privacy-pink:#f5d9e8;--privacy-lilac:#e8e2fb;--privacy-line:#e7e3e9}
-    html{background:#fff;color:var(--privacy-ink)}
-    body{overflow-x:hidden;background:#fff;color:var(--privacy-ink)}
+    html{background:var(--privacy-bg,#fff);color:var(--privacy-ink)}
+    body{overflow-x:hidden;background:var(--privacy-bg,#fff);color:var(--privacy-ink)}
     main{position:relative;z-index:1;width:min(920px,calc(100% - 48px));padding:clamp(126px,14vw,170px) 0 96px;text-align:center}
     .yfa-menu-button{width:58px!important;color:var(--privacy-ink)!important}
     .yfa-menu-button .yfa-menu-word{display:none!important}
@@ -79,7 +80,7 @@
     </div>
   </main>
   <script id="xilo-chat-loader">(function(){const root=location.origin+'/';const css=document.createElement('link');css.rel='stylesheet';css.href=root+'xilo-chat.css?v=20260908-privacy1';document.head.appendChild(css);const script=document.createElement('script');script.src=root+'xilo-chat.js?v=20260908-zilo1';script.defer=true;document.head.appendChild(script)})();</script>
-<script src="mothership-config.js?v=20261027-redesign-shell"></script><script src="mothership-theme.js?v=20260905-1"></script>
+<script src="mothership-config.js?v=20261113-drafts-privacy"></script><script src="mothership-theme.js?v=20261113-drafts-privacy"></script>
 <script defer src="/polish-controls.js?v=interior-footer-2"></script></body>
 </html>
 

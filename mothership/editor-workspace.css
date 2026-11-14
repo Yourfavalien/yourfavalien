@@ -61,3 +61,14 @@ body.yfa-app-ready>.shell{max-width:none!important;width:100%!important;padding:
 
 .yfa-editor-preview .menu-preset,.yfa-editor-preview .appearance-preset,.yfa-editor-preview .color-control,.yfa-editor-preview .home-cta-preset{background:#f5f6f8!important;color:#202124!important;border-color:#cbd2dc!important}
 .yfa-editor-preview .yfa-app-main>#dashboard>.dashboard-view{background:#f3f4f6!important}
+
+/* Legacy form surfaces must use the workspace palette too. */
+.yfa-editor-preview .color-row,.yfa-editor-preview .home-control-toggle,.yfa-editor-preview .social-editor-card,.yfa-editor-preview .training-field,.yfa-editor-preview .control-link,.yfa-editor-preview .home-shape-presets button,.yfa-editor-preview .c-field,.yfa-editor-preview .c-section,.yfa-editor-preview .note{background:#fff!important;color:#202124!important;border-color:#cbd2dc!important}
+.yfa-editor-preview .color-label,.yfa-editor-preview .slot-name,.yfa-editor-preview .menu-preset strong,.yfa-editor-preview .home-control-toggle,.yfa-editor-preview .training-field label{color:#202124!important}
+.yfa-editor-preview .menu-preset span,.yfa-editor-preview .slot-path,.yfa-editor-preview .training-help,.yfa-editor-preview .social-editor-card label{color:#536176!important}
+.yfa-editor-preview .preview{background:#edf0f4!important}.yfa-editor-preview .preview span{color:#536176!important}
+
+.yfa-editor-preview .yfa-ie-panel,.yfa-editor-preview .yfa-ie-card{background:#fff!important;color:#202124!important;border-color:#cbd2dc!important}
+.yfa-editor-preview .yfa-ie h2,.yfa-editor-preview .yfa-ie label,.yfa-editor-preview .yfa-ie output{color:#202124!important}
+.yfa-editor-preview .yfa-ie p,.yfa-editor-preview .yfa-ie-help{color:#536176!important}
+.yfa-editor-preview .yfa-ie button{background:#f5f6f8!important;color:#202124!important;border-color:#cbd2dc!important}
