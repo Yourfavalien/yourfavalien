@@ -93,7 +93,7 @@
   async function loadPublished() {
     const controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),12000);
     try {
-      const response = await fetch(`${publicUrl(CONTENT_PATH)}?v=${Date.now()}`, {cache:'no-store',signal:controller.signal});
+      const response = await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(`${publicUrl(CONTENT_PATH)}?v=${Date.now()}`, {cache:'no-store',signal:controller.signal});
       if (!response.ok) throw new Error('Gallery content could not load ('+response.status+'). Please retry.');
       const parsed = await response.json();
       return normalizeContentMedia({ ...defaults(), ...parsed, navigation:{...defaults().navigation,...(parsed.navigation||{})}, home:{...defaults().home,...(parsed.home||{})}, seo:{...defaults().seo,...(parsed.seo||{})}, pages:Array.isArray(parsed.pages)?parsed.pages:[] });
@@ -138,14 +138,18 @@
   }
 
   async function uploadBatch(files, folder, status) {
+    if (!files.length) return {uploaded:[],errors:[]};
+    const invalid = files.find(file=>file.size>49e6 || !/^(image\/|video\/)/i.test(file.type||''));
+    if(invalid) throw new Error(invalid.name+' must be a picture or video under 49 MB.');
     const adjustments = new Map();
     if (window.YFA_IMAGE_EDITOR) {
       for (const file of files) {
         if (!file.type.startsWith('image/')) continue;
+        if(status)status.textContent='Preparing '+file.name+' ('+(adjustments.size+1)+' of '+files.filter(f=>f.type.startsWith('image/')).length+' pictures)…';
         const objectUrl = URL.createObjectURL(file);
         const responsive = await window.YFA_IMAGE_EDITOR.edit({ src:objectUrl, title:`Adjust ${file.name}` });
         URL.revokeObjectURL(objectUrl);
-        if (!responsive) return { uploaded:[], errors:[], cancelled:true };
+        if (!responsive) {if(status)status.textContent='Upload cancelled. No files were added.';return { uploaded:[], errors:[], cancelled:true };}
         adjustments.set(file, responsive);
       }
     }
@@ -163,6 +167,7 @@
       }
     }
     await Promise.all(Array.from({length:Math.min(4,files.length)},worker));
+    if(status)status.textContent=results.filter(Boolean).length+' file(s) uploaded'+(errors.length?'; '+errors.length+' failed.':'.');
     return {uploaded:results.filter(Boolean),errors};
   }
 
@@ -211,7 +216,7 @@
       box.addEventListener('dragover',event=>{if([...event.dataTransfer.types].includes('application/x-yfa-media-index'))event.preventDefault();});
       box.addEventListener('drop',event=>{const source=event.dataTransfer.getData('application/x-yfa-media-index');if(event.dataTransfer.getData('application/x-yfa-media-owner')!==dragGroup||source==='')return;event.preventDefault();const from=Number(source);if(!Number.isInteger(from)||from<0||from>=images.length||from===index)return;images.splice(index,0,images.splice(from,1)[0]);if(owner)owner.orderMode='manual';markDirty();rerender();});
       const isVideoItem=/\.(mp4|webm|mov)(\?|$)/i.test(String(item.path||item.url||''));
-      const media=isVideoItem?`<video src="${item.url}" muted playsinline controls preload="metadata" aria-label="${(item.alt||'Gallery video').replace(/"/g,'&quot;')}"></video>`:`<img src="${item.url}" alt="${(item.alt||'Gallery photo').replace(/"/g,'&quot;')}">`;
+      const media=isVideoItem?`<video src="${item.url}" muted playsinline controls preload="none" aria-label="${(item.alt||'Gallery video').replace(/"/g,'&quot;')}"></video>`:`<img loading="lazy" decoding="async" src="${item.url}" alt="${(item.alt||'Gallery photo').replace(/"/g,'&quot;')}">`;
       box.setAttribute('aria-disabled', String(item.visible === false));
       if (item.visible === false) box.style.opacity = '.45';
       box.innerHTML=`${media}<div class="power-media-body"><input placeholder="Alt text" value="${(item.alt||'').replace(/"/g,'&quot;')}" data-alt><label class="power-check" style="margin-top:8px"><input type="checkbox" data-visible ${item.visible!==false?'checked':''}> Visible on site</label><div class="power-actions"><button class="power-mini" type="button" data-up ${index===0?'disabled':''}>Move up</button><button class="power-mini" type="button" data-down ${index===images.length-1?'disabled':''}>Move down</button></div><div class="power-actions"><button class="power-mini" type="button" data-adjust ${isVideoItem?'disabled':''}>Adjust</button><label class="power-mini" style="position:relative;overflow:hidden">Replace<input data-replace type="file" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><button class="power-mini danger" type="button" data-delete>Delete</button></div><div class="power-muted" data-media-status></div></div>`;
@@ -275,7 +280,8 @@
       const current=await loadPublished();
       if(current && current.updatedAt){
         const stamp=new Date().toISOString().replace(/[:.]/g,'-');
-        await client.storage.from(cfg.storageNamespace).upload(`revisions/site-content-${stamp}.json`,new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),{upsert:false,contentType:'application/json'});
+        const backup = await client.storage.from(cfg.storageNamespace).upload(`revisions/site-content-${stamp}.json`,new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),{upsert:false,contentType:'application/json'});
+        if (backup.error) throw new Error('Could not save a revision. Published settings were kept. ' + backup.error.message);
       }
       data.updatedAt=new Date().toISOString();
       delete data._draftSavedAt;
@@ -311,11 +317,11 @@
 
       <section class="power-section" id="powerGallerySection"><div class="power-head"><div><h3>Gallery &amp; pages</h3><div class="power-copy">Your main Gallery is listed first. Add, replace, reorder, hide, or remove its photos and videos here; new uploads are inserted at the front. Other editable pages remain below it.</div></div><button id="powerAddPage" class="btn" type="button">Create page</button></div><div id="powerPages"></div></section>
 
-      <section class="power-section"><div class="power-head"><div><h3>Navigation</h3><div class="power-copy">Control how the fixed menu behaves while visitors scroll and add extra links without touching HTML.</div></div></div><div class="power-grid"><div class="power-field"><label>MENU SCROLL BEHAVIOR</label><select id="powerScrollBehavior" data-power-bind><option value="hide-up-show-down">Hide scrolling up / return scrolling down</option><option value="hide-down-show-up">Hide scrolling down / return scrolling up</option><option value="always">Always visible</option></select></div></div><div class="power-divider"></div><div class="power-head"><div><div class="power-card-title">Extra menu links</div></div><button id="powerAddLink" class="power-mini" type="button">Add link</button></div><div id="powerLinks"></div></section>
+      <section class="power-section" id="powerNavigationSection"><div class="power-head"><div><h3>Navigation</h3><div class="power-copy">Control how the fixed menu behaves while visitors scroll and add extra links without touching HTML.</div></div></div><div class="power-grid"><div class="power-field"><label>MENU SCROLL BEHAVIOR</label><select id="powerScrollBehavior" data-power-bind><option value="hide-up-show-down">Hide scrolling up / return scrolling down</option><option value="hide-down-show-up">Hide scrolling down / return scrolling up</option><option value="always">Always visible</option></select></div></div><div class="power-divider"></div><div class="power-head"><div><div class="power-card-title">Extra menu links</div></div><button id="powerAddLink" class="power-mini" type="button">Add link</button></div><div id="powerLinks"></div></section>
 
       <section class="power-section"><div class="power-head"><div><h3>SEO</h3><div class="power-copy">Edit the homepage browser/search title and description here. Your existing static SEO stays as the fallback.</div></div></div><div class="power-grid"><div class="power-field full"><label>HOMEPAGE TITLE</label><input id="powerSeoTitle" data-power-bind></div><div class="power-field full"><label>HOMEPAGE DESCRIPTION</label><textarea id="powerSeoDescription" data-power-bind></textarea></div></div></section>
 
-      <section class="power-section"><div class="power-head"><div><h3>Email center</h3><div class="power-copy">Kit is your subscriber/newsletter system, while your Resend + Worker setup keeps handling the automatic welcome email. Subscriber totals are intentionally not pulled directly into this browser dashboard because that would require exposing a private Kit credential.</div></div></div><div class="power-actions"><a class="btn secondary" href="https://app.kit.com/subscribers" target="_blank" rel="noopener">Open Kit</a><a class="btn secondary" href="https://resend.com/" target="_blank" rel="noopener">Open Resend</a></div></section>
+      <section class="power-section" id="powerEmailSection"><div class="power-head"><div><h3>Email center</h3><div class="power-copy">Kit is your subscriber/newsletter system, while your Resend + Worker setup keeps handling the automatic welcome email. Subscriber totals are intentionally not pulled directly into this browser dashboard because that would require exposing a private Kit credential.</div></div></div><div class="power-actions"><a class="btn secondary" href="https://app.kit.com/subscribers" target="_blank" rel="noopener">Open Kit</a><a class="btn secondary" href="https://resend.com/" target="_blank" rel="noopener">Open Resend</a></div></section>
 
       <section class="power-section"><div class="power-head"><div><h3>Revision history</h3><div class="power-copy">Every publish stores the previous configuration first, so you can bring an older setup back into the editor.</div></div><button id="powerRefreshRevisions" class="power-mini" type="button">Refresh</button></div><div id="powerRevisions"></div></section>
 
@@ -326,7 +332,7 @@
 
   async function init(){
     css();
-    const tabs=document.querySelector('.dashboard-tabs');const controlsView=document.getElementById('controlsView');const chatsView=document.getElementById('chatsView');if(!tabs||!controlsView)return;
+    const tabs=document.querySelector('.dashboard-tabs');const controlsView=document.getElementById('controlsView');const chatsView=document.getElementById('chatsView');if(!tabs||!controlsView){resolvePowerReady(false);return;}
     const powerTab=el('button',{id:'powerTab',class:'dashboard-tab',type:'button',role:'tab'},'Power Tools');powerTab.setAttribute('aria-selected','false');tabs.appendChild(powerTab);
     const view=makeView();controlsView.parentNode.insertBefore(view,chatsView||controlsView.nextSibling);
 
@@ -355,7 +361,7 @@
       publish:()=>publish(),
       reorder:(fromId,toId)=>mutate(()=>{const page=gallery();if(!page)throw new Error('Gallery is unavailable.');const items=page.images;if(page.orderMode!=='manual'){const time=item=>{const stamp=Date.parse(item.uploadedAt||item.createdAt||'');return Number.isFinite(stamp)?stamp:Number(String(item.path||item.url).match(/\/(\d{10,})-/)?.[1]||0);};items.sort((a,b)=>time(b)-time(a));}const from=items.findIndex(item=>item.id===fromId),to=items.findIndex(item=>item.id===toId);if(from<0||to<0)throw new Error('Media item is unavailable.');items.splice(to,0,items.splice(from,1)[0]);page.orderMode='manual';}),
       update:(id,values)=>mutate(()=>{const item=gallery()?.images.find(item=>item.id===id);if(!item)throw new Error('Media item is unavailable.');item.alt=String(values.alt??item.alt??'');item.visible=values.visible!==false;}),
-      upload:async(files)=>{const page=gallery();if(!page)throw new Error('Gallery is unavailable.');const result=await uploadBatch([...files],'pages/'+page.id,document.getElementById('powerPublishStatus'));if(result.uploaded.length)mutate(()=>page.images.unshift(...result.uploaded));if(result.errors.length)throw new Error(result.errors.join('\n'));},
+      upload:async(files)=>{const page=gallery();if(!page)throw new Error('Gallery is unavailable.');const result=await uploadBatch([...files],'pages/'+page.id,document.getElementById('powerPublishStatus'));if(result.cancelled)throw new Error('Upload cancelled. No files were added.');if(result.uploaded.length)mutate(()=>page.images.unshift(...result.uploaded));if(result.errors.length)throw new Error(result.errors.join('\n'));},
       undo:()=>{if(!history.length)return;future.push(snapshot());data=history.pop();changed();},
       redo:()=>{if(!future.length)return;history.push(snapshot());data=future.pop();changed();},
       createBlock:type=>mutate(()=>{if(!['text','button','divider'].includes(type))throw new Error('Unsupported block.');data.home.blocks=data.home.blocks||[];data.home.blocks.push({id:uid(),type,title:type==='button'?'Contact':'New text',body:'',url:'/contact.html',visible:true});}),

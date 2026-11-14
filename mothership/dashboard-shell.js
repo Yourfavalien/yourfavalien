@@ -21,8 +21,12 @@
     dashboard.parentNode.insertBefore(layout, dashboard); layout.append(appBar, main); main.append(dashboard);
 
     const home = document.createElement('section'); home.id = 'yfaAppHome'; home.className = 'yfa-app-home';
-    home.innerHTML = `<article class="yfa-app-welcome"><div class="eyebrow">YOURFAVALIEN · WEBSITE CONTROL</div><h1>Welcome back to Mothership.</h1><p>Manage your real site without losing the tools that already run it.</p><div class="yfa-app-actions"><button data-jump="yfaCampaignControl">Campaign Mode</button><button data-jump="yfaWebsiteEditor">Open editor</button><button data-jump="yfaGalleryControls">Gallery & uploads</button><button data-jump="yfaMaintenanceControl">Maintenance</button></div></article><article class="yfa-app-status"><div class="eyebrow">SITE STATUS</div><strong>Protected controls connected</strong><small>Publishing stays explicit. Opening a tool never changes your public website by itself.</small></article>`;
+    home.innerHTML = `<article class="yfa-app-welcome"><div class="eyebrow">YOURFAVALIEN · WEBSITE CONTROL</div><h1>Welcome back to Mothership.</h1><p>Manage your real site without losing the tools that already run it.</p><div class="yfa-app-actions"><button data-jump="yfaCampaignControl">Campaign Mode</button><button data-jump="yfaWebsiteEditor">Open editor</button><button data-jump="yfaGalleryControls">Gallery & uploads</button><button data-jump="yfaMaintenanceControl">Maintenance</button></div></article><article class="yfa-app-status"><div class="eyebrow">SITE STATUS</div><strong>Checking public site status…</strong><small>Reading the saved website setting.</small></article>`;
     dashboard.querySelector('.topbar')?.insertAdjacentElement('afterend', home);
+    (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(window.YFA_MOTHERSHIP.settingsBase+'maintenance?v='+Date.now(), {cache:'no-store'})
+      .then(response=>{if(!response.ok)throw new Error('Status unavailable');return response.json();})
+      .then(status=>{home.querySelector('.yfa-app-status strong').textContent=status.enabled?'Maintenance active':status.campaignEnabled?'Campaign active':'Website public';home.querySelector('.yfa-app-status small').textContent=status.enabled?'Public visitors should see the maintenance page. Owner previews can still open the regular website.':'Saved public website setting confirmed.';})
+      .catch(()=>{home.querySelector('.yfa-app-status strong').textContent='Public status unavailable';home.querySelector('.yfa-app-status small').textContent='Open Maintenance to retry the connection before changing the public site.';});
 
     // The visual editor owns the editor view; retain the existing control modules as sibling views.
     const editor = document.createElement('section');
@@ -33,7 +37,8 @@
     const maintenanceView = document.getElementById('maintenanceView');
     const campaignView = document.getElementById('campaignView');
     const showControls = anchor => { editor.classList.add('hidden'); click('controlsTab'); setTimeout(() => reveal(anchor), 0); };
-    const showGalleryControls = async () => {
+    const showGalleryControls = async (anchor='powerGallerySection') => {
+      const requestedArea=document.body.dataset.workspaceArea;
       editor.classList.add('hidden');
       // The Power Tools button is injected before its content request finishes.
       // Wait for the existing content manager to finish loading before opening it.
@@ -42,10 +47,12 @@
       }
       const powerTab = await waitFor('#powerTab', 60);
       if (!powerTab) { showControls('websiteImages'); return; }
+      if(document.body.dataset.workspaceArea!==requestedArea)return;
       powerTab.click();
+      if(document.body.dataset.workspaceArea!==requestedArea)return;
       const galleryCard = await waitFor('#powerPages [data-main-gallery]', 25);
       const target = galleryCard || await waitFor('#powerPages', 25);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     const showEditor = () => { hide(controlsView, socialsView, maintenanceView, campaignView); window.dispatchEvent(new Event('yfa-open-editor')); };
     const showMaintenance = () => { editor.classList.add('hidden'); click('maintenanceTab'); setTimeout(() => reveal('yfaMaintenanceControl'), 80); };
@@ -64,16 +71,19 @@
     }));
     editor.querySelectorAll('[data-editor-control]').forEach(button => button.addEventListener('click', () => button.dataset.editorControl === 'socialsView' ? showSocials() : button.dataset.editorControl === 'galleryControls' ? showGalleryControls() : showControls(button.dataset.editorControl)));
 
+    const showUtility = id => { editor.classList.add('hidden'); document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); };
     const actions = {
       dashboard: () => { editor.classList.add('hidden'); home.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, campaign: showCampaign, editor: showEditor,
-      pages: () => showControls('menuEditorTitle'), design: () => showControls('themeColors'), media: showGalleryControls, socials: showSocials,
-      popup: () => { showControls('yfaPopupControl'); setTimeout(() => reveal('yfaPopupControl'), 80); }, maintenance: showMaintenance,
-      settings: () => { showControls('yfaBadgeControl'); setTimeout(() => reveal('yfaBadgeControl'), 80); }
+      pages: () => showGalleryControls('powerNavigationSection'), design: () => showControls('themeColors'), media: () => showGalleryControls(), socials: showSocials,
+      popup: () => { showUtility('yfaPopupControl'); showGalleryControls('powerEmailSection'); }, maintenance: showMaintenance,
+      settings: () => { showUtility('yfaBadgeControl'); click('completeTab'); }
     };
     appBar.querySelectorAll('[data-area]').forEach(button => button.addEventListener('click', () => { appBar.querySelectorAll('[data-area]').forEach(item => item.removeAttribute('aria-current')); button.setAttribute('aria-current', 'page');document.body.dataset.workspaceArea=button.dataset.area;hide(...dashboard.querySelectorAll(':scope > .dashboard-view')); actions[button.dataset.area]?.(); }));
 
     const utilities = document.createElement('section'); utilities.id = 'yfaAppUtilities'; utilities.className = 'yfa-app-utilities'; home.insertAdjacentElement('afterend', utilities);
     const placeUtilities = () => ['yfaPopupControl', 'yfaBadgeControl'].forEach(id => { const panel = document.getElementById(id); if (panel && panel.parentElement !== utilities) utilities.append(panel); });
+    document.body.dataset.workspaceArea = 'dashboard';
+    hide(...dashboard.querySelectorAll(':scope > .dashboard-view'));
     placeUtilities(); setTimeout(placeUtilities, 400); setTimeout(placeUtilities, 1200);
 
     // An iframe's browser default is only 150px high when its parent gets its

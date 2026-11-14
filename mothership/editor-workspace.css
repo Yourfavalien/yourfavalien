@@ -44,3 +44,20 @@ body.yfa-app-ready>.shell{max-width:none!important;width:100%!important;padding:
 .yfa-editor-preview .builder-toolbar>strong{display:none}.yfa-editor-preview .builder-toolbar{position:sticky;top:0}
 
 .yfa-editor-preview[data-workspace-area]:not([data-workspace-area="dashboard"]) .yfa-app-home,.yfa-editor-preview[data-workspace-area]:not([data-workspace-area="dashboard"]) .yfa-app-utilities{display:none!important}
+
+/* Keep all control panels readable in the shared light workspace. */
+.yfa-editor-preview .power-section,.yfa-editor-preview .ym-group,.yfa-editor-preview .menu-editor,.yfa-editor-preview .slot,.yfa-editor-preview .chat-console{background:#fff!important;color:#202124!important;border-color:#cbd2dc!important}
+.yfa-editor-preview .power-copy,.yfa-editor-preview .ym-copy,.yfa-editor-preview .ym-note,.yfa-editor-preview .power-check{color:#536176!important;font:12px/1.6 Arial,sans-serif!important}
+.yfa-editor-preview .power-media input{color:#202124!important}
+.yfa-editor-preview[data-workspace-area="popup"] .yfa-app-utilities,.yfa-editor-preview[data-workspace-area="settings"] .yfa-app-utilities{display:block!important;margin:24px!important}
+.yfa-editor-preview[data-workspace-area="popup"] #yfaBadgeControl,.yfa-editor-preview[data-workspace-area="settings"] #yfaPopupControl{display:none!important}
+.yfa-editor-preview .yfa-app-main :focus-visible{outline:2px solid #356fe3;outline-offset:3px}
+
+.yfa-editor-preview[data-workspace-area="popup"] #powerView>.power-section:not(#powerEmailSection),.yfa-editor-preview[data-workspace-area="popup"] #powerView>.power-sticky{display:none!important}
+.yfa-editor-preview[data-workspace-area="pages"] #powerView>.power-section:not(#powerGallerySection):not(#powerNavigationSection){display:none!important}
+
+.yfa-editor-preview .status.error,.yfa-editor-preview .status.err,.yfa-editor-preview .yfa-popup-badge.off{color:#a52332!important}
+.yfa-editor-preview .status.ok,.yfa-editor-preview .ym-badge.on{color:#17633d!important}
+
+.yfa-editor-preview .menu-preset,.yfa-editor-preview .appearance-preset,.yfa-editor-preview .color-control,.yfa-editor-preview .home-cta-preset{background:#f5f6f8!important;color:#202124!important;border-color:#cbd2dc!important}
+.yfa-editor-preview .yfa-app-main>#dashboard>.dashboard-view{background:#f3f4f6!important}

@@ -30,7 +30,7 @@
   }
 
   async function load(){
-    try{const r=await fetch(publicUrl(),{cache:'no-store'});if(r.ok)state={...state,...await r.json()};}catch{}
+    try{const r=await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(publicUrl(),{cache:'no-store'});if(r.ok)state={...state,...await r.json()};}catch{}
     render();
   }
 

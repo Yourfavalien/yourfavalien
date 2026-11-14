@@ -16,7 +16,7 @@
   let positionState = { version: 1, updatedAt: null, slots: {} };
 
   async function apiFetch(url, options = {}) {
-    const response = await fetch(url, {
+    const response = await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(url, {
       ...options,
       credentials: 'same-origin',
       cache: 'no-store'
@@ -45,7 +45,7 @@
 
   async function loadPositions() {
     try {
-      const response = await fetch(assetUrl(POSITION_PATH), { cache:'no-store' });
+      const response = await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(assetUrl(POSITION_PATH), { cache:'no-store' });
       if (response.ok) {
         const saved = await response.json();
         positionState = { version:1, updatedAt:saved?.updatedAt || null, slots:saved?.slots || {} };
@@ -80,7 +80,7 @@
     card.dataset.cfPreviewLoading = '1';
     const url = assetUrl(path);
 
-    fetch(url, { method: 'HEAD', cache: 'no-store' }).then(response => {
+    (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(url, { method: 'HEAD', cache: 'no-store' }).then(response => {
       if (!response.ok) throw new Error('missing');
       const type = (response.headers.get('content-type') || '').toLowerCase();
       preview.innerHTML = '';
@@ -89,14 +89,15 @@
         const video = document.createElement('video');
         video.src = url;
         video.muted = true;
-        video.loop = true;
-        video.autoplay = true;
+        video.preload = 'none';
+
         video.playsInline = true;
         video.controls = true;
         preview.appendChild(video);
-        video.play().catch(() => {});
+
       } else if (type.startsWith('image/')) {
         const img = new Image();
+        img.loading = 'lazy'; img.decoding = 'async';
         img.src = url;
         img.alt = card.querySelector('.slot-name')?.textContent || 'Mothership image';
         preview.appendChild(img);
@@ -328,7 +329,7 @@
       button.textContent = enabled ? 'Turn Orbit popup OFF' : 'Turn Orbit popup ON';
       button.disabled = false;
     };
-    fetch(assetUrl(cfg.popupPath || 'system/orbit-popup.json'), { cache: 'no-store' })
+    (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(assetUrl(cfg.popupPath || 'system/orbit-popup.json'), { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { enabled: false })
       .then(data => {
         enabled = data?.enabled === true;

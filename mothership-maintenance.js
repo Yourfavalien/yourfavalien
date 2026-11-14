@@ -23,8 +23,8 @@
 
   let finished = false;
   function reveal() {
-    if (finished) return;
-    finished = true;
+    // Revealing content must not cancel a routing decision that arrives later.
+    // Slow settings responses still need to enforce maintenance/campaign mode.
   }
 
   function goToMaintenance() {

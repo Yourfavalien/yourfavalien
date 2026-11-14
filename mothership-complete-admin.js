@@ -52,7 +52,7 @@
   }
 
   async function session(){ const {data}=await client.auth.getSession(); return data?.session||null; }
-  async function loadPublished(){ try{const r=await fetch(url(PATH),{cache:'no-store'}); return r.ok?merge(await r.json()):defaults();}catch{return defaults();} }
+  async function loadPublished(){ try{const r=await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(url(PATH),{cache:'no-store'}); return r.ok?merge(await r.json()):defaults();}catch{return defaults();} }
   function loadDraft(){ try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');}catch{return null;} }
 
   function addCss(){
@@ -145,13 +145,13 @@
 
   async function publish(){
     readAll(); const s=await session(); if(!s)throw new Error('Log in first.'); const status=document.getElementById('cPublishStatus');status.textContent='Publishing…';
-    try{state.updatedAt=new Date().toISOString();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});await client.storage.from(cfg.storageNamespace).remove([PATH]);const {error}=await client.storage.from(cfg.storageNamespace).upload(PATH,blob,{upsert:false,contentType:'application/json',cacheControl:'30'});if(error)throw error;localStorage.setItem(DRAFT_KEY,JSON.stringify(state));dirty=false;status.textContent='Advanced controls published.';status.className='status ok';const b=document.getElementById('cSaveState');b.textContent='PUBLISHED';b.className='c-badge';await runChecks();}catch(e){status.textContent=e.message||'Publish failed.';status.className='status error';throw e;}
+    try{state.updatedAt=new Date().toISOString();const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const {error}=await client.storage.from(cfg.storageNamespace).upload(PATH,blob,{upsert:true,contentType:'application/json',cacheControl:'30'});if(error)throw error;localStorage.setItem(DRAFT_KEY,JSON.stringify(state));dirty=false;status.textContent='Advanced controls published.';status.className='status ok';const b=document.getElementById('cSaveState');b.textContent='PUBLISHED';b.className='c-badge';await runChecks();}catch(e){status.textContent=e.message||'Publish failed.';status.className='status error';throw e;}
   }
 
   async function runChecks(){
     const host=document.getElementById('cChecks'); if(!host)return; host.textContent='Checking…';
     const checks=[['Advanced config',PATH],['Theme',cfg.themePath],['Maintenance',cfg.maintenancePath],['Orbit status',cfg.popupPath]];
-    const results=await Promise.all(checks.map(async ([name,p])=>{try{const r=await fetch(url(p),{cache:'no-store'});return `${name}: ${r.ok?'OK':'not published yet'}`;}catch{return `${name}: unavailable`;}}));
+    const results=await Promise.all(checks.map(async ([name,p])=>{try{const r=await (window.YFA_MOTHERSHIP_REQUEST || window.fetch)(url(p),{cache:'no-store'});return `${name}: ${r.ok?'OK':'not published yet'}`;}catch{return `${name}: unavailable`;}}));
     host.innerHTML=results.map(x=>`<div>${esc(x)}</div>`).join('');
     const grid=document.getElementById('cStatusGrid');if(grid)grid.innerHTML=`<div class="c-status"><span class="c-muted">WEBSITE</span><strong>${state.system.siteEnabled!==false?'Enabled':'Disabled'}</strong></div><div class="c-status"><span class="c-muted">ORBIT</span><strong>${state.popup.enabled!==false?'Enabled':'Disabled'}</strong></div><div class="c-status"><span class="c-muted">XILO</span><strong>${state.xilo.enabled!==false?'Enabled':'Disabled'}</strong></div><div class="c-status"><span class="c-muted">ADVANCED CONFIG</span><strong>${results[0].includes('OK')?'Connected':'Draft only'}</strong></div>`;
   }
@@ -167,7 +167,7 @@
     view.querySelectorAll('input,textarea,select').forEach(n=>{n.addEventListener('input',()=>{readAll();mark();});n.addEventListener('change',()=>{readAll();mark();});});
     document.getElementById('cSaveDraft').onclick=()=>{readAll();localStorage.setItem(DRAFT_KEY,JSON.stringify(state));dirty=false;badge.textContent='DRAFT SAVED';badge.className='c-badge warn';};
     document.getElementById('cDiscardDraft').onclick=async()=>{if(!confirm('Discard the local advanced draft and reload published settings?'))return;localStorage.removeItem(DRAFT_KEY);state=await loadPublished();fill();dirty=false;badge.textContent='PUBLISHED';badge.className='c-badge';};
-    document.getElementById('cPublish').onclick=async e=>{e.currentTarget.disabled=true;try{await publish();}finally{e.currentTarget.disabled=false;}};document.getElementById('cRunChecks').onclick=runChecks;await runChecks();
+    document.getElementById('cPublish').onclick=async e=>{const button=e.currentTarget;button.disabled=true;try{await publish();}catch{}finally{button.disabled=false;}};document.getElementById('cRunChecks').onclick=runChecks;await runChecks();
     window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

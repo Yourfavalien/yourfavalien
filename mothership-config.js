@@ -83,6 +83,29 @@ window.YFA_MOTHERSHIP = {
   const cfg = window.YFA_MOTHERSHIP;
   const encodePath = path => String(path || '').replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
 
+  window.YFA_MOTHERSHIP_REQUEST = async function request(url, options = {}) {
+    const controller = new AbortController();
+    const { timeoutMs = options.body ? 180000 : 20000, ...init } = options;
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const abort = () => controller.abort();
+    if (init.signal?.aborted) controller.abort();
+    else init.signal?.addEventListener('abort', abort, { once: true });
+    try {
+      const response = await window.fetch(url, { ...init, signal: controller.signal });
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('Your Mothership session has expired or access was denied. Sign in again, then retry.');
+      }
+      return response;
+    } catch (error) {
+      if (error.name === 'AbortError') throw new Error('The request timed out. Check your connection and retry.');
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      init.signal?.removeEventListener('abort', abort);
+    }
+  };
+  const request = window.YFA_MOTHERSHIP_REQUEST;
+
   async function apiError(response, fallback) {
     let message = fallback || `Cloudflare request failed (${response.status}).`;
     try {
@@ -94,7 +117,7 @@ window.YFA_MOTHERSHIP = {
 
   async function getOwnerSession() {
     try {
-      const response = await fetch(`${cfg.adminApiBase}/auth/me`, {
+      const response = await request(`${cfg.adminApiBase}/auth/me`, {
         credentials: 'same-origin',
         cache: 'no-store'
       });
@@ -150,7 +173,7 @@ window.YFA_MOTHERSHIP = {
           logoutError = error;
         }
         try {
-          const response = await fetch(`${cfg.adminApiBase}/auth/logout`, {
+          const response = await request(`${cfg.adminApiBase}/auth/logout`, {
             method: 'POST',
             credentials: 'same-origin',
             cache: 'no-store'
@@ -172,7 +195,7 @@ window.YFA_MOTHERSHIP = {
                   const headers = {};
                   const contentType = options.contentType || (body && body.type) || 'application/octet-stream';
                   if (contentType) headers['Content-Type'] = contentType;
-              const response = await fetch(`${cfg.adminApiBase}/assets/${encodePath(path)}`, {
+              const response = await request(`${cfg.adminApiBase}/assets/${encodePath(path)}`, {
                     method: 'PUT',
                     headers,
                     body,
@@ -189,7 +212,7 @@ window.YFA_MOTHERSHIP = {
                 try {
                   const list = Array.isArray(paths) ? paths : [paths];
                   for (const path of list.filter(Boolean)) {
-                const response = await fetch(`${cfg.adminApiBase}/assets/${encodePath(path)}`, {
+                const response = await request(`${cfg.adminApiBase}/assets/${encodePath(path)}`, {
                       method: 'DELETE',
                       credentials: 'same-origin',
                       cache: 'no-store'
@@ -208,7 +231,7 @@ window.YFA_MOTHERSHIP = {
           },
           async download(path) {
             try {
-              const response = await fetch(`${cfg.adminApiBase}/assets/${encodePath(path)}?v=${Date.now()}`, { credentials: 'same-origin', cache: 'no-store' });
+              const response = await request(`${cfg.adminApiBase}/assets/${encodePath(path)}?v=${Date.now()}`, { credentials: 'same-origin', cache: 'no-store' });
               if (!response.ok) return { data: null, error: await apiError(response, 'Could not download Cloudflare asset.') };
               return { data: await response.blob(), error: null };
             } catch (error) {
@@ -220,7 +243,7 @@ window.YFA_MOTHERSHIP = {
               const url = new URL(`${cfg.adminApiBase}/assets`, window.location.origin);
               url.searchParams.set('prefix', String(prefix || '').replace(/^\/+/, ''));
               url.searchParams.set('limit', String(options.limit || 100));
-              const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store' });
+              const response = await request(url, { credentials: 'same-origin', cache: 'no-store' });
               if (!response.ok) return { data: null, error: await apiError(response, 'Could not list Cloudflare assets.') };
               const payload = await response.json();
               return { data: payload.items || [], error: null };
@@ -255,7 +278,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20261028-editor-connection'
+    ? '/mothership-popup-admin.js?v=20261113-health-check'
     : '/mothership-popup-gate.js?v=20261027-redesign-shell';
   script.defer = true;
   document.head.appendChild(script);
