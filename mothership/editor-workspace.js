@@ -4,7 +4,7 @@ let active=false;
 function activate(){
 if(active)return;active=true;document.getElementById('yfaEditorPreviewEntry')?.remove();
 
-const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261113-share-save';document.head.append(css);document.body.classList.add('yfa-editor-preview');
+const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261113-share-save-final';document.head.append(css);document.body.classList.add('yfa-editor-preview');
 let selected=null,mode='arrange',viewport='desktop',route='/',busy=false;
 const api=()=>window.YFA_VISUAL_EDITOR;
 function start(){
