@@ -104,13 +104,18 @@
     return overlay;
   }
 
-  let overlay;
-  function close() { overlay.hidden = true; }
+  let overlay, returnFocus;
+  function close() { overlay.hidden = true; returnFocus?.focus(); }
+  function showDialog() {
+    if (overlay.hidden) returnFocus = document.activeElement;
+    overlay.hidden = false;
+    overlay.querySelector('button, input:not([disabled])')?.focus();
+  }
   function applyAndClose(next) { save(next); close(); }
 
   function openSummary() {
-    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Cookies & privacy</h2><p>We use necessary technology to operate and protect the site. Cookie-free website analytics through Metricool is ON by default. You can turn analytics off here or anytime under Privacy Choices. Other optional features require your permission. Read our <a href="/privacy.html">privacy policy</a>.</p><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="accept">Accept optional</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button><button class="yfa-privacy__manage" data-action="manage">Customize choices</button></div></section>';
-    overlay.hidden = false;
+    overlay.innerHTML = '<section class="yfa-privacy__panel"><div class="yfa-privacy__eyebrow">YourFavAlien · Privacy</div><h2 id="yfa-privacy-title">Cookies & privacy</h2><p>We use necessary technology to operate and protect the site. Cookie-free website analytics through Metricool is ON by default. You can turn analytics off here or anytime under Privacy Choices. Other optional features require your permission. Read our <a href="/privacy.html">privacy policy</a>.</p><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="accept">Accept optional</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button><button class="yfa-privacy__manage" data-action="manage">Customize choices</button><button class="yfa-privacy__manage" data-action="close">Close without changing choices</button></div></section>';
+    showDialog();
   }
 
   function openSettings() {
@@ -119,8 +124,8 @@
       categoryRow('preferences', 'Site preferences', 'Remembers optional interface choices such as signup-popup dismissal.', false) +
       categoryRow('xiloStorage', 'Xilo chat storage', 'Keeps recent Xilo messages and a conversation token only for this browser session.', false) +
       categoryRow('analytics', 'Website analytics (Metricool)', 'On by default. Sends page-visit information to Metricool without analytics cookies. You may turn it off anytime.', browserBlocksAnalytics() ? 'off' : false) +
-      '</div><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="save">Save choices</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button></div></section>';
-    overlay.hidden = false;
+      '</div><div class="yfa-privacy__actions"><button class="yfa-privacy__accept" data-action="save">Save choices</button><button class="yfa-privacy__reject" data-action="reject">Reject optional</button><button class="yfa-privacy__manage" data-action="close">Close without saving</button></div></section>';
+    showDialog();
   }
 
   function initialize() {
@@ -128,6 +133,7 @@
     overlay = makeDialog();
     overlay.addEventListener('click', function (event) {
       const action = event.target.closest('[data-action]')?.dataset.action;
+      if (action === 'close') close();
       if (action === 'accept') applyAndClose({ preferences: true, xiloStorage: true, analytics: true });
       if (action === 'reject') applyAndClose({ preferences: false, xiloStorage: false, analytics: false, advertising: false });
       if (action === 'manage') openSettings();
@@ -139,6 +145,16 @@
     });
     document.addEventListener('click', function (event) {
       if (event.target.closest('[data-yfa-privacy-open]')) openSettings();
+    });
+    document.addEventListener('keydown', event => {
+      if (overlay.hidden) return;
+      if (event.key === 'Escape') { event.preventDefault(); close(); }
+      if (event.key === 'Tab') {
+        const controls = [...overlay.querySelectorAll('button, a[href], input:not([disabled])')];
+        const first = controls[0], last = controls[controls.length-1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
     });
     loadMetricoolIfAllowed();
     if (!choices) openSummary();
