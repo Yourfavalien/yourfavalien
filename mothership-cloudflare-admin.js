@@ -216,65 +216,7 @@
     }
   }, true);
 
-  document.addEventListener('click', async event => {
-    const button = event.target.closest && event.target.closest('#saveThemeBtn');
-    if (!button) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const status = document.getElementById('themeStatus');
-    button.disabled = true;
-    setStatus(status, 'Saving to Cloudflare…');
-    try {
-      const colors = {};
-      document.querySelectorAll('.color-row').forEach(row => {
-        const key = row.dataset.colorId;
-        const input = row.querySelector('.hex-input');
-        if (key && input) colors[key] = input.value.trim().toLowerCase();
-      });
-      const layout = document.querySelector('[data-menu-layout][aria-pressed="true"]')?.dataset.menuLayout || 'editorial';
-      const style = document.querySelector('[data-menu-style][aria-pressed="true"]')?.dataset.menuStyle || 'obsidian';
-      const labels = {
-        home: document.getElementById('menuLabelHome')?.value.trim() || 'home',
-        socials: document.getElementById('menuLabelSocials')?.value.trim() || 'socials',
-        about: document.getElementById('menuLabelAbout')?.value.trim() || 'about moi',
-        contact: document.getElementById('menuLabelContact')?.value.trim() || 'contact'
-      };
-      const homeIdentity = {
-        text: document.getElementById('homeIdentityText')?.value.trim() || 'model · main character energy · fashion',
-        enabled: true
-      };
-      const ctaAction = document.getElementById('homeCtaAction')?.value || 'menu';
-      const ctaUrl = document.getElementById('homeCtaUrl')?.value.trim() || '';
-      const ctaEnabled = document.getElementById('homeCtaEnabled')?.checked === true;
-      const homeHero = {
-        menuEnabled: document.getElementById('homeMenuEnabled')?.checked !== false,
-        titleEnabled: document.getElementById('homeTitleEnabled')?.checked === true,
-        cta: {
-          enabled: ctaEnabled,
-          text: document.getElementById('homeCtaText')?.value.trim() || 'Enter my orbit',
-          action: ['menu','socials','about','contact','custom'].includes(ctaAction) ? ctaAction : 'menu',
-          url: ctaUrl,
-          style: document.querySelector('[data-home-cta-style][aria-pressed="true"]')?.dataset.homeCtaStyle || 'outline',
-          font: document.getElementById('homeCtaFont')?.value || 'courier',
-          fontSize: Math.min(24, Math.max(10, Number(document.getElementById('homeCtaFontSize')?.value) || 14)),
-          radius: Math.min(30, Math.max(0, Number(document.getElementById('homeCtaRadius')?.value) || 0)),
-          x: Math.min(92, Math.max(8, Number(document.getElementById('homeCtaX')?.value) || 50)),
-          y: Math.min(88, Math.max(12, Number(document.getElementById('homeCtaY')?.value) || 62))
-        }
-      };
-      if (ctaEnabled && homeHero.cta.action === 'custom' && !/^(https:\/\/|\/)/i.test(ctaUrl)) throw new Error('Use a full https:// link or a site path beginning with /.');
-      const payload = JSON.stringify({ version: 5, updatedAt: new Date().toISOString(), colors, menu: { layout, style, labels }, homeIdentity, homeHero }, null, 2);
-      await Promise.all([
-        apiFetch(writeSettingUrl('theme'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload }),
-        apiFetch(writeAssetUrl(cfg.themePath || 'theme/theme.json'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
-      ]);
-      setStatus(status, 'Homepage menu, button, and appearance saved.', 'ok');
-    } catch (error) {
-      setStatus(status, error.message || 'Could not save the theme.', 'error');
-    } finally {
-      button.disabled = false;
-    }
-  }, true);
+  // Theme publishing is owned by admin.html, including the share card.
 
   const socialKeys = ['quickTikTok','quickInstagram','quickSnapchat','tiktokEmbed','instagramEmbed','snapchat','facebook','mediaKit','subscribe'];
   document.addEventListener('submit', async event => {

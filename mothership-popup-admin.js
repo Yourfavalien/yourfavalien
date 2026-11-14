@@ -44,10 +44,10 @@
 
   const scripts = [
     ['/mothership-image-editor.js?v=20261113-share-crop', 'yfaImageEditor'],
-    ['/mothership-cloudflare-admin.js?v=20261113-drafts-privacy', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20261113-drafts-privacy', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20261113-drafts-privacy', 'yfaMothershipComplete'],
-    ['/mothership-badge-admin.js?v=20261113-drafts-privacy', 'yfaMothershipBadge']
+    ['/mothership-cloudflare-admin.js?v=20261113-share-save', 'yfaCloudflareAdmin'],
+    ['/mothership-power.js?v=20261113-share-save', 'yfaMothershipPower'],
+    ['/mothership-complete-admin.js?v=20261113-share-save', 'yfaMothershipComplete'],
+    ['/mothership-badge-admin.js?v=20261113-share-save', 'yfaMothershipBadge']
   ];
 
   scripts.forEach(([src,key]) => {

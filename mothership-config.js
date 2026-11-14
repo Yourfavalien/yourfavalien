@@ -285,7 +285,7 @@ window.YFA_MOTHERSHIP = {
   const isMothership = /^\/mothership(?:\/|$)/i.test(window.location.pathname || '');
   const script = document.createElement('script');
   script.src = isMothership
-    ? '/mothership-popup-admin.js?v=20261113-drafts-privacy'
+    ? '/mothership-popup-admin.js?v=20261113-share-save'
     : '/mothership-popup-gate.js?v=20261027-redesign-shell';
   script.defer = true;
   document.head.appendChild(script);

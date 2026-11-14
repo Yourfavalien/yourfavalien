@@ -212,7 +212,7 @@
   </main>
 
   <script src="https://descopecdn.com/npm/@descope/web-js-sdk@1.54.4/dist/index.umd.js" integrity="sha384-Mzy5HRAhIVMW+iTgiIdeYT5AlFGOi7FTmIp/izytT+gl4/NhJCq9g6YuqGhnyDfO" crossorigin="anonymous"></script>
-  <script src="../mothership-config.js?v=20261113-drafts-privacy"></script>
+  <script src="../mothership-config.js?v=20261113-share-save"></script>
   <script>
     (() => {
       const cfg = window.YFA_MOTHERSHIP;
@@ -772,7 +772,7 @@
               });
 
           // 2. Keep Cloudflare theme settings API updated
-          const settingsPromise = fetch(`${cfg.adminApiBase}/settings/theme`, {
+          const settingsPromise = window.YFA_MOTHERSHIP_REQUEST(`${cfg.adminApiBase}/settings/theme`, {
             method: 'PUT',
             credentials: 'same-origin',
             cache: 'no-store',
@@ -966,7 +966,7 @@
             cacheControl: '60',
             upsert: true
           });
-          const settingsPromise = fetch(`${cfg.adminApiBase}/settings/theme`, {
+          const settingsPromise = window.YFA_MOTHERSHIP_REQUEST(`${cfg.adminApiBase}/settings/theme`, {
             method: 'PUT',
             credentials: 'same-origin',
             cache: 'no-store',
@@ -997,10 +997,6 @@
         menuState = { layout: defaultMenu.layout, style: defaultMenu.style, labels: { ...defaultMenu.labels } };
         homeIdentityState = { ...defaultHomeIdentity };
         homeHeroState = JSON.parse(JSON.stringify(defaultHomeHero));
-        try {
-          const draft=JSON.parse(localStorage.getItem('yfa-theme-draft')||'null');
-          if(draft){themeState={...themeState,...draft.colors};menuState=draft.menu||menuState;homeIdentityState=draft.homeIdentity||homeIdentityState;homeHeroState=draft.homeHero||homeHeroState;sharePreviewState=draft.sharePreview||sharePreviewState;setStatus(themeStatus,'Appearance draft restored. Publish when ready.','ok');}
-        } catch(error){setStatus(themeStatus,'Could not restore the appearance draft.','error');}
         renderMenuEditor();
         homeIdentityText.value = homeIdentityState.text;
         renderHomeHeroEditor();
@@ -1294,12 +1290,12 @@
       startMothership();
     })();
   </script>
-  <script src="../mothership-maintenance-admin.js?v=20261113-drafts-privacy"></script>
-  <script src="../mothership-campaign-admin.js?v=20261113-drafts-privacy"></script>
+  <script src="../mothership-maintenance-admin.js?v=20261113-share-save"></script>
+  <script src="../mothership-campaign-admin.js?v=20261113-share-save"></script>
   <script src="../mothership-maintenance-fullscreen.js?v=20261019-1"></script>
-  <link rel="stylesheet" href="dashboard-shell.css?v=20261113-drafts-privacy">
-  <script src="dashboard-shell.js?v=20261113-drafts-privacy"></script>
-<script defer src="editor-workspace.js?v=20261113-drafts-privacy"></script></body>
+  <link rel="stylesheet" href="dashboard-shell.css?v=20261113-share-save">
+  <script src="dashboard-shell.js?v=20261113-share-save"></script>
+<script defer src="editor-workspace.js?v=20261113-share-save"></script></body>
 </html>
 
 
