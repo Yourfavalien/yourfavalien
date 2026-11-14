@@ -22,9 +22,8 @@
     navigation: {
       items: [
         {id:'home',label:'Home',url:'/',enabled:true},
-        {id:'about',label:'About',url:'/about.html',enabled:true},
-        {id:'socials',label:'Socials',url:'/socials.html',enabled:true},
-        {id:'contact',label:'Contact',url:'/contact.html',enabled:true},
+        {id:'socials',label:'Socials',url:'/socials',enabled:true},
+        {id:'contact',label:'Contact',url:'/contact',enabled:true},
         {id:'privacy',label:'Privacy',url:'/privacy.html',enabled:false}
       ]
     },
@@ -40,10 +39,12 @@
 
   function merge(src) {
     const d = defaults();
+    const navigation = {...d.navigation,...(src?.navigation||{})};
+    navigation.items = (navigation.items || []).filter(item => item.id !== 'about' && !/^\/about(?:\.html)?\/?$/.test(item.url || '')).map(item => ({...item, url: String(item.url || '').replace(/^\/(contact|socials)\.html(?=[?#]|$)/,'/$1')}));
     return {
       ...d, ...src,
       pages: {...d.pages,...(src?.pages||{})},
-      navigation: {...d.navigation,...(src?.navigation||{})},
+      navigation,
       design: {...d.design,...(src?.design||{})},
       popup: {...d.popup,...(src?.popup||{})},
       xilo: {...d.xilo,...(src?.xilo||{})},
@@ -113,10 +114,10 @@
     return v;
   }
 
-  let selectedPage='about';
+  let selectedPage='contact';
   function renderPages(){
     const tabs=document.getElementById('cPageTabs'), host=document.getElementById('cPageEditor'); if(!tabs||!host)return;
-    tabs.innerHTML=''; ['about','contact','privacy','socials'].forEach(k=>{const b=document.createElement('button');b.className='c-mini';b.textContent=k[0].toUpperCase()+k.slice(1);b.setAttribute('aria-pressed',String(k===selectedPage));b.onclick=()=>{readPage();selectedPage=k;renderPages();};tabs.appendChild(b);});
+    tabs.innerHTML=''; ['contact','privacy','socials'].forEach(k=>{const b=document.createElement('button');b.className='c-mini';b.textContent=k[0].toUpperCase()+k.slice(1);b.setAttribute('aria-pressed',String(k===selectedPage));b.onclick=()=>{readPage();selectedPage=k;renderPages();};tabs.appendChild(b);});
     host.innerHTML=pageEditor(selectedPage);
     host.querySelectorAll('input,textarea').forEach(n=>{n.addEventListener('input',()=>{readPage();mark();});n.addEventListener('change',()=>{readPage();mark();});});
   }

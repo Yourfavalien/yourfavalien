@@ -37,7 +37,7 @@
   };
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
   const safe = value => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
-  const pageUrl = page => String(page?.slug || '').toLowerCase() === 'gallery' ? '/redesign-gallery.html' : `/page.html?slug=${encodeURIComponent(page?.slug || '')}`;
+  const pageUrl = page => String(page?.slug || '').toLowerCase() === 'gallery' ? '/' : `/page.html?slug=${encodeURIComponent(page?.slug || '')}`;
 
   const defaults = () => ({
     version: 1,
@@ -366,8 +366,8 @@
       upload:async(files)=>{const page=gallery();if(!page)throw new Error('Gallery is unavailable.');const result=await uploadBatch([...files],'pages/'+page.id,document.getElementById('powerPublishStatus'));if(result.cancelled)throw new Error('Upload cancelled. No files were added.');if(result.uploaded.length)mutate(()=>page.images.unshift(...result.uploaded));if(result.errors.length)throw new Error(result.errors.join('\n'));},
       undo:()=>{if(!history.length)return;future.push(snapshot());data=history.pop();changed();},
       redo:()=>{if(!future.length)return;history.push(snapshot());data=future.pop();changed();},
-      createBlock:type=>mutate(()=>{if(!['text','button','divider'].includes(type))throw new Error('Unsupported block.');data.home.blocks=data.home.blocks||[];data.home.blocks.push({id:uid(),type,title:type==='button'?'Contact':'New text',body:'',url:'/contact.html',visible:true});}),
-      updateBlock:(id,values)=>mutate(()=>{const block=data.home.blocks?.find(b=>b.id===id);if(!block)throw new Error('Block is unavailable.');block.title=String(values.title||'');block.body=String(values.body||'');block.url=String(values.url||'/contact.html');block.visible=values.visible!==false;}),
+      createBlock:type=>mutate(()=>{if(!['text','button','divider'].includes(type))throw new Error('Unsupported block.');data.home.blocks=data.home.blocks||[];data.home.blocks.push({id:uid(),type,title:type==='button'?'Contact':'New text',body:'',url:'/contact',visible:true});}),
+      updateBlock:(id,values)=>mutate(()=>{const block=data.home.blocks?.find(b=>b.id===id);if(!block)throw new Error('Block is unavailable.');block.title=String(values.title||'');block.body=String(values.body||'');block.url=String(values.url||'/contact');block.visible=values.visible!==false;}),
       removeBlock:id=>mutate(()=>{data.home.blocks=(data.home.blocks||[]).filter(b=>b.id!==id);}),
       reorderBlock:(fromId,toId)=>mutate(()=>{const blocks=data.home.blocks||[];const from=blocks.findIndex(b=>b.id===fromId),to=blocks.findIndex(b=>b.id===toId);if(from<0||to<0)return;blocks.splice(to,0,blocks.splice(from,1)[0]);}),
       history:()=>({undo:history.length,redo:future.length})

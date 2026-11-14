@@ -8,6 +8,27 @@ const DEFAULTS = {
 let cachedPreview = null;
 let cachedUntil = 0;
 
+// Only public page aliases are canonicalized. Private routes and APIs pass
+// through unchanged; their more-specific Cloudflare routes stay in place.
+export function publicRedirect(request) {
+  if (!['GET', 'HEAD'].includes(request.method)) return null;
+  const url = new URL(request.url);
+  const aliases = {
+    '/index.html': '/', '/index': '/',
+    '/contact.html': '/contact', '/contact/': '/contact',
+    '/socials.html': '/socials', '/socials/': '/socials',
+    '/about': '/', '/about.html': '/', '/about/': '/',
+    '/redesign-gallery.html': '/', '/redesign-preview.html': '/'
+  };
+  const destination = aliases[url.pathname];
+  const mainPage = ['/', '/contact', '/socials'].includes(url.pathname);
+  if (!destination && !(mainPage && url.hostname === 'www.yourfavalien.com')) return null;
+  url.hostname = 'yourfavalien.com';
+  url.protocol = 'https:';
+  url.pathname = destination || url.pathname;
+  return Response.redirect(url.href, 301);
+}
+
 async function getSharePreview(env) {
   if (Date.now() < cachedUntil) return cachedPreview;
   try {
@@ -41,6 +62,9 @@ async function getSharePreview(env) {
 export default {
   async fetch(request, env, ctx) {
     ctx.passThroughOnException();
+    const redirect = publicRedirect(request);
+    if (redirect) return redirect;
+    if (new URL(request.url).pathname !== '/') return fetch(request);
     if (request.method !== 'GET') return fetch(request);
 
     // The route is the bare homepage URL. Remove origin validators because

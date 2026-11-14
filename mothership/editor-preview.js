@@ -9,9 +9,8 @@
       { id: 'home-identity', label: 'Homepage identity line', type: 'Text', note: 'Current public home copy; no live text editing in this prototype.' },
       { id: 'home-menu', label: 'Homepage menu', type: 'Navigation', note: 'Mapped to the existing global menu theme settings.' }
     ] },
-    { id: 'about', label: 'About', url: 'https://yourfavalien.com/about.html', title: 'About YourFavAlien | Official Website', sections: [{ id: 'about-page', label: 'Published page', type: 'Page content', note: 'Existing page is displayed without altering its content.' }] },
-    { id: 'contact', label: 'Contact', url: 'https://yourfavalien.com/contact.html', title: 'Contact YourFavAlien | Business & Inquiries', sections: [{ id: 'contact-page', label: 'Published page', type: 'Page content', note: 'Existing contact workflow remains separate from this preview.' }] },
-    { id: 'socials', label: 'Socials', url: 'https://yourfavalien.com/socials.html', title: 'YourFavAlien Socials | Official Links', sections: [
+    { id: 'contact', label: 'Contact', url: 'https://yourfavalien.com/contact', title: 'Contact YourFavAlien | Business & Inquiries', sections: [{ id: 'contact-page', label: 'Published page', type: 'Page content', note: 'Existing contact workflow remains separate from this preview.' }] },
+    { id: 'socials', label: 'Socials', url: 'https://yourfavalien.com/socials', title: 'YourFavAlien Socials | Official Links', sections: [
       { id: 'socials-hero', label: 'Socials hero photo', type: 'Image', path: 'slots/socials-hero', note: 'Real social hero mapping from the existing configuration.' },
       { id: 'socials-profiles', label: 'Profile photos', type: 'Media group', note: 'TikTok, Instagram, Snapchat, Facebook, and YouTube remain their current mapped slots.' },
       { id: 'socials-links', label: 'Social links', type: 'Links', note: 'Uses the existing socials configuration file when integrated.' }

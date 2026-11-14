@@ -45,8 +45,8 @@
   const scripts = [
     ['/mothership-image-editor.js?v=20261113-share-crop', 'yfaImageEditor'],
     ['/mothership-cloudflare-admin.js?v=20261113-share-save-final', 'yfaCloudflareAdmin'],
-    ['/mothership-power.js?v=20261113-share-save-final', 'yfaMothershipPower'],
-    ['/mothership-complete-admin.js?v=20261113-share-save-final', 'yfaMothershipComplete'],
+    ['/mothership-power.js?v=20261114-clean-urls', 'yfaMothershipPower'],
+    ['/mothership-complete-admin.js?v=20261114-clean-urls', 'yfaMothershipComplete'],
     ['/mothership-badge-admin.js?v=20261113-share-save-final', 'yfaMothershipBadge']
   ];
 

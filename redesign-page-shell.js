@@ -5,8 +5,8 @@
 
   const preview = new URLSearchParams(location.search).get('yfa-redesign') === 'preview';
   const routes = preview
-    ? { home: '/redesign-preview.html', gallery: '/redesign-gallery.html', socials: '/socials.html?yfa-redesign=preview', contact: '/contact.html?yfa-redesign=preview', privacy: '/privacy.html?yfa-redesign=preview', help: '/help.html' }
-    : { home: '/', gallery: '/redesign-gallery.html', socials: '/socials.html', contact: '/contact.html', privacy: '/privacy.html', help: '/help.html' };
+    ? { home: '/redesign-preview.html', gallery: '/redesign-gallery.html', socials: '/socials?yfa-redesign=preview', contact: '/contact?yfa-redesign=preview', privacy: '/privacy.html?yfa-redesign=preview', help: '/help.html' }
+    : { home: '/', gallery: '/redesign-gallery.html', socials: '/socials', contact: '/contact', privacy: '/privacy.html', help: '/help.html' };
 
   document.querySelector('body > nav')?.remove();
 
@@ -17,7 +17,7 @@
 
   const footer = document.createElement('footer');
   footer.className = 'yfa-footer';
-  footer.innerHTML = `<a data-route="home">Home</a><img src="/assets/06_YFA_Chrome_Monogram_Clean.png" alt="" aria-hidden="true"><div class="yfa-footer__links"><a data-route="gallery">Gallery</a><a href="https://www.yourfavalien.site/" target="_blank" rel="noopener noreferrer">Business</a><a data-route="privacy">Privacy</a><button type="button" data-yfa-privacy-open>Privacy choices</button><a data-route="help">Help</a><small class="yfa-footer__copyright">© 2026 YourFavAlien. All rights reserved.</small></div>`;
+  footer.innerHTML = `<a data-route="home">Home</a><img src="/assets/06_YFA_Chrome_Monogram_Clean.png" alt="" aria-hidden="true"><div class="yfa-footer__links"><a href="https://www.yourfavalien.site/" target="_blank" rel="noopener noreferrer">Business</a><a data-route="privacy">Privacy</a><button type="button" data-yfa-privacy-open>Privacy choices</button><a data-route="help">Help</a><small class="yfa-footer__copyright">© 2026 YourFavAlien. All rights reserved.</small></div>`;
   footer.querySelectorAll('[data-route]').forEach(link => { link.href = routes[link.dataset.route]; });
 
   document.body.prepend(header);
