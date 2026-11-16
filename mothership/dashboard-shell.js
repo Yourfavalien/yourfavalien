@@ -10,13 +10,14 @@
   const hide = (...nodes) => nodes.forEach(node => node?.classList.add('hidden'));
 
   async function mount() {
+    if (document.documentElement.classList.contains('mothership-hub')) return;
     const dashboard = await waitFor('#dashboard');
     if (!dashboard || document.querySelector('.yfa-app-layout')) return;
     document.body.classList.add('yfa-app-ready');
 
     const layout = document.createElement('div'); layout.className = 'yfa-app-layout';
     const appBar = document.createElement('header'); appBar.className = 'yfa-app-sidebar';
-    appBar.innerHTML = `<div class="yfa-app-brand"><span>✦</span><div><b>MOTHERSHIP</b><small>YourFavAlien control center</small></div></div><nav class="yfa-app-nav" aria-label="Mothership navigation"><button data-area="dashboard" aria-current="page">Dashboard</button><button data-area="campaign">Campaign Mode</button><button data-area="editor">Website Editor</button><button data-area="pages">Pages & Navigation</button><button data-area="design">Design & Branding</button><button data-area="media">Gallery & uploads</button><button data-area="socials">Socials & Links</button><button data-area="popup">Popups & Email</button><button data-area="maintenance">Maintenance</button><button data-area="settings">Settings</button></nav><a class="yfa-app-view-site" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View site</a>`;
+    appBar.innerHTML = `<div class="yfa-app-brand"><span>✦</span><div><b>MOTHERSHIP</b><small>YourFavAlien control center</small></div></div><nav class="yfa-app-nav" aria-label="Mothership navigation"><button data-area="dashboard" aria-current="page">Dashboard</button><button data-area="campaign">Campaign Mode</button><button data-area="editor">Website Editor</button><button data-area="pages">Pages & Navigation</button><button data-area="design">Design & Branding</button><button data-area="media">Gallery & uploads</button><button data-area="socials">Socials & Links</button><button data-area="popup">Popups & Email</button><button data-area="maintenance">Maintenance</button><button data-area="settings">Settings</button></nav><a class="yfa-app-consoles" href="/mothership/admin.html#hub">All consoles</a><a class="yfa-app-view-site" href="https://yourfavalien.com" target="_blank" rel="noopener">↗ View site</a>`;
     const main = document.createElement('main'); main.className = 'yfa-app-main';
     dashboard.parentNode.insertBefore(layout, dashboard); layout.append(appBar, main); main.append(dashboard);
 

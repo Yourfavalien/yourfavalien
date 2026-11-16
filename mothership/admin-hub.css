@@ -1,0 +1,66 @@
+/* Private console launcher. Shown for /mothership/admin.html#hub (and ?view=hub).
+   Add a console by appending to CONSOLES in admin-hub.js and a .console--id rule here. */
+html.mothership-hub{color-scheme:dark}
+html.mothership-hub body{min-height:100vh;min-height:100dvh;background:
+  radial-gradient(420px 220px at 0 0,rgba(181,23,94,.22),transparent 70%),
+  #070408;color:#f3eeee}
+html.mothership-hub .shell{display:none!important}
+#mothershipHub:empty{display:none}
+
+html.mothership-hub .mothership-hub{box-sizing:border-box;display:block;min-height:100vh;min-height:100dvh;padding:
+  max(28px,env(safe-area-inset-top))
+  max(20px,env(safe-area-inset-right))
+  max(36px,env(safe-area-inset-bottom))
+  max(20px,env(safe-area-inset-left))}
+html.mothership-hub .mothership-hub *,html.mothership-hub .mothership-hub *::before,html.mothership-hub .mothership-hub *::after{box-sizing:border-box}
+.hub-frame{width:min(920px,100%);margin:0 auto}
+
+.hub-top{display:grid;gap:14px;padding-bottom:22px;border-bottom:1px solid rgba(243,238,238,.14)}
+.hub-mark{width:min(240px,62vw);height:auto;display:block;mix-blend-mode:screen}
+.hub-kicker{display:flex;justify-content:space-between;gap:16px;margin:8px 0 0;color:#9b8f98;font:700 10px/1 'Space Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase}
+.hub-kicker span:last-child{color:#ff39ae}
+.hub-title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.hub-title-row h1{margin:0;color:#f7f1f4;font:700 clamp(36px,6vw,60px)/.92 'Space Mono',ui-monospace,monospace;letter-spacing:-.06em}
+.hub-count{margin:0 0 6px;color:#6f656c;font:700 12px/1 'Space Mono',ui-monospace,monospace;letter-spacing:.22em}
+.hub-deck{max-width:38em;margin:0;color:#b7aab2;font:400 13px/1.6 'Space Mono',ui-monospace,monospace}
+
+.hub-list{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:12px}
+.console{position:relative;background:#100910;border:1px solid rgba(243,238,238,.14);border-left-width:3px}
+.console-hit{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"index name gate" "index purpose gate";column-gap:16px;row-gap:6px;align-items:center;min-height:108px;padding:18px 18px 18px 16px;color:inherit;text-decoration:none}
+.console-index{grid-area:index;align-self:start;color:var(--console-accent);font:700 11px/1 'Space Mono',ui-monospace,monospace;letter-spacing:.16em}
+.console-name{grid-area:name;min-width:0;font:700 clamp(16px,2.4vw,22px)/1.2 'Space Mono',ui-monospace,monospace;letter-spacing:.01em}
+.console-purpose{grid-area:purpose;margin:0;color:#9b8f98;font:400 12px/1.45 'Space Mono',ui-monospace,monospace}
+.console-gate{grid-area:gate;align-self:start;padding-top:2px;color:var(--console-accent);font:700 10px/1.35 'Space Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;text-align:right;white-space:nowrap}
+.console-side{display:inline-flex;align-items:center;min-height:44px;margin:0 18px 8px 46px;color:inherit;font:700 11px/1 'Space Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+.console-side:hover,.console-side:focus-visible{text-decoration:underline;text-underline-offset:3px}
+
+.console--mothership{--console-accent:#ff39ae;border-left-color:#b5175e;background:#140910}
+.console--mothership .console-name{color:#ffd0e8}
+.console--support{--console-accent:#3182f6;border-left-color:#3182f6;background:#0b1018}
+.console--support .console-name{color:#e7f0ff}
+.console--xilo{--console-accent:#d8ff54;border-left-color:#d8ff54;background:#10140a;box-shadow:inset 0 -2px 0 #48e4d5}
+.console--xilo .console-name{color:#d8ff54}
+.console--xilo .console-index{color:#48e4d5}
+.console--headquarters{--console-accent:#1c1a16;border-left-color:#b6e23a;background:#ece9e2;color:#1c1a16}
+.console--headquarters .console-name{color:#1c1a16;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;line-height:1}
+.console--headquarters .console-purpose{color:#5e584f}
+.console--headquarters .console-gate{color:#3d4a12}
+.console--headquarters .console-index{color:#6d8a14}
+.console--headquarters .console-side{color:#3f4d16}
+
+.console-hit:hover,.console-hit:focus-visible{background:rgba(255,255,255,.035)}
+.console--headquarters .console-hit:hover,.console--headquarters .console-hit:focus-visible{background:rgba(28,26,22,.04)}
+.console-hit:focus-visible,.console-side:focus-visible{outline:2px solid var(--console-accent);outline-offset:-2px}
+.console--xilo .console-hit:focus-visible{outline-color:#48e4d5}
+.console-hit:active{transform:translateX(3px)}
+
+@media(max-width:760px){
+  .hub-title-row h1{font-size:clamp(28px,11vw,40px)}
+  .console-hit{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"index name" "index purpose" "index gate";min-height:0;padding:16px 14px 16px 12px}
+  .console-gate{text-align:left;white-space:normal;padding-top:4px}
+  .console-side{margin-left:40px}
+  .console-hit:active{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .console-hit:active{transform:none}
+}
