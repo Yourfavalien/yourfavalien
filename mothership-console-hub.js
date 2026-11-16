@@ -1,7 +1,7 @@
 /* Private launcher for /mothership/admin.html#hub.
    The mothership Worker already gates that pathname with a Descope session.
-   The hash survives its login redirect; a new /mothership/admin* file does not,
-   because that route returns 404 for every path except /mothership/admin.html. */
+   Keep this file outside /mothership/admin*: that route returns 404 for every
+   path except /mothership/admin.html, so admin-hub.js never reaches the browser. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   catch (error) { params = new URLSearchParams(); }
   if (params.get('view') !== 'hub' && window.location.hash !== '#hub') return;
 
-  // Append a console here, then add a matching .console--id rule in admin-hub.css.
+  // Append a console here, then add a matching .console--id rule in mothership-console-hub.css.
   var CONSOLES = [
     {
       id: 'mothership',
