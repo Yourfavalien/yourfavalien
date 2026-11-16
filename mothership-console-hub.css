@@ -1,5 +1,5 @@
 /* Private console launcher. Shown for /mothership/admin.html#hub (and ?view=hub).
-   Add a console by appending to CONSOLES in admin-hub.js and a .console--id rule here. */
+   Add a console by appending to CONSOLES in mothership-console-hub.js and a .console--id rule here. */
 html.mothership-hub{color-scheme:dark}
 html.mothership-hub body{min-height:100vh;min-height:100dvh;background:
   radial-gradient(420px 220px at 0 0,rgba(181,23,94,.22),transparent 70%),
