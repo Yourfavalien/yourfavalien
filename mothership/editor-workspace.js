@@ -2,6 +2,7 @@
 'use strict';
 let active=false;
 function activate(){
+if(document.documentElement.classList.contains('mothership-hub'))return;
 if(active)return;active=true;document.getElementById('yfaEditorPreviewEntry')?.remove();
 
 const css=document.createElement('link');css.rel='stylesheet';css.href='editor-workspace.css?v=20261113-share-save-final';document.head.append(css);document.body.classList.add('yfa-editor-preview');

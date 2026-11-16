@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-hub.css?v=20261116-admin-hub">
+  <style>html.mothership-hub .shell{display:none!important}html.mothership-hub body{margin:0;padding:0;background:#070408}</style>
+  <script>document.documentElement.classList.toggle('mothership-hub',new URLSearchParams(location.search).get('view')==='hub'||location.hash==='#hub');if(document.documentElement.classList.contains('mothership-hub')){var hubFont=document.createElement('link');hubFont.rel='stylesheet';hubFont.href='https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap';document.head.appendChild(hubFont);}else{try{sessionStorage.removeItem('yfa-hub-return')}catch(e){}}</script>
   <link href="../mothership-editor-layout.css?v=20261019-1" rel="stylesheet">
   <style>
     :root{--bg:#070408;--panel:#120a11;--ink:#f3eeee;--muted:#9b8f98;--magenta:#b5175e;--line:rgba(255,255,255,.12);--ok:#9ed1b6;--bad:#ff8f9f}
@@ -36,6 +39,7 @@
   <style>#xiloTraining,#trainingForm,#xiloView,#chatsView{display:none!important}</style>
 </head>
 <body>
+  <div id="mothershipHub" class="mothership-hub"></div>
   <main class="shell">
     <div class="brand"><div><div class="eyebrow">YourFavAlien private control room</div><h1>MOTHERSHIP</h1></div><small>/mothership</small></div>
 
@@ -1291,9 +1295,10 @@
   <script src="../mothership-maintenance-admin.js?v=20261113-share-save-final"></script>
   <script src="../mothership-campaign-admin.js?v=20261113-share-save-final"></script>
   <script src="../mothership-maintenance-fullscreen.js?v=20261019-1"></script>
-  <link rel="stylesheet" href="dashboard-shell.css?v=20261113-share-save-final">
-  <script src="dashboard-shell.js?v=20261113-share-save-final"></script>
-<script defer src="editor-workspace.js?v=20261114-clean-urls"></script></body>
+  <link rel="stylesheet" href="dashboard-shell.css?v=20261116-admin-hub">
+  <script src="admin-hub.js?v=20261116-admin-hub"></script>
+  <script src="dashboard-shell.js?v=20261116-admin-hub"></script>
+<script defer src="editor-workspace.js?v=20261116-admin-hub"></script></body>
 </html>
 
 

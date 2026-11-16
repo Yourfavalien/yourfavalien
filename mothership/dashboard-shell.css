@@ -21,3 +21,7 @@ body.yfa-app-ready>.shell{width:100%!important;max-width:none!important;margin:0
    middle canvas or horizontal overflow. */
 .yfa-editor-grid>*{min-width:0;box-sizing:border-box}
 @media(max-width:620px){.yfa-editor-grid{grid-template-columns:minmax(0,1fr)!important;gap:12px}.yfa-editor-pages{width:100%;grid-template-columns:repeat(2,minmax(0,1fr))}.yfa-editor-inspector{width:100%;grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));box-sizing:border-box}.yfa-editor-frame,.yfa-editor-frame[data-viewport="tablet"],.yfa-editor-frame[data-viewport="mobile"]{width:100%!important;height:clamp(440px,66vh,600px)}}
+
+/* Stays visible on a phone; .yfa-app-view-site is hidden under 620px. */
+.yfa-app-consoles{flex:0 0 auto;padding:9px 10px;border:1px solid rgba(255,113,196,.28);border-radius:8px;color:#ff39ae;font:700 10px 'Space Mono',monospace;text-decoration:none;white-space:nowrap}
+.yfa-app-consoles:hover,.yfa-app-consoles:focus-visible{color:#fff;border-color:rgba(255,113,196,.22);background:linear-gradient(90deg,#a61363,#64143f);outline:none}
