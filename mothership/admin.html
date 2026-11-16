@@ -10,6 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/mothership-console-hub.css?v=20261116-console-hub">
   <style>html.mothership-hub .shell{display:none!important}html.mothership-hub body{margin:0;padding:0;background:#070408}</style>
+  <style>
+    html:not(.mothership-hub) #mothershipHub{display:none!important}
+    html.mothership-hub .hub-fallback{max-width:900px;margin:0 auto;padding:clamp(36px,7vw,72px) 20px 60px;color:#f3eeee;font-family:Arial,sans-serif}
+    .hub-fallback-eyebrow,.hub-fallback-note{font:700 11px/1.6 ui-monospace,monospace;letter-spacing:.1em;color:#a8a0a7}
+    .hub-fallback h1{font:700 clamp(36px,7vw,64px)/1.05 ui-monospace,monospace;letter-spacing:-.05em;margin:18px 0;color:#f9f2f7}
+    .hub-fallback-intro{color:#bcb0b8;font:14px/1.6 ui-monospace,monospace;margin-bottom:28px}
+    .hub-fallback nav{display:grid;gap:12px}
+    .hub-fallback nav a{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding:20px;border:1px solid #574354;border-left:3px solid #ed53a2;background:#150e16;text-decoration:none;color:#faf2f7;min-height:72px;align-items:center}
+    .hub-fallback nav a:nth-child(2){border-left-color:#3182f6}.hub-fallback nav a:nth-child(3){border-left-color:#d8ff54}.hub-fallback nav a:nth-child(4){border-left-color:#cbbf9f}
+    .hub-fallback nav a strong{font:700 17px/1.3 ui-monospace,monospace}.hub-fallback nav a span{font:12px/1.4 ui-monospace,monospace;color:#aaa0a9}
+    .hub-fallback nav a:hover,.hub-fallback nav a:focus-visible{outline:2px solid #ed53a2;outline-offset:1px}
+    .hub-fallback-note{margin-top:22px;letter-spacing:0}
+  </style>
   <script>document.documentElement.classList.toggle('mothership-hub',new URLSearchParams(location.search).get('view')==='hub'||location.hash==='#hub');if(document.documentElement.classList.contains('mothership-hub')){var hubFont=document.createElement('link');hubFont.rel='stylesheet';hubFont.href='https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap';document.head.appendChild(hubFont);}else{try{sessionStorage.removeItem('yfa-hub-return')}catch(e){}}</script>
   <link href="../mothership-editor-layout.css?v=20261019-1" rel="stylesheet">
   <style>
@@ -39,7 +52,21 @@
   <style>#xiloTraining,#trainingForm,#xiloView,#chatsView{display:none!important}</style>
 </head>
 <body>
-  <div id="mothershipHub" class="mothership-hub"></div>
+  <div id="mothershipHub" class="mothership-hub">
+    <!-- Server-rendered fallback: retains working links if the enhanced launcher JS is unavailable. -->
+    <section class="hub-fallback" aria-label="YourFavAlien private admin consoles">
+      <p class="hub-fallback-eyebrow">YOURFAVALIEN / PRIVATE CONTROL ROOM</p>
+      <h1>Consoles</h1>
+      <p class="hub-fallback-intro">Choose a private workspace. Each console retains its own sign-in and permissions.</p>
+      <nav aria-label="Admin console launcher">
+        <a href="/mothership/admin.html"><strong>The Mothership</strong><span>Website editor and site administration</span></a>
+        <a href="/mothership/support/index.html"><strong>Support Control Center</strong><span>Help center and support tickets</span></a>
+        <a href="https://xilo.yourfavalien.site/"><strong>Xilo Control Center</strong><span>Assistant training and inbox</span></a>
+        <a href="https://partners.yourfavalien.site/"><strong>Business Headquarters</strong><span>Partner and owner portal</span></a>
+      </nav>
+      <p class="hub-fallback-note">If the enhanced interface does not load, these direct links still work.</p>
+    </section>
+  </div>
   <main class="shell">
     <div class="brand"><div><div class="eyebrow">YourFavAlien private control room</div><h1>MOTHERSHIP</h1></div><small>/mothership</small></div>
 
