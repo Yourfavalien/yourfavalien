@@ -1,0 +1,114 @@
+.yfa-chrome-intro {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #050405;
+  color: #fff;
+  touch-action: pinch-zoom;
+}
+
+.yfa-chrome-intro::backdrop {
+  background: transparent;
+}
+
+.yfa-chrome-intro__light,
+.yfa-chrome-intro__head {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.yfa-chrome-intro__light {
+  background: radial-gradient(ellipse at 78% 63%, #76190999, #360d1060 28%, transparent 57%),
+    radial-gradient(ellipse at 21% 27%, #43515c70, #17222938 29%, transparent 58%);
+}
+
+.yfa-chrome-intro__orbit {
+  position: absolute;
+  top: 20%;
+  left: 11%;
+  width: 77%;
+  height: 58%;
+  border-block: 1px solid transparent;
+  border-top-color: #dce8f16b;
+  border-bottom-color: #fb4a2b7e;
+  border-radius: 50%;
+  box-shadow: 0 -3px 10px -8px #dce8f1, 0 4px 12px -8px #f64528;
+  transform: rotate(-17deg) scaleY(.6);
+  pointer-events: none;
+}
+
+.yfa-chrome-intro__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(77%, 720px);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.yfa-chrome-intro.is-leaving {
+  opacity: 0;
+  transition: opacity 650ms ease;
+}
+
+.yfa-chrome-intro__hint,
+.yfa-chrome-intro__skip {
+  position: absolute;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font: 400 11px var(--sans, system-ui, sans-serif);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.yfa-chrome-intro__hint {
+  left: max(22px, env(safe-area-inset-left));
+  opacity: .8;
+  pointer-events: none;
+}
+
+.yfa-chrome-intro__hint span + span {
+  display: none;
+}
+
+.yfa-chrome-intro__skip {
+  right: max(12px, env(safe-area-inset-right));
+  padding: 0 12px;
+  border: 1px solid transparent;
+  background: #050405bf;
+  cursor: pointer;
+}
+
+.yfa-chrome-intro__skip:hover {
+  border-color: #ffffff60;
+}
+
+.yfa-chrome-intro__skip:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: -2px;
+}
+
+@media (pointer: coarse) {
+  .yfa-chrome-intro__hint span:first-child { display: none; }
+  .yfa-chrome-intro__hint span + span { display: inline; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yfa-chrome-intro { display: none; }
+}

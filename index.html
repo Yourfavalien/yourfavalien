@@ -22,15 +22,21 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"YourFavAlien","alternateName":"Your Fav Alien","url":"https://yourfavalien.com/"}</script>
   <link rel="icon" type="image/png" href="assets/favicon.png?v=20261027-chrome">
   <link rel="stylesheet" href="redesign-experience.css?v=20261109-intro-fullscreen">
+  <link rel="stylesheet" href="/chrome-intro.css?v=20261122">
   <script defer src="redesign-experience.js?v=20261114-clean-urls"></script>
   <script defer src="redesign-page-shell.js?v=20261114-clean-urls"></script>
   <script defer src="/privacy-choices.js?v=20261113-dismiss"></script>
 </head>
 <body>
-  <div class="yfa-intro" data-intro aria-label="YourFavAlien introduction" role="dialog" aria-modal="true" tabindex="-1">
-    <video class="yfa-intro__film" data-intro-film autoplay muted playsinline preload="auto"></video>
-  </div>
-  <script src="intro-autoplay.js?v=20261109-phone-matched"></script>
+  <dialog class="yfa-chrome-intro" data-chrome-intro aria-label="YourFavAlien introduction">
+    <div class="yfa-chrome-intro__light" aria-hidden="true"></div>
+    <div class="yfa-chrome-intro__orbit" aria-hidden="true"></div>
+    <canvas class="yfa-chrome-intro__head" aria-hidden="true"></canvas>
+    <img class="yfa-chrome-intro__logo" data-logo-src="/assets/01_Primary_Chrome_Wordmark_Clean.png" alt="" aria-hidden="true">
+    <p class="yfa-chrome-intro__hint" aria-hidden="true"><span>Scroll to enter</span><span>Swipe to enter</span></p>
+    <button class="yfa-chrome-intro__skip" type="button">Skip intro</button>
+  </dialog>
+  <script src="/chrome-intro.js?v=20261122"></script>
   <header class="yfa-header" data-header>
     <nav class="yfa-nav" aria-label="Primary navigation">
       <a class="yfa-nav__left" href="/socials">Socials</a>
